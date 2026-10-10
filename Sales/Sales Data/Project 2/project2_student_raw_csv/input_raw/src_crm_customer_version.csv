@@ -1,0 +1,211 @@
+﻿crm_version_id,crm_customer_id,version_no,full_name,email,phone_number,address_text,preferred_store_id,valid_from,valid_to,updated_at
+CV00001,CRM0001,1,Huỳnh Anh Hiếu,huynh.anh.hieu01@outlook.com,,"23 Hai Ba Trung, Phuong Hang Bac, Quan Hoan Kiem, Ha Noi",S06,2026-01-12 07:00:00,,2026-01-14 19:00:00
+CV00002,CRM0002,1,Võ Thị Hạnh, VO.THI.HANH04@OUTLOOK.COM ,0337 735 153,"62 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S06,2025-01-27 23:00:00,,2025-01-29 00:00:00
+CV00003,CRM0003,1,Dương Gia Ngọc,,0336586781,"75 TRẦN HƯNG ĐẠO, PHƯỜNG DỊCH VỌNG, QUẬN CẦU GIẤY, HÀ NỘI",S01,2024-12-05 18:00:00,,2024-12-07 13:00:00
+CV00004,CRM0004,1,Hoàng Thanh Hạnh,,0373.345.380,"88 Trần Hưng Đạo, P. Láng Hạ, Q. Đống Đa, Hà Nội",S05,2025-06-04 12:00:00,,2025-06-06 00:00:00
+CV00005,CRM0005,1,Pham Thi Ha, PHAM.THI.HA07@OUTLOOK.COM ,0948.394.304,"101 Lê Lợi, P. Tân An, Q. Ninh Kiều, Cần Thơ",S03,2025-05-09 08:00:00,,2025-05-10 02:00:00
+CV00006,CRM0006,1,Ngo Huu Hang,ngo.huu.hang08@yahoo.com,0963697508,"114 Nguyễn Trãi, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S05,2025-10-21 11:00:00,,2025-10-22 07:00:00
+CV00007,CRM0007,1,Lý  Mai  Hùng,ly.mai.hung.new08@gmail.com,0386.328.192,"127 Phan Chu Trinh, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S04,2025-08-20 00:00:00,,2025-08-21 01:00:00
+CV00008,CRM0008,1,ĐỖ PHƯƠNG CHI,do.phuong.chi10@gmail.com,0905227385,"140 Nguyễn Huệ, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S01,2025-11-22 00:00:00,,2025-11-22 20:00:00
+CV00009,CRM0009,1,Đỗ Ngọc Anh,,0356.269.293,"153 Lê Lợi, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S04,2024-10-09 14:00:00,,2024-10-11 01:00:00
+CV00010,CRM0010,1,Hoàng Phương Lan,hoang.phuong.lan12@gmai.com,+84347911558,"166 Nguyễn Huệ, P. Dịch Vọng, Q. Cầu Giấy, Hà Nội",S01,2024-11-16 01:00:00,,2024-11-18 15:00:00
+CV00011,CRM0011,1,Phạm Anh Long,pham.anh.long14@icloud.com,+84324794066,"192 Võ Văn Tần, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S04,2025-11-24 16:00:00,,2025-11-25 03:00:00
+CV00012,CRM0012,1,Hồ Ngọc Thảo,ho.ngoc.thao15@gmai.com,0824000598,"17 Trần Hưng Đạo, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S03,2024-12-25 01:00:00,2026-01-07 00:00:00,2026-01-08 09:00:00
+CV00013,CRM0012,2,Ho Ngoc Thao,ho.ngoc.thao.new14@outlook.com,84 824 000 598,"17 Trần Hưng Đạo, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S03,2026-01-07 00:00:00,,2026-01-07 16:00:00
+CV00014,CRM0013,1,Đỗ Minh Hằng,do.minh.hang16 @ icloud.com,0833320155,"30 Lý Tự Trọng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S01,2025-01-29 14:00:00,,2025-01-31 10:00:00
+CV00015,CRM0014,1,Trần Hằng,tran.mai.hang17@icloud.com,0816800546,"43 Nguyễn Huệ, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S05,2025-01-07 14:00:00,,2025-01-09 04:00:00
+CV00016,CRM0015,1,Nguyễn Hùng,nguyen.van.hung18@yahoo.com,+84703762578,"56 Hai Ba Trung, Phuong Hai Chau I, Quan Hai Chau, Da Nang",S05,2025-05-19 11:00:00,,2025-05-21 00:00:00
+CV00017,CRM0016,1,Nguyễn Văn Hùng,nguyen.van.hung18 @ yahoo.com,,"56 Hai Bà Trưng, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S05,2025-05-24 01:00:00,,2025-05-26 02:00:00
+CV00018,CRM0017,1,Huỳnh Phương Bảo,huynh.phuong.bao21@gmail.com,0819 034 729,"95 Võ Văn Tần, P. Dịch Vọng, Q. Cầu Giấy, Hà Nội",S01,2025-11-17 13:00:00,,2025-11-17 20:00:00
+CV00019,CRM0018,1,Dang Quynh Yen,,0361 596 944,"134 HAI BÀ TRƯNG, PHƯỜNG AN HẢI BẮC, QUẬN SƠN TRÀ, ĐÀ NẴNG",S06,2024-10-04 09:00:00,2026-02-23 00:00:00,2026-02-23 14:00:00
+CV00020,CRM0018,2,Dang Quynh Yen,dang.quynh.yen24@icloud.com,,"134 Hai Bà Trưng, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S06,2026-02-23 00:00:00,,2026-02-25 02:00:00
+CV00021,CRM0019,1,Nguyễn Thanh Quân,nguyen.thanh.quan26@gmai.com,+84907051807,"160 Nguyễn Huệ, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S03,2024-10-06 13:00:00,,2024-10-09 02:00:00
+CV00022,CRM0020,1,Trần Khánh Phương,tran.khanh.phuong28@outlook.com,,"186 Nguyễn Trãi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S05,2025-10-23 20:00:00,,2025-10-25 05:00:00
+CV00023,CRM0021,1,Đỗ Mai Hùng,do.mai.hung29@gmail.com,0937622193,"11 Nguyễn Huệ, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S01,2024-11-19 20:00:00,,2024-11-21 19:00:00
+CV00024,CRM0022,1,TRẦN KHÁNH BẢO,tran.khanh.bao30@gmail.com,0398577584,"24 Võ Văn Tần, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S04,2025-07-08 15:00:00,2026-03-25 00:00:00,2026-03-25 17:00:00
+CV00025,CRM0022,2,Trần Khánh Bảo,tran.khanh.bao30@gmail.com,+84887572302,"24 Võ Văn Tần, P. An Hải Bắc, Q. Sơn Trà, Đà Nẵng",S04,2026-03-25 00:00:00,,2026-03-26 01:00:00
+CV00026,CRM0023,1,Ngô  Hữu  Bảo,N/A,034603210,"37 Nguyễn Trãi, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S05,2025-03-16 08:00:00,,2025-03-18 22:00:00
+CV00027,CRM0024,1,Tran Gia Linh,tran.gia.linh35@yahoo.com,0816.655.594,"89 Phan Chu Trinh, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S06,2025-09-17 03:00:00,,2025-09-18 13:00:00
+CV00028,CRM0025,1,Trần Thị Sơn,tran.thi.son36@gmail.com,0324745816,"102 Trần Hưng Đạo, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2024-12-10 18:00:00,2025-10-09 00:00:00,2025-10-09 06:00:00
+CV00029,CRM0025,2,Trần Thị Sơn,tran.thi.son36@gmail.com,0935 552 150,"102 Trần Hưng Đạo, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2025-10-09 00:00:00,,2025-10-10 05:00:00
+CV00030,CRM0026,1,Lê Quỳnh Yến,,+84381177946,,S02,2025-11-04 07:00:00,,2025-11-05 18:00:00
+CV00031,CRM0027,1,HỒ MINH LONG,ho.minh.long41@yahoo.com,0337.639.176,"167 Lý Tự Trọng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S01,2025-07-25 15:00:00,,2025-07-27 05:00:00
+CV00032,CRM0028,1,Dương Hoàng Hà,,+84791742875,,S01,2024-09-15 06:00:00,2025-08-09 00:00:00,2025-08-10 09:00:00
+CV00033,CRM0028,2,DƯƠNG HOÀNG HÀ, DUONG.HOANG.HA42@GMAIL.COM ,0821 075 713,"180 Lý Tự Trọng, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S01,2025-08-09 00:00:00,,2025-08-09 21:00:00
+CV00034,CRM0029,1,Phan Duc Thao,phan.duc.thao45@gmail.com,0770876042,"31 Nguyen Trai, Phuong Ben Nghe, Quan 1, TP. Ho Chi Minh",S02,2025-10-13 18:00:00,,2025-10-14 12:00:00
+CV00035,CRM0030,1,Bùi Mai Tuấn, BUI.MAI.TUAN47@OUTLOOK.COM ,0827623738,"57 Nguyễn Trãi, P. Võ Thị Sáu, Q. 3, TP. Hồ Chí Minh",S02,2025-04-11 07:00:00,,2025-04-11 18:00:00
+CV00036,CRM0031,1,Ngô Khánh Ngân,ngo.khanh.ngan48 @ outlook.com,+84370514817,"70 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S01,2025-05-25 15:00:00,,2025-05-26 23:00:00
+CV00037,CRM0032,1,Vo Mai Quan,vo.mai.quan49@gmail.com,0702 582 440,"83 Lê Lợi, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S06,2025-06-02 09:00:00,,2025-06-04 11:00:00
+CV00038,CRM0033,1,Vũ Hữu Chi, VU.HUU.CHI50@GMAIL.COM ,+84786574035,"96 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S03,2025-07-17 21:00:00,,2025-07-18 05:00:00
+CV00039,CRM0034,1,Trần Đức Phúc, TRAN.DUC.PHUC51@OUTLOOK.COM ,0831.825.119,"109 Nguyễn Trãi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S03,2025-10-01 03:00:00,,2025-10-03 21:00:00
+CV00040,CRM0035,1,Hồ Minh Hà,ho.minh.ha56@icloud.com,,"174 Lê Lợi, Phường Tân An, Quận Ninh Kiều, Cần Thơ",S03,2024-10-14 23:00:00,,2024-10-17 22:00:00
+CV00041,CRM0036,1,Phạm Văn Trang,pham.van.trang57@outlook.com,84 948 394 304,"187 Võ Văn Tần, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S01,2025-10-01 20:00:00,,2025-10-02 22:00:00
+CV00042,CRM0037,1,Hoang Thu Nam,hoang.thu.nam58@gmail.com,0915.550.234,"12 Nguyen Trai, Phuong Hung Loi, Quan Ninh Kieu, Can Tho",S03,2024-12-26 07:00:00,,2024-12-27 05:00:00
+CV00043,CRM0038,1,Bùi Ngọc Linh,bui.ngoc.linh60@gmail.com,0859659532,,S04,2025-10-03 21:00:00,,2025-10-06 19:00:00
+CV00044,CRM0039,1,Bùi Bảo,bui.duc.bao61 @ icloud.com,0330.064.858,"51 Hai Bà Trưng, P. Hàng Bạc, Q. Hoàn Kiếm, Hà Nội",S03,2025-02-20 01:00:00,2025-11-28 00:00:00,2025-11-30 14:00:00
+CV00045,CRM0039,2,Bùi Đức Bảo,bui.duc.bao61@icloud.com,,,S03,2025-11-28 00:00:00,,2025-11-30 06:00:00
+CV00046,CRM0040,1,ĐẶNG PHƯƠNG YẾN,dang.phuong.yen62@outlook.com,0766450009,"64 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S06,2025-08-18 11:00:00,2026-01-20 00:00:00,2026-01-22 16:00:00
+CV00047,CRM0040,2,Đặng Phương Yến,dang.phuong.yen.new61@icloud.com,0766 450 009,"64 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S06,2026-01-20 00:00:00,,2026-01-20 23:00:00
+CV00048,CRM0041,1,Bùi Gia Sơn,,0969 353 997,"77 Võ Văn Tần, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S04,2025-03-12 02:00:00,,2025-03-12 10:00:00
+CV00049,CRM0042,1,Nguyễn Anh Khánh,nguyen.anh.khanh64 @ icloud.com,0902 092 174,"90 Lý Tự Trọng, P. Hàng Bạc, Q. Hoàn Kiếm, Hà Nội",S05,2025-11-29 21:00:00,,2025-11-29 23:00:00
+CV00050,CRM0043,1,Bùi Đức Lan,,0398.931.296,"103 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S02,2025-06-25 14:00:00,,2025-06-28 07:00:00
+CV00051,CRM0044,1,Huỳnh Phương Hằng, HUYNH.PHUONG.HANG.NEW65@YAHOO.COM ,0856227130,"116 Trần Hưng Đạo, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S04,2025-12-07 13:00:00,,2025-12-08 20:00:00
+CV00052,CRM0045,1,Phan Đức Hạnh,phan.duc.hanh67@icloud.com,0380 400 243,"129 Hai Bà Trưng, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S02,2024-09-07 05:00:00,,2024-09-07 09:00:00
+CV00053,CRM0046,1,Ngo Phuong Giang,ngo.phuong.giang69@outlook.com,0767828979,"155 Phan Chu Trinh, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S05,2025-05-18 15:00:00,,2025-05-19 12:00:00
+CV00054,CRM0047,1,LÝ KHÁNH LAN,ly.khanh.lan71 @ gmail.com,84 943 121 697,"181 Phan Chu Trinh, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2025-08-25 19:00:00,2026-02-09 00:00:00,2026-02-11 12:00:00
+CV00055,CRM0047,2,Lý Khánh Lan,ly.khanh.lan71@gmail.com,0932627889,"181 Phan Chu Trinh, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2026-02-09 00:00:00,,2026-02-10 23:00:00
+CV00056,CRM0048,1,NGÔ PHƯƠNG TRINH,ngo.phuong.trinh72@gmail.com,0823692782,"194 Nguyen Trai, Phuong Hung Loi, Quan Ninh Kieu, Can Tho",S05,2025-09-15 19:00:00,,2025-09-17 21:00:00
+CV00057,CRM0049,1,Dương Khánh Khang,duong.khanh.khang74 @ yahoo.com,0974862975,"32 Nguyễn Trãi, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2025-05-11 19:00:00,,2025-05-12 20:00:00
+CV00058,CRM0050,1,Dương  Hữu  Long,duong.huu.long75 @ outlook.com,0948800174,"45 Lê Lợi, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S01,2025-07-15 01:00:00,,2025-07-16 09:00:00
+CV00059,CRM0051,1,Lý Minh Phương,ly.minh.phuong77@yahoo.com,0846916129,"71 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S06,2025-01-05 13:00:00,,2025-01-06 22:00:00
+CV00060,CRM0052,1,Phạm Tuấn,pham.khanh.tuan78@yahoo.com,0887683610,"84 Nguyễn Trãi, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S02,2025-01-27 12:00:00,,2025-01-28 10:00:00
+CV00061,CRM0053,1,Hồ Hữu Hằng,,0811.798.206,"97 Phan Chu Trinh, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S06,2025-09-08 01:00:00,,2025-09-09 08:00:00
+CV00062,CRM0054,1,Dương Khánh Lan,duong.khanh.lan81 @ icloud.com,,"123 Hai Bà Trưng, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S06,2025-03-20 20:00:00,,2025-03-21 00:00:00
+CV00063,CRM0055,1,Hoàng Quỳnh Yến,hoang.quynh.yen83@yahoo.com,0762 651 747,"149 Hai Bà Trưng, P. Láng Hạ, Q. Đống Đa, Hà Nội",S06,2025-01-23 07:00:00,,2025-01-23 16:00:00
+CV00064,CRM0056,1,Trần Văn Yến,tran.van.yen84@outlook.com,0766 744 677,"162 Lê Lợi, P. Võ Thị Sáu, Q. 3, TP. Hồ Chí Minh",S05,2024-12-23 03:00:00,,2024-12-25 19:00:00
+CV00065,CRM0057,1,Hoàng Hữu Mai,hoang.huu.mai88@yahoo.com,84 767 072 020,"26 Võ Văn Tần, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S03,2024-10-11 14:00:00,,2024-10-11 18:00:00
+CV00066,CRM0058,1,Hoàng  Hữu  Mai,hoang.huu.mai88@yahoo.com,84 767 072 020,"26 Võ Văn Tần, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S03,2025-02-20 20:00:00,,2025-02-22 13:00:00
+CV00067,CRM0059,1,Lý Hữu Khánh,ly.huu.khanh92@gmai.com,0395 680 786,"78 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S05,2024-11-19 13:00:00,,2024-11-20 09:00:00
+CV00068,CRM0060,1,Hoàng Thị Phúc,hoang.thi.phuc00@icloud.com,0850379557,"143 NGUYỄN TRÃI, PHƯỜNG THẢO ĐIỀN, THÀNH PHỐ THỦ ĐỨC, TP. HỒ CHÍ MINH",S06,2025-12-14 06:00:00,,2025-12-14 08:00:00
+CV00069,CRM0061,1,Lý Thu Lan,ly.thu.lan01@icloud.com,+84937985195,"156 TRẦN HƯNG ĐẠO, PHƯỜNG VÕ THỊ SÁU, QUẬN 3, TP. HỒ CHÍ MINH",S04,2025-06-26 18:00:00,,2025-06-28 08:00:00
+CV00070,CRM0062,1,Lý Minh Hà,ly.minh.ha04@icloud.com,0885418012,"195 Võ Văn Tần, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S03,2025-10-30 03:00:00,,2025-11-01 12:00:00
+CV00071,CRM0063,1,Pham Quoc Linh,pham.quoc.linh05@gmail.com,0708825424,"20 Trần Hưng Đạo, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S06,2025-12-19 00:00:00,2026-01-10 00:00:00,2026-01-10 20:00:00
+CV00072,CRM0063,2,Pham Quoc Linh,pham.quoc.linh.new12@icloud.com,0708 825 424,"20 TRẦN HƯNG ĐẠO, PHƯỜNG AN HẢI BẮC, QUẬN SƠN TRÀ, ĐÀ NẴNG",S06,2026-01-10 00:00:00,,2026-01-11 06:00:00
+CV00073,CRM0064,1,Huynh Khanh Chi,huynh.khanh.chi06@icloud.com,0331084568,,S02,2025-11-21 04:00:00,,2025-11-22 16:00:00
+CV00074,CRM0065,1,Bùi Quốc Chi,bui.quoc.chi07@icloud.com,0811.979.173,"46 Phan Chu Trinh, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S05,2025-10-24 02:00:00,,2025-10-26 09:00:00
+CV00075,CRM0066,1,Huỳnh Gia Hằng,huynh.gia.hang10@yahoo.com,0812013778,"85 Nguyen Trai, Phuong Ben Nghe, Quan 1, TP. Ho Chi Minh",S05,2025-08-12 05:00:00,,2025-08-14 02:00:00
+CV00076,CRM0067,1,Le Huu Dung,le.huu.dung11@outlook.com,0946.561.842,"98 Trần Hưng Đạo, Phường Tân An, Quận Ninh Kiều, Cần Thơ",S06,2026-01-07 15:00:00,,2026-01-08 00:00:00
+CV00077,CRM0068,1,Bùi Mai Hà,bui.mai.ha14@gmail.com,0331411404,"137 Lê Lợi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S04,2026-01-09 14:00:00,,2026-01-09 20:00:00
+CV00078,CRM0069,1,Hoàng Hữu Hà,hoang.huu.ha15@icloud.com,0333127314,"150 Phan Chu Trinh, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S05,2025-12-08 20:00:00,,2025-12-08 23:00:00
+CV00079,CRM0070,1,PHAN HỮU HẠNH,phan.huu.hanh16@outlook.com,070670750,"163 Lê Lợi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S01,2025-05-24 13:00:00,,2025-05-26 06:00:00
+CV00080,CRM0071,1,Lý Gia Anh,ly.gia.anh17@outlook.com,0912957246,"176 Võ Văn Tần, P. Hải Châu I, Q. Hải Châu, Đà Nẵng",S05,2025-11-05 12:00:00,,2025-11-06 05:00:00
+CV00081,CRM0072,1,Võ Minh Nhung,vo.minh.nhung18@outlook.com,0769522065,"189 Lý Tự Trọng, Phường Tân An, Quận Ninh Kiều, Cần Thơ",S02,2025-05-22 20:00:00,,2025-05-24 13:00:00
+CV00082,CRM0073,1,Dương Quỳnh Bảo,duong.quynh.bao19@gmail.com,0349832094,,S05,2025-11-25 11:00:00,,2025-11-26 08:00:00
+CV00083,CRM0074,1,Hoang Khanh Hieu,hoang.khanh.hieu23@outlook.com,0785144037,"66 Lê Lợi, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S02,2025-02-03 19:00:00,,2025-02-05 15:00:00
+CV00084,CRM0075,1,LÊ KHÁNH GIANG,le.khanh.giang25@gmail.com,0845924448,"92 Hai Bà Trưng, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S02,2025-01-31 14:00:00,,2025-02-02 16:00:00
+CV00085,CRM0076,1,Hoang Ngoc Quan, HOANG.NGOC.QUAN29@OUTLOOK.COM ,0326.463.986,"144 Lê Lợi, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S01,2024-10-31 09:00:00,,2024-11-01 14:00:00
+CV00086,CRM0077,1,BÙI MAI YẾN,bui.mai.yen31@yahoo.com,84 783 824 830,"170 Vo Van Tan, Phuong Hang Bac, Quan Hoan Kiem, Ha Noi",S05,2025-09-26 02:00:00,,2025-09-26 06:00:00
+CV00087,CRM0078,1,Dương Văn Long,duong.van.long32@outlook.com,84 323 651 072,"183 Trần Hưng Đạo, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S02,2025-12-16 11:00:00,,2025-12-16 18:00:00
+CV00088,CRM0079,1,Phạm Mai Trinh,pham.mai.trinh33 @ outlook.com,0944 202 150,"196 Nguyễn Trãi, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S01,2025-08-22 01:00:00,2026-03-27 00:00:00,2026-03-29 11:00:00
+CV00089,CRM0079,2,Phạm Mai Trinh,pham.mai.trinh.new40@gmail.com,0944202150,"196 Nguyễn Trãi, P. Hải Châu I, Q. Hải Châu, Đà Nẵng",S01,2026-03-27 00:00:00,,2026-03-29 10:00:00
+CV00090,CRM0080,1,Nguyễn Anh Quân,nguyen.anh.quan34 @ outlook.com,0915362744,"21 Hai Bà Trưng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S05,2025-02-13 20:00:00,,2025-02-16 01:00:00
+CV00091,CRM0081,1,Phạm Gia Linh,pham.gia.linh35@outlook.com,84 845 456 796,"34 Trần Hưng Đạo, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S02,2025-06-06 06:00:00,,2025-06-08 21:00:00
+CV00092,CRM0082,1,Dương Anh Phương,duong.anh.phuong36@gmail.com,0792592099,"47 Võ Văn Tần, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S02,2025-08-15 11:00:00,,2025-08-18 04:00:00
+CV00093,CRM0083,1,Đỗ Minh Hùng,do.minh.hung37@outlook.com,0392257381,"60 Nguyễn Huệ, P. Hàng Bạc, Q. Hoàn Kiếm, Hà Nội",S05,2025-04-04 14:00:00,,2025-04-05 21:00:00
+CV00094,CRM0084,1,NGÔ HỮU MINH,ngo.huu.minh40@icloud.com,0906.275.772,"99 Nguyễn Trãi, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S04,2024-11-21 00:00:00,,2024-11-23 01:00:00
+CV00095,CRM0085,1,Hoàng Gia Vy,hoang.gia.vy42@gmail.com,84 389 809 712,"125 LÊ LỢI, PHƯỜNG BẾN NGHÉ, QUẬN 1, TP. HỒ CHÍ MINH",S01,2025-01-30 07:00:00,,2025-01-30 08:00:00
+CV00096,CRM0086,1,Võ Mai Ngân,vo.mai.ngan43@outlook.com,0840.357.598,"138 Trần Hưng Đạo, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S01,2025-04-29 02:00:00,,2025-04-29 12:00:00
+CV00097,CRM0087,1,Đỗ Gia Sơn,do.gia.son44@gmail.com,0705 336 364,"151 Hai Bà Trưng, P. Bến Nghé, Q. 1, TP. Hồ Chí Minh",S04,2025-03-04 02:00:00,,2025-03-06 16:00:00
+CV00098,CRM0088,1,VŨ PHƯƠNG MINH, VU.PHUONG.MINH45@ICLOUD.COM ,0976552580,"164 Nguyễn Huệ, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S04,2025-02-25 21:00:00,,2025-02-27 15:00:00
+CV00099,CRM0089,1,HỒ VĂN TRANG,ho.van.trang46@icloud.com,0938681239,"177 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S06,2024-12-15 02:00:00,,2024-12-17 12:00:00
+CV00100,CRM0090,1,ĐẶNG ĐỨC BẢO,dang.duc.bao48@gmail.com,+84702550366,"15 Ly Tu Trong, Phuong Hang Bac, Quan Hoan Kiem, Ha Noi",S04,2025-08-12 16:00:00,,2025-08-15 12:00:00
+CV00101,CRM0091,1,Phan Thu Phương,phan.thu.phuong50@yahoo.com,84 827 731 440,"41 Phan Chu Trinh, P. Hàng Bạc, Q. Hoàn Kiếm, Hà Nội",S02,2025-09-11 00:00:00,,2025-09-13 23:00:00
+CV00102,CRM0092,1,Lê Quốc Nhung,le.quoc.nhung51@yahoo.com,0839391519,"54 Lê Lợi, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S04,2025-12-02 05:00:00,,2025-12-04 18:00:00
+CV00103,CRM0093,1,HUỲNH PHƯƠNG SƠN,huynh.phuong.son52@icloud.com,0376883761,"67 Lê Lợi, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S01,2025-05-07 11:00:00,,2025-05-07 19:00:00
+CV00104,CRM0094,1,Phan Hoàng Minh,phan.hoang.minh54@outlook.com,0981 571 179,"93 Hai Bà Trưng, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S05,2025-07-23 06:00:00,2025-10-24 00:00:00,2025-10-24 17:00:00
+CV00105,CRM0094,2,Phan Hoàng Minh,phan.hoang.minh54@outlook.com,0366.326.482,"93 Hai Bà Trưng, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S05,2025-10-24 00:00:00,,2025-10-25 22:00:00
+CV00106,CRM0095,1,Huynh Huu Long,huynh.huu.long57@yahoo.com,0886.789.182,"132 Trần Hưng Đạo, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S06,2024-10-26 14:00:00,,2024-10-28 03:00:00
+CV00107,CRM0096,1,Ngô Quỳnh,ngo.huu.quynh59@icloud.com,0760066774,"158 Võ Văn Tần, P. Hàng Bạc, Q. Hoàn Kiếm, Hà Nội",S06,2025-12-16 07:00:00,,2025-12-17 00:00:00
+CV00108,CRM0097,1,HỒ HỮU CHI,ho.huu.chi64@outlook.com,0778 037 538,"35 Nguyễn Trãi, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S04,2025-10-24 17:00:00,,2025-10-25 13:00:00
+CV00109,CRM0098,1,Pham Thi Giang, PHAM.THI.GIANG66@OUTLOOK.COM ,0771.227.610,,S03,2025-07-02 08:00:00,,2025-07-03 02:00:00
+CV00110,CRM0099,1,Hồ Gia Ngân,ho.gia.ngan68@outlook.com,0973.483.388,"87 Hai Bà Trưng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S01,2025-01-04 06:00:00,2025-12-21 00:00:00,2025-12-23 22:00:00
+CV00111,CRM0099,2,Hồ Gia Ngân,ho.gia.ngan.new75@icloud.com,0973483388,"87 Hai Ba Trung, Phuong Vo Thi Sau, Quan 3, TP. Ho Chi Minh",S01,2025-12-21 00:00:00,,2025-12-21 01:00:00
+CV00112,CRM0100,1,Bùi Hoàng Nga,unknown@example.com,+84906796537,"100 Tran Hung Dao, Phuong Vo Thi Sau, Quan 3, TP. Ho Chi Minh",S01,2025-02-03 04:00:00,,2025-02-03 11:00:00
+CV00113,CRM0101,1,Bùi Hoàng Sơn,bui.hoang.son72@gmail.com,0853416518,"139 Lý Tự Trọng, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S03,2025-10-04 20:00:00,,2025-10-06 03:00:00
+CV00114,CRM0102,1,Hoàng Hoàng Bảo,hoang.hoang.bao73@outlook.com,0774.013.231,"152 Lý Tự Trọng, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S05,2024-09-17 04:00:00,2025-09-22 00:00:00,2025-09-22 20:00:00
+CV00115,CRM0102,2,Hoàng Hoàng Bảo, HOANG.HOANG.BAO.NEW80@GMAIL.COM ,0774.013.231,"152 Lý Tự Trọng, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S05,2025-09-22 00:00:00,,2025-09-24 23:00:00
+CV00116,CRM0103,1,Phan Hoàng Thảo,phan.hoang.thao75@icloud.com,0709.418.216,"178 Nguyễn Trãi, P. Dịch Vọng, Q. Cầu Giấy, Hà Nội",S06,2024-11-15 22:00:00,,2024-11-17 06:00:00
+CV00117,CRM0104,1,HỒ QUỐC QUỲNH,ho.quoc.quynh76@outlook.com,0767.449.711,"191 Nguyen Trai, Phuong Dich Vong, Quan Cau Giay, Ha Noi",S02,2025-12-25 11:00:00,,2025-12-25 18:00:00
+CV00118,CRM0105,1,Trần Hữu Trinh,tran.huu.trinh77@icloud.com,0887689975,"16 Hai Bà Trưng, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S02,2025-07-06 01:00:00,,2025-07-08 03:00:00
+CV00119,CRM0106,1,Ngô Minh Ngân,ngo.minh.ngan78@icloud.com,0772435393,"29 Trần Hưng Đạo, P. An Hải Bắc, Q. Sơn Trà, Đà Nẵng",S02,2025-10-14 01:00:00,,2025-10-14 19:00:00
+CV00120,CRM0107,1,Phạm Mai Giang, PHAM.MAI.GIANG81@ICLOUD.COM ,0700.704.615,"68 Hai Ba Trung, Phuong An Hai Bac, Quan Son Tra, Da Nang",S04,2025-10-18 08:00:00,,2025-10-19 21:00:00
+CV00121,CRM0108,1,PHẠM NGỌC HÀ,,0373867134,"81 Lý Tự Trọng, Phường Tân An, Quận Ninh Kiều, Cần Thơ",S04,2025-11-20 20:00:00,2025-12-17 00:00:00,2025-12-17 18:00:00
+CV00122,CRM0108,2,Pham Ngoc Ha, PHAM.NGOC.HA82@ICLOUD.COM ,0851 289 807,"81 Lý Tự Trọng, P. Tân An, Q. Ninh Kiều, Cần Thơ",S04,2025-12-17 00:00:00,,2025-12-18 17:00:00
+CV00123,CRM0109,1,Huỳnh  Quốc  Tâm,huynh.quoc.tam83@outlook.com,+84855864457,"94 Lý Tự Trọng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S02,2025-07-11 15:00:00,,2025-07-13 21:00:00
+CV00124,CRM0110,1,Phan Thanh Ngọc,phan.thanh.ngoc84@outlook.com,,"107 Phan Chu Trinh, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S02,2025-10-30 23:00:00,,2025-11-01 00:00:00
+CV00125,CRM0111,1,Lý Quốc Thảo,ly.quoc.thao85@outlook.com,0704 033 108,"120 Lê Lợi, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S05,2025-12-02 21:00:00,,2025-12-05 07:00:00
+CV00126,CRM0112,1,Bui Anh Quan,bui.anh.quan86@gmail.com,+84850815699,"133 Nguyễn Huệ, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S01,2024-10-14 08:00:00,,2024-10-16 18:00:00
+CV00127,CRM0113,1,Bùi Hoàng Chi, BUI.HOANG.CHI87@YAHOO.COM ,+84914912698,"146 Lê Lợi, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S01,2024-09-19 16:00:00,,2024-09-21 11:00:00
+CV00128,CRM0114,1,Đặng Đức Long,,0900.734.720,"159 Lê Lợi, P. Bến Nghé, Q. 1, TP. Hồ Chí Minh",S05,2025-12-25 19:00:00,,2025-12-27 22:00:00
+CV00129,CRM0115,1,Phan Hạnh,phan.quynh.hanh89@yahoo.com,+84813422881,"172 Nguyễn Huệ, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S02,2025-09-17 12:00:00,,2025-09-20 00:00:00
+CV00130,CRM0116,1,Dương Anh Chi,duong.anh.chi91@outlook.com,,"10 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S01,2025-04-26 21:00:00,,2025-04-27 22:00:00
+CV00131,CRM0117,1,Ngô Thị Khánh,ngo.thi.khanh92@outlook.com,0352432629,,S01,2025-04-10 08:00:00,,2025-04-12 13:00:00
+CV00132,CRM0118,1,Hồ Phương Sơn,ho.phuong.son94@yahoo.com,0828949338,"49 Lê Lợi, P. Hải Châu I, Q. Hải Châu, Đà Nẵng",S02,2025-08-28 19:00:00,,2025-08-29 21:00:00
+CV00133,CRM0119,1,Phan  Thanh  Hiếu,phan.thanh.hieu96@yahoo.com,0883 195 809,"75 Lý Tự Trọng, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S05,2025-08-10 08:00:00,,2025-08-13 02:00:00
+CV00134,CRM0120,1,Vũ Thanh Anh,vu.thanh.anh00@icloud.com,0971519347,"88 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S04,2025-09-22 14:00:00,,2025-09-24 21:00:00
+CV00135,CRM0121,1,Lê Phương Phúc,le.phuong.phuc01@gmail.com,0395094300,"101 Trần Hưng Đạo, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S01,2024-09-17 21:00:00,,2024-09-20 04:00:00
+CV00136,CRM0122,1,Phan Thu Hà, PHAN.THU.HA03@ICLOUD.COM ,0329693600,"127 Nguyễn Trãi, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S02,2024-09-15 15:00:00,,2024-09-17 06:00:00
+CV00137,CRM0123,1,Vu Hoang Thao,vu.hoang.thao04@yahoo.com,0771.070.940,"140 Lý Tự Trọng, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S04,2025-09-14 00:00:00,,2025-09-16 22:00:00
+CV00138,CRM0124,1,Bùi Quốc Hạnh,bui.quoc.hanh05@icloud.com,0838704229,"153 PHAN CHU TRINH, PHƯỜNG VÕ THỊ SÁU, QUẬN 3, TP. HỒ CHÍ MINH",S06,2025-07-17 03:00:00,2026-01-08 00:00:00,2026-01-08 19:00:00
+CV00139,CRM0124,2,Bùi Quốc Hạnh,bui.quoc.hanh.new20@yahoo.com,0838.704.229,"153 Phan Chu Trinh, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S06,2026-01-08 00:00:00,,2026-01-10 04:00:00
+CV00140,CRM0125,1,Lý  Hoàng  Lan,ly.hoang.lan08@icloud.com,0817579074,"192 Võ Văn Tần, P. An Hải Bắc, Q. Sơn Trà, Đà Nẵng",S05,2024-11-18 05:00:00,,2024-11-18 15:00:00
+CV00141,CRM0126,1,Nguyễn Minh Yến,nguyen.minh.yen10@outlook.com,0974376350,,S05,2025-05-03 06:00:00,,2025-05-05 22:00:00
+CV00142,CRM0127,1,Đỗ Quỳnh Tâm,do.quynh.tam11@yahoo.com,0843919406,"43 Nguyễn Huệ, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S01,2025-09-22 09:00:00,,2025-09-25 04:00:00
+CV00143,CRM0128,1,Dương Mai Hùng,duong.mai.hung12 @ icloud.com,0845483772,"56 Trần Hưng Đạo, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S05,2024-09-13 08:00:00,,2024-09-13 13:00:00
+CV00144,CRM0129,1,Vũ Thị Yến, VU.THI.YEN13@OUTLOOK.COM ,,"69 Trần Hưng Đạo, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S03,2024-12-26 21:00:00,,2024-12-28 04:00:00
+CV00145,CRM0130,1,Phan Đức Nhung,phan.duc.nhung15@gmail.com,0764759736,"95 Võ Văn Tần, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S04,2024-10-08 22:00:00,,2024-10-11 05:00:00
+CV00146,CRM0131,1,Hồ Mai Tuấn,ho.mai.tuan17@icloud.com,,"121 Nguyễn Huệ, P. Võ Thị Sáu, Q. 3, TP. Hồ Chí Minh",S06,2024-12-09 21:00:00,,2024-12-10 19:00:00
+CV00147,CRM0132,1,Trần Quỳnh Phúc,tran.quynh.phuc20 @ outlook.com,0774013231,"160 Nguyễn Trãi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S05,2024-09-26 13:00:00,,2024-09-27 09:00:00
+CV00148,CRM0133,1,Le Huu Hung,le.huu.hung22@yahoo.com,0363060756,"186 Nguyễn Huệ, P. Láng Hạ, Q. Đống Đa, Hà Nội",S02,2025-06-08 23:00:00,,2025-06-09 12:00:00
+CV00149,CRM0134,1,Hoàng Mai Quân,hoang.mai.quan23@outlook.com,,"11 Nguyễn Trãi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S04,2024-10-10 18:00:00,,2024-10-12 06:00:00
+CV00150,CRM0135,1,Trần Quỳnh Thảo,tran.quynh.thao24@yahoo.com,0974250485,"24 Võ Văn Tần, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S05,2025-06-15 17:00:00,,2025-06-17 14:00:00
+CV00151,CRM0136,1,Huỳnh Ngọc Ngọc,huynh.ngoc.ngoc25@yahoo.com,0340435437,"37 Phan Chu Trinh, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S03,2025-11-15 07:00:00,,2025-11-16 10:00:00
+CV00152,CRM0137,1,Lê Mai,le.thi.mai26 @ gmail.com,,"50 Lý Tự Trọng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S03,2025-01-29 07:00:00,2026-03-13 00:00:00,2026-03-15 00:00:00
+CV00153,CRM0137,2,Lê Thị Mai,le.thi.mai26@gmail.com,84 339 240 941,"50 Lý Tự Trọng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S03,2026-03-13 00:00:00,,2026-03-15 21:00:00
+CV00154,CRM0138,1,Lý Văn Hà,ly.van.ha27@gmail.com,0938 263 751,"63 Le Loi, Phuong An Hai Bac, Quan Son Tra, Da Nang",S05,2025-04-09 15:00:00,,2025-04-10 17:00:00
+CV00155,CRM0139,1,Phan Anh Dũng,phan.anh.dung.new44@yahoo.com,0354.209.899,"89 Lý Tự Trọng, P. Láng Hạ, Q. Đống Đa, Hà Nội",S04,2025-11-24 00:00:00,,2025-11-24 18:00:00
+CV00156,CRM0140,1,Hoàng Đức Long,hoang.duc.long30@icloud.com,0369414135,"102 Lý Tự Trọng, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S01,2025-11-23 09:00:00,,2025-11-23 14:00:00
+CV00157,CRM0141,1,Nguyễn Phương Nam, NGUYEN.PHUONG.NAM31@ICLOUD.COM ,0854 655 536,"115 Hai Bà Trưng, P. Tân An, Q. Ninh Kiều, Cần Thơ",S03,2025-12-15 07:00:00,,2025-12-16 16:00:00
+CV00158,CRM0142,1,Trần Gia Hiếu, TRAN.GIA.HIEU32@OUTLOOK.COM ,0378593566,"128 Hai Bà Trưng, P. Láng Hạ, Q. Đống Đa, Hà Nội",S03,2025-05-16 12:00:00,,2025-05-16 15:00:00
+CV00159,CRM0143,1,Tran Minh Quan,tran.minh.quan33@gmail.com,0818221332,"141 Hai Bà Trưng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S02,2025-07-14 18:00:00,,2025-07-16 06:00:00
+CV00160,CRM0144,1,Đỗ Văn Sơn,do.van.son35@yahoo.com,0889988767,"167 Nguyễn Trãi, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S01,2025-09-23 05:00:00,,2025-09-24 13:00:00
+CV00161,CRM0145,1,Bùi Mai Hùng,bui.mai.hung36@outlook.com,0850 948 464,"180 Lý Tự Trọng, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S04,2024-10-30 21:00:00,,2024-11-02 09:00:00
+CV00162,CRM0146,1,Đỗ Đức Anh, DO.DUC.ANH38@YAHOO.COM ,0941.888.190,"18 Trần Hưng Đạo, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S01,2025-04-26 12:00:00,,2025-04-27 23:00:00
+CV00163,CRM0147,1,Vo Minh Hang,vo.minh.hang41@gmail.com,0772 074 196,"57 Lý Tự Trọng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S03,2026-01-01 08:00:00,,2026-01-04 01:00:00
+CV00164,CRM0148,1,Hoàng Khang,hoang.thi.khang43@gmail.com,0789 322 615,"83 Phan Chu Trinh, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S02,2024-10-25 11:00:00,,2024-10-27 08:00:00
+CV00165,CRM0149,1,Vũ Hoàng Long,vu.hoang.long44@icloud.com,0350590552,"96 Ly Tu Trong, Phuong Hung Loi, Quan Ninh Kieu, Can Tho",S01,2025-10-29 21:00:00,,2025-11-01 06:00:00
+CV00166,CRM0150,1,Đặng Hữu Linh,dang.huu.linh45@gmail.com,0326571709,"109 Lý Tự Trọng, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S05,2024-12-15 04:00:00,,2024-12-15 23:00:00
+CV00167,CRM0151,1,Lê Anh Hằng,le.anh.hang48@yahoo.com,0795 565 771,"148 Nguyễn Trãi, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S03,2025-10-23 10:00:00,,2025-10-26 02:00:00
+CV00168,CRM0152,1,Hoàng Mai Khang,hoang.mai.khang49@icloud.com,0791174224,"161 Võ Văn Tần, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S06,2025-09-25 03:00:00,,2025-09-26 11:00:00
+CV00169,CRM0153,1,VÕ GIA PHÚC,vo.gia.phuc50@yahoo.com,0846069470,"174 Hai Bà Trưng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S03,2025-11-10 19:00:00,,2025-11-12 00:00:00
+CV00170,CRM0154,1,Ngô Phương Anh,ngo.phuong.anh51@gmail.com,+84973249063,"187 Nguyễn Huệ, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S04,2025-07-16 04:00:00,,2025-07-17 09:00:00
+CV00171,CRM0155,1,Ngô Anh Hiếu,ngo.anh.hieu52@gmail.com,0333829461,"12 Hai Bà Trưng, P. Láng Hạ, Q. Đống Đa, Hà Nội",S01,2025-07-01 07:00:00,,2025-07-01 20:00:00
+CV00172,CRM0156,1,Võ Mai Hiếu,,0935.696.700,"51 Võ Văn Tần, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S05,2025-10-26 18:00:00,,2025-10-28 09:00:00
+CV00173,CRM0157,1,Hoang Quynh Hieu,hoang.quynh.hieu56@yahoo.com,+84822930524,"64 Lý Tự Trọng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S04,2025-06-05 17:00:00,,2025-06-07 19:00:00
+CV00174,CRM0158,1,Phạm Thanh Yến,pham.thanh.yen58@gmail.com,0909852506,"90 Lê Lợi, P. Võ Thị Sáu, Q. 3, TP. Hồ Chí Minh",S01,2024-10-25 20:00:00,,2024-10-28 16:00:00
+CV00175,CRM0159,1,Tran Gia Hanh,tran.gia.hanh60@yahoo.com,0789.076.837,"116 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S03,2026-01-01 11:00:00,,2026-01-02 05:00:00
+CV00176,CRM0160,1,Lê Anh Nga,,0332435163,"129 Võ Văn Tần, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S03,2024-09-26 09:00:00,,2024-09-27 10:00:00
+CV00177,CRM0161,1,Hồ Gia Hạnh, HO.GIA.HANH62@GMAIL.COM ,+84834463997,"142 VÕ VĂN TẦN, PHƯỜNG THẢO ĐIỀN, THÀNH PHỐ THỦ ĐỨC, TP. HỒ CHÍ MINH",S02,2025-07-20 22:00:00,,2025-07-21 19:00:00
+CV00178,CRM0162,1,Nguyen Quynh Phuong,,0392529562,,S03,2025-08-03 23:00:00,,2025-08-06 19:00:00
+CV00179,CRM0163,1,Ho Thi Hang,ho.thi.hang64@outlook.com,0903962720,"168 Nguyễn Huệ, P. Dịch Vọng, Q. Cầu Giấy, Hà Nội",S03,2025-12-01 21:00:00,,2025-12-02 10:00:00
+CV00180,CRM0164,1,Đỗ Gia Phương,do.gia.phuong65@icloud.com,,"181 Nguyễn Huệ, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S05,2025-03-25 09:00:00,,2025-03-27 09:00:00
+CV00181,CRM0165,1,Huỳnh Đức Anh,huynh.duc.anh67@gmail.com,0761.655.968,"19 Trần Hưng Đạo, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S01,2025-07-19 08:00:00,,2025-07-20 23:00:00
+CV00182,CRM0166,1,Phan  Anh  Tâm,phan.anh.tam68@outlook.com,+84330580688,"32 Nguyễn Trãi, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S01,2025-09-20 09:00:00,,2025-09-21 23:00:00
+CV00183,CRM0167,1,Lý Quốc Trang,ly.quoc.trang70@gmail.com,0933164782,"58 Lê Lợi, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S04,2025-01-27 13:00:00,,2025-01-28 13:00:00
+CV00184,CRM0168,1,Huynh Huu Phuc,huynh.huu.phuc71@yahoo.com,84 880 470 655,"71 Hai Bà Trưng, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S01,2025-11-16 03:00:00,,2025-11-17 03:00:00
+CV00185,CRM0169,1,Pham Minh Trinh,pham.minh.trinh72 @ outlook.com,0702320018,"84 Võ Văn Tần, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S06,2024-10-30 19:00:00,,2024-10-31 04:00:00
+CV00186,CRM0170,1,Hoàng Quỳnh Trang,hoang.quynh.trang73@icloud.com,0321288554,"97 Võ Văn Tần, Phường Hàng Bạc, Quận Hoàn Kiếm, Hà Nội",S02,2024-12-31 12:00:00,,2025-01-03 00:00:00
+CV00187,CRM0171,1,Bùi Minh Hiếu,bui.minh.hieu74@outlook.com,0358246993,"110 Hai Bà Trưng, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S02,2025-10-05 07:00:00,,2025-10-06 02:00:00
+CV00188,CRM0172,1,HỒ KHÁNH BẢO,ho.khanh.bao75@gmail.com,+84393062837,"123 Trần Hưng Đạo, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S01,2024-12-21 16:00:00,,2024-12-24 07:00:00
+CV00189,CRM0173,1,Võ Thanh Quỳnh,vo.thanh.quynh76@gmail.com,0816 994 277,"136 Lý Tự Trọng, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S06,2025-10-03 04:00:00,,2025-10-03 06:00:00
+CV00190,CRM0174,1,Phạm Anh Hùng,pham.anh.hung77@outlook.com,0989190953,"149 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S04,2024-11-07 17:00:00,,2024-11-09 05:00:00
+CV00191,CRM0175,1,Bùi Ngọc Linh,bui.ngoc.linh78@yahoo.com,,"162 Lý Tự Trọng, Phường Hưng Lợi, Quận Ninh Kiều, Cần Thơ",S06,2025-07-13 14:00:00,,2025-07-15 05:00:00
+CV00192,CRM0176,1,Trần Thị Yến, TRAN.THI.YEN79@ICLOUD.COM ,0777732498,"175 Nguyen Hue, Phuong An Hai Bac, Quan Son Tra, Da Nang",S04,2025-05-03 07:00:00,2025-08-19 00:00:00,2025-08-21 05:00:00
+CV00193,CRM0176,2,Trần Thị Yến,tran.thi.yen79@icloud.com,+84964165729,"175 Nguyen Hue, Phuong An Hai Bac, Quan Son Tra, Da Nang",S04,2025-08-19 00:00:00,,2025-08-21 10:00:00
+CV00194,CRM0177,1,Bùi Ngọc Mai,bui.ngoc.mai80@yahoo.com,0911431069,"188 Lê Lợi, P. Hưng Lợi, Q. Ninh Kiều, Cần Thơ",S04,2025-03-22 05:00:00,,2025-03-24 02:00:00
+CV00195,CRM0178,1,Đặng Khánh Khánh,dang.khanh.khanh81@icloud.com,0783009380,"13 Lê Lợi, Phường An Hải Bắc, Quận Sơn Trà, Đà Nẵng",S02,2025-11-02 14:00:00,,2025-11-03 18:00:00
+CV00196,CRM0179,1,Vo Quynh Khang,vo.quynh.khang82@gmail.com,0881133976,"26 Trần Hưng Đạo, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S01,2025-02-13 19:00:00,,2025-02-15 01:00:00
+CV00197,CRM0180,1,Huỳnh Thị Hằng,huynh.thi.hang84@gmail.com,0707.143.216,"52 Võ Văn Tần, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội",S06,2025-08-28 18:00:00,,2025-08-29 08:00:00
+CV00198,CRM0181,1,Nguyễn Ngọc Ngân,nguyen.ngoc.ngan85@icloud.com,0796469859,"65 Nguyễn Trãi, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S03,2025-07-12 20:00:00,,2025-07-15 06:00:00
+CV00199,CRM0182,1,Võ Thị Tuấn,,098206069,"117 Trần Hưng Đạo, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S03,2025-01-13 21:00:00,,2025-01-15 21:00:00
+CV00200,CRM0183,1,Đỗ Mai Anh, DO.MAI.ANH90@OUTLOOK.COM ,0945.707.532,"130 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",S05,2025-10-08 21:00:00,,2025-10-10 05:00:00
+CV00201,CRM0184,1,NGUYỄN QUỲNH PHƯƠNG,nguyen.quynh.phuong91@yahoo.com,0333.526.133,"143 Trần Hưng Đạo, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S01,2025-02-08 16:00:00,,2025-02-08 17:00:00
+CV00202,CRM0185,1,Lê Văn Mai,le.van.mai92@icloud.com,0907227684,"156 Le Loi, Phuong Tan An, Quan Ninh Kieu, Can Tho",S05,2025-09-19 10:00:00,,2025-09-22 02:00:00
+CV00203,CRM0186,1,Lý Thị Long,ly.thi.long93@yahoo.com,0399.392.483,"169 Lý Tự Trọng, Phường Tân An, Quận Ninh Kiều, Cần Thơ",S03,2025-02-08 13:00:00,,2025-02-09 19:00:00
+CV00204,CRM0187,1,Lý Gia Hà,ly.gia.ha94@icloud.com,0388464781,"182 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S04,2025-10-17 16:00:00,,2025-10-18 17:00:00
+CV00205,CRM0188,1,Nguyễn Đức Giang,nguyen.duc.giang95@gmail.com,+84331284391,"195 Lê Lợi, P. Bến Nghé, Q. 1, TP. Hồ Chí Minh",S04,2025-03-05 10:00:00,,2025-03-06 12:00:00
+CV00206,CRM0189,1,VÕ HOÀNG MINH,vo.hoang.minh96@yahoo.com,036721922,"20 Nguyễn Trãi, Phường Hải Châu I, Quận Hải Châu, Đà Nẵng",S06,2024-10-24 18:00:00,,2024-10-25 23:00:00
+CV00207,CRM0190,1,Lê Anh Anh,le.anh.anh01@gmail.com,,"46 Nguyễn Huệ, P. Thảo Điền, TP. Thủ Đức, TP. Hồ Chí Minh",S05,2025-06-08 00:00:00,2026-02-20 00:00:00,2026-02-21 17:00:00
+CV00208,CRM0190,2,Lê Anh Anh,le.anh.anh01@gmail.com,+84794525325,"46 Nguyễn Huệ, Phường Thảo Điền, Thành phố Thủ Đức, TP. Hồ Chí Minh",S05,2026-02-20 00:00:00,,2026-02-22 08:00:00
+CV00209,CRM0191,1,Hoàng Quỳnh,hoang.duc.quynh05@yahoo.com,0338264308,"98 Phan Chu Trinh, Phường Láng Hạ, Quận Đống Đa, Hà Nội",S05,2024-09-02 07:00:00,,2024-09-02 08:00:00
+CV00210,CRM0192,1,Vũ  Thanh  Trinh,vu.thanh.trinh09@gmail.com,0706753817,"150 Phan Chu Trinh, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh",S05,2025-12-25 07:00:00,,2025-12-26 18:00:00

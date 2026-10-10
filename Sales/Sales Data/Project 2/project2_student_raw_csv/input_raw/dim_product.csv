@@ -1,0 +1,61 @@
+﻿product_id,product_name,brand,category,color,size,list_price,standard_cost
+PRD001,Luma Atelier Shirt 01,Luma Atelier,Áo,Red,L,1550000,713000
+PRD002,Luma Atelier Skirt 02,Luma Atelier,Váy,Navy,S,2450000,964000
+PRD003,Mori Sneakers 03,Mori,Giày,Blue,L,600000,330000
+PRD004,North & Co Bottle 04,North & Co,Lifestyle,Red,One Size,1900000,1166000
+PRD005,Saigon Studio Sneakers 05,Saigon Studio,Giày,Black,M,1350000,660000
+PRD006,Luma Core Loafers 06,Luma Core,Giày,Navy,M,2550000,1415000
+PRD007,Mori Blazer 07,Mori,Áo,Navy,M,400000,242000
+PRD008,North & Co Wallet 08,North & Co,Túi & phụ kiện,White,One Size,2400000,1399000
+PRD009,North & Co Wallet 09,North & Co,Túi & phụ kiện,Red,One Size,2750000,1517000
+PRD010,Mori Shorts 10,Mori,Quần,Black,M,2550000,1404000
+PRD011,Saigon Studio Candle 11,Saigon Studio,Lifestyle,White,One Size,2550000,1514000
+PRD012,Luma Core Shirt 12,Luma Core,Áo,Black,L,1700000,1049000
+PRD013,Luma Core Scarf 13,Luma Core,Túi & phụ kiện,Navy,One Size,2250000,864000
+PRD014,Mori Loafers 14,Mori,Giày,White,S,2400000,1191000
+PRD015,Luma Core Skirt 15,Luma Core,Váy,Green,XS,550000,275000
+PRD016,Saigon Studio Bag 16,Saigon Studio,Túi & phụ kiện,Beige,One Size,800000,306000
+PRD017,Mori Bag 17,Mori,Túi & phụ kiện,Brown,One Size,850000,433000
+PRD018,Mori Shirt 18,Mori,Áo,Black,M,2000000,1196000
+PRD019,Saigon Studio Belt 19,Saigon Studio,Túi & phụ kiện,Brown,One Size,600000,328000
+PRD020,Luma Atelier Shorts 20,Luma Atelier,Quần,Navy,XL,1800000,1042000
+PRD021,Mori Travel pouch 21,Mori,Lifestyle,Brown,One Size,2100000,934000
+PRD022,North & Co Jacket 22,North & Co,Áo,Brown,XL,700000,389000
+PRD023,Luma Core Shirt 23,Luma Core,Áo,Red,L,650000,259000
+PRD024,Saigon Studio Wallet 24,Saigon Studio,Túi & phụ kiện,Red,One Size,300000,177000
+PRD025,Luma Atelier Cap 25,Luma Atelier,Túi & phụ kiện,Green,One Size,2450000,1067000
+PRD026,Saigon Studio Candle 26,Saigon Studio,Lifestyle,Brown,One Size,1400000,842000
+PRD027,Mori Jeans 27,Mori,Quần,Brown,S,1400000,703000
+PRD028,Saigon Studio Notebook 28,Saigon Studio,Lifestyle,Blue,One Size,2500000,1036000
+PRD029,North & Co Jacket 29,North & Co,Áo,Blue,M,1800000,1098000
+PRD030,Mori Blazer 30,Mori,Áo,Brown,XL,850000,523000
+PRD031,Luma Atelier Jacket 31,Luma Atelier,Áo,Black,L,1100000,561000
+PRD032,North & Co Travel pouch 32,North & Co,Lifestyle,Brown,One Size,800000,423000
+PRD033,Luma Core Loafers 33,Luma Core,Giày,Brown,L,1100000,558000
+PRD034,Luma Atelier Skirt 34,Luma Atelier,Váy,Brown,XS,550000,310000
+PRD035,North & Co Trousers 35,North & Co,Quần,Green,XL,900000,428000
+PRD036,North & Co Trousers 36,North & Co,Quần,White,L,800000,486000
+PRD037,North & Co Blazer 37,North & Co,Áo,Brown,S,1800000,1105000
+PRD038,North & Co Jacket 38,North & Co,Áo,Blue,XS,1500000,703000
+PRD039,North & Co Sandals 39,North & Co,Giày,Blue,S,750000,382000
+PRD040,Luma Core Blazer 40,Luma Core,Áo,Navy,L,1950000,760000
+PRD041,North & Co Cap 41,North & Co,Túi & phụ kiện,White,One Size,550000,273000
+PRD042,North & Co Sneakers 42,North & Co,Giày,Black,XL,250000,132000
+PRD043,Saigon Studio Jeans 43,Saigon Studio,Quần,Red,M,1500000,728000
+PRD044,North & Co Cap 44,North & Co,Túi & phụ kiện,Black,One Size,450000,177000
+PRD045,Saigon Studio Shorts 45,Saigon Studio,Quần,Navy,XS,800000,311000
+PRD046,Luma Atelier Dress 46,Luma Atelier,Váy,White,M,650000,375000
+PRD047,North & Co Candle 47,North & Co,Lifestyle,Brown,One Size,2750000,1665000
+PRD048,Luma Core Cap 48,Luma Core,Túi & phụ kiện,White,One Size,850000,424000
+PRD049,Luma Atelier Dress 49,Luma Atelier,Váy,Brown,M,550000,231000
+PRD050,Saigon Studio Trousers 50,Saigon Studio,Quần,Green,S,1200000,458000
+PRD051,Luma Atelier Bag 51,Luma Atelier,Túi & phụ kiện,Beige,One Size,1850000,1053000
+PRD052,North & Co T-shirt 52,North & Co,Áo,White,XS,300000,177000
+PRD053,Luma Core Dress 53,Luma Core,Váy,Green,XS,700000,321000
+PRD054,Luma Atelier Candle 54,Luma Atelier,Lifestyle,Navy,One Size,1750000,929000
+PRD055,Luma Atelier Wallet 55,Luma Atelier,Túi & phụ kiện,Beige,One Size,2450000,1514000
+PRD056,Luma Atelier Jacket 56,Luma Atelier,Áo,Beige,M,2350000,1264000
+PRD057,Saigon Studio Blazer 57,Saigon Studio,Áo,Black,S,2500000,1238000
+PRD058,Saigon Studio Sneakers 58,Saigon Studio,Giày,Green,L,1850000,758000
+PRD059,Luma Atelier Dress 59,Luma Atelier,Váy,Blue,L,450000,228000
+PRD060,Mori Bag 60,Mori,Túi & phụ kiện,Brown,One Size,700000,321000

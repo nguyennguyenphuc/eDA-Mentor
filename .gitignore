@@ -1,0 +1,7 @@
+# File nen (Contoso.zip 465 MB vuot gioi han 100 MB cua GitHub; cac zip con lai la ban tai tu Drive)
+*.zip
+# Rac chay
+__pycache__/
+*.pyc
+# Nhat ky goi ngoai va tra loi ChatGPT -- sinh luc chay, khong dua len repo
+.claude/skills/goi-ngoai/nhat-ky/

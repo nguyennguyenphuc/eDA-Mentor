@@ -1,0 +1,17 @@
+{
+  "_ghi_chu": "Cau hinh cho loop.py. Chep ca loop_mau.py (doi ten thanh loop.py) va tep nay vao thu muc chua <du_an>.pbip. Xoa cac khoa _ghi_chu neu muon.",
+  "du_an": "TenDuAn",
+  "scripts": "../../.claude/skills/pbi-dashboard-loop/scripts",
+  "python_db": null,
+  "_bang_nap": "Thu tu nap: bang chi chua measure (co partition) truoc, bang nho truoc bang nang; bang co cot tinh doc bang khac thi dat SAU bang no doc.",
+  "bang_nap": ["_Measures", "DimDate", "DimProduct", "FactSales"],
+  "truoc_model": [
+    {"ten": "kiem_nen.py", "mo_ta": "dau van tay du lieu nguon", "python": "db", "ma_bo_qua": [10]}
+  ],
+  "build_model": "build_model.py",
+  "build_report": "build_report.py",
+  "kiem_so": [
+    {"ten": "kiem_so.py", "mo_ta": "DAX so voi moc.json"}
+  ],
+  "xuat_khoi_dong": true
+}

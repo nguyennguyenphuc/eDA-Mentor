@@ -1,0 +1,11 @@
+{
+  "_ghi_chu": "So ky vong cho kiem_so.py, tinh DOC LAP voi Power BI (SQL thuan hoac pandas tren file nguon), cung moc cat du lieu. Moi phep: measure (hoac bieu_thuc DAX) + loc (danh sach dieu kien DAX) + mong + loai (dem | tien | so). Nen co nhom '0-tukiem' (tong cac lat cat = tong) de bat loi trong chinh moc. Script sinh moc nen ghi lai keo_luc_utc va moc_cat.",
+  "keo_luc_utc": "2026-10-10T00:00:00Z",
+  "moc_cat": "2026-09-30",
+  "phep": [
+    {"nhom": "A-kpi", "measure": "Doanh thu", "loc": ["'DimDate'[Nam] = 2024"], "mong": 123456789.0, "loai": "tien"},
+    {"nhom": "A-kpi", "measure": "So don", "loc": [], "mong": 1520, "loai": "dem"},
+    {"nhom": "B-latcat", "measure": "Doanh thu", "loc": ["'DimStore'[Vung] = \"Mien Bac\""], "mong": 45678901.0, "loai": "tien"},
+    {"nhom": "0-tukiem", "bieu_thuc": "SUMX(VALUES('DimStore'[Vung]), [Doanh thu]) - [Doanh thu]", "loc": [], "mong": 0, "loai": "tien"}
+  ]
+}

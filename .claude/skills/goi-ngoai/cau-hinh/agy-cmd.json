@@ -1,0 +1,7 @@
+{
+  "_ghi_chu": "Lenh Antigravity CLI cho `goi_ngoai.py agy`. agy 1.2.14, do 2026-10-02. Che do -p tu choi moi cong cu can quyen `command` (khong treo, bao loi ngay), nen dung --dangerously-skip-permissions: Gemini tu chay moi lenh va sua moi tep trong thu muc lam viec. goi_ngoai.py dat thu muc lam viec = thu muc chung cua cac tep --tep, nen chi truyen tep trong mot thu muc con, KHONG truyen tep o goc du an hay trong .claude. Model: viec code -> Gemini 3.8 Flash, viec can suy luan (`--suy-luan`) -> Gemini 3.1 Pro. Ten model lay tu `agy models`. Duong dan agy.exe: bien AGY_EXE thang lenh[0], lenh[0] khong ton tai thi tim `agy` tren PATH.",
+  "lenh": ["C:\\Users\\nguyennp\\AppData\\Local\\agy\\bin\\agy.exe", "-p", "{prompt}", "--model", "{model}",
+           "--dangerously-skip-permissions", "--disable-slash-commands", "--print-timeout", "1800s"],
+  "model": {"code": "gemini-3.8-flash-high", "suy-luan": "gemini-3.1-pro-high"},
+  "timeout": 1900
+}
