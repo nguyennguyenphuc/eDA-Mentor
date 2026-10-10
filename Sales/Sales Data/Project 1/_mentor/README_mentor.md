@@ -17,16 +17,26 @@ Không gửi thư mục này cho học viên: `Nexa_Sales_P1_Instructor_Key.xlsx
 ```
 python generate_dataset.py   # dataset, finance_revenue.xlsx, Instructor Key, ref_numbers.json (seed 2026)
 python build_dashboard.py    # ../Nexa_Sales_P1_Dashboard.html — Storytelling with Data (số từ aggregate.py)
-python build_dashboard_xlsx.py   # ../Nexa_Sales_P1_Dashboard.xlsx — dashboard Excel (SUMIFS, chọn tháng/kênh)
+python build_dashboard_xlsx.py   # ../Nexa_Sales_P1_Dashboard.xlsx — file đối chiếu số (SUMIFS, chọn tháng/kênh)
+python build_excel_kit.py   # ../excel_build/ (code M + measures.dax) + pq_steps.json; chạy song song từng bước M bằng pandas, assert số dòng
 cd /opt/node-tools && node <repo>/Sales/Sales\ Data/Project\ 1/_mentor/chup_dashboard.js <thư mục assets> <file html>   # ảnh cho slide
 python build_diagrams.py     # ../diagrams/*.drawio → .pdf + png/ (cần draw.io desktop; Linux chạy qua xvfb-run)
-python build_guideline.py    # ../Dashboard_Guideline (dành cho mentor).docx (khuôn: guideline Bank)
-python build_slides.py       # ../Slide_Project_1.pptx (khuôn: slide Bank)
+python build_guideline.py    # ../Dashboard_Guideline (dành cho mentor).docx — dựng dashboard Excel (khuôn: guideline Bank)
+python build_slides.py       # ../Slide_Project_1.pptx (khuôn: slide Bank); assert code DAX trên slide = measures.dax
 ```
 - Seed cố định, nên chạy lại cho đúng các con số cũ.
 - Dấu vân tay dữ liệu được in ở cuối `generate_dataset.py`.
 
-## Kiểm dashboard Excel
+## Bộ dựng Excel (excel_build/) — giới hạn cần biết
+- Học viên dựng dashboard bằng **Excel for Windows** (Microsoft 365 / 2016+, bật add-in Power Pivot): Power Query (M) →
+  Data Model → DAX → 4 sheet (PivotTable, PivotChart, Slicer, CUBEVALUE). Guideline Bước 2–5 và slide Phần 4, 6, 7.
+- Code M và DAX **chưa được chạy thử trên Excel thật** (máy sinh tài liệu là Linux, không có Excel). Đã kiểm:
+  từng bước M được chạy song song bằng pandas và khớp số dòng QC (62.884 · 2.430 · 19.400); logic [Vượt ngưỡng]
+  khớp Instructor Key (32 ô năm 2020, 120 ô toàn kỳ); Net Revenue 12/2020 khớp số tham chiếu; ngoặc cân.
+- **Trước buổi học, mentor dựng thử một lần trên Excel Windows** theo excel_build/README.md và so số với Bước 6.
+  Lỗi cú pháp nếu có thì sửa trong build_excel_kit.py rồi chạy lại build_excel_kit → build_guideline → build_slides.
+
+## Kiểm file đối chiếu số Nexa_Sales_P1_Dashboard.xlsx
 `recalc.py` của skill xlsx (hoặc LibreOffice) tính lại công thức trên **bản sao** để kiểm số; file giao giữ nguyên bản
 openpyxl (Excel tự tính lại khi mở vì đã bật fullCalcOnLoad). Ô vàng ở sheet Dashboard là ô chọn tháng / kênh.
 

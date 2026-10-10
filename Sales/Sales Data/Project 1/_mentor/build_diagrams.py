@@ -95,7 +95,7 @@ def d_pipeline():
     d = Dia("01_pipeline_du_lieu")
     d.text(20, 10, 1300, 34, "Sales Project 1 · Pipeline dữ liệu từ nguồn đến báo cáo", size=20, color=G, bold=True)
     d.lane(20, 60, 1380, 170, "Mentor chuẩn bị", BLUE10, BLUE)
-    d.lane(20, 250, 1380, 190, "Học viên · Power BI", G10, G)
+    d.lane(20, 250, 1380, 190, "Học viên · Excel", G10, G)
     d.lane(20, 460, 1380, 130, "Kiểm tra", COR10, COR)
     b = dict(fill="#FFFFFF")
     s1 = d.box(80, 90, 210, 110, "<b>Global Electronics Retailer</b><br>Sales · Products · Stores<br>Customers · Exchange_Rates<br><i>source/*.zip (tải từ Drive)</i>", stroke=BLUE, **b)
@@ -104,10 +104,10 @@ def d_pipeline():
     s4 = d.box(670, 150, 250, 60, "<b>finance_revenue.xlsx</b><br>ngày × mã cửa hàng Finance", stroke=COR, fill=COR10)
     s5 = d.box(1000, 90, 250, 110, "<b>Instructor Key</b> (chỉ mentor)<br>đáp án chênh lệch<br>cầu nối Orders → Finance<br>ref_numbers.json", stroke=BLUE, fill=BLUE10)
     d.edge(s1, s2); d.edge(s2, s3); d.edge(s2, s4); d.edge(s2, s5, dashed=True, color=BLUE)
-    p1 = d.box(80, 290, 200, 120, "<b>1 · Power Query</b><br>nạp 2 file, đặt kiểu<br>bỏ 120 dòng trùng<br>map fin_store_code<br>theo valid_from/to", stroke=G, **b)
-    p2 = d.box(320, 290, 200, 120, "<b>2 · Mô hình</b><br>star schema<br>dim_date đánh dấu<br>quan hệ inactive<br>delivery_date", stroke=G, **b)
-    p3 = d.box(560, 290, 200, 120, "<b>3 · DAX</b><br>Gross → Net Sales<br>→ Net Revenue<br>Orders, AOV, ASP<br>Δ Finance, cờ ngưỡng", stroke=G, **b)
-    p4 = d.box(800, 290, 200, 120, "<b>4 · Dashboard</b><br>Tổng quan<br>Doanh thu<br>Đối soát<br>Hoàn trả &amp; chất lượng", stroke=G, **b)
+    p1 = d.box(80, 290, 200, 120, "<b>1 · Power Query (M)</b><br>nạp 2 file, đặt kiểu<br>bỏ 120 dòng trùng<br>map fin_store_code<br>theo valid_from/to", stroke=G, **b)
+    p2 = d.box(320, 290, 200, 120, "<b>2 · Data Model</b><br>Power Pivot<br>quan hệ star schema<br>Mark as Date Table<br>inactive delivery_date", stroke=G, **b)
+    p3 = d.box(560, 290, 200, 120, "<b>3 · DAX (Power Pivot)</b><br>Gross → Net Sales<br>→ Net Revenue<br>Δ Finance, cờ ngưỡng<br>measure chuỗi tiêu đề", stroke=G, **b)
+    p4 = d.box(800, 290, 200, 120, "<b>4 · Dashboard 4 sheet</b><br>PivotTable · PivotChart<br>Slicer dùng chung<br>CUBEVALUE cho thẻ KPI<br>và câu Điểm chính", stroke=G, **b)
     p5 = d.box(1040, 290, 200, 120, "<b>5 · Báo cáo</b><br>8 phần theo<br>guide_report_template<br>giải thích chênh lệch<br>vượt ngưỡng", stroke=G, **b)
     for a, c in [(p1, p2), (p2, p3), (p3, p4), (p4, p5)]:
         d.edge(a, c, color=G)
@@ -130,7 +130,7 @@ def d_model():
                  "store_key · channel_code", "product_key · customer_key", "quantity · unit_price",
                  "promo_code · discount_amount", "order_status"], head="#2B4F18", key_rows=(0,))
     f2 = d.table(560, 600, 250, "fact_return", ["return_id", "order_number + line_item", "return_date",
-                 "return_qty · return_amount", "return_reason"], head="#2B4F18", key_rows=(0,))
+                 "store_key · product_key (Power Query)", "return_qty · return_amount", "return_reason"], head="#2B4F18", key_rows=(0,))
     dd = d.table(575, 60, 220, "dim_date", ["date", "month_id · month_label", "year · quarter", "has_data"], key_rows=(0,))
     ds = d.table(120, 230, 220, "dim_store", ["store_key", "store_code · store_name", "channel_code · country", "region · open_date"], key_rows=(0,))
     dc = d.table(120, 420, 220, "dim_channel", ["channel_code", "channel_name", "revenue_recognition_rule"], key_rows=(0,))
@@ -144,7 +144,9 @@ def d_model():
     d.edge(dd, f1, "delivery_date (inactive)", color=G, dashed=True, exit=(0.85, 1), entry=(0.85, 0))
     d.edge(dd, f2, "return_date (1 → *)", color=G, exit=(1, 0.5), entry=(1, 0.3), pts=[(900, 115), (900, 650)])
     d.edge(ds, f1, "1 → *", color=G, exit=(1, 0.5), entry=(0, 0.45))
-    d.edge(dc, f1, "1 → *", color=G, exit=(1, 0.5), entry=(0, 0.75))
+    d.edge(dc, ds, "1 → * (kênh lọc qua cửa hàng)", color=G, exit=(0.5, 0), entry=(0.5, 1))
+    d.edge(ds, f2, "1 → *", color=G, exit=(1, 0.85), entry=(0, 0.55), pts=[(450, 334), (450, 691)])
+    d.edge(dp, f2, "1 → *", color=G, exit=(1, 0.5), entry=(1, 0.75), pts=[(1290, 121), (1290, 724)])
     d.edge(dp, f1, "1 → *", color=G, exit=(0, 0.5), entry=(1, 0.12))
     d.edge(dm, f1, "1 → *", color=G, exit=(0, 0.5), entry=(1, 0.4))
     d.edge(do, f1, "1 → *", color=G, exit=(0, 0.5), entry=(1, 0.7))
@@ -233,7 +235,68 @@ def d_kpi():
     return d
 
 
-DIAGRAMS = [d_pipeline, d_model, d_recon, d_kpi]
+def d_pq():
+    import json
+    J = json.loads((HERE / "pq_steps.json").read_text(encoding="utf-8"))
+    S = J["steps"]
+    vn = lambda n: f"{n:,}".replace(",", ".")
+    d = Dia("05_power_query_pipeline")
+    d.text(20, 10, 1500, 34, "Power Query (M) trong Excel: pipeline xử lý từng bước · số dòng sau mỗi bước", size=20,
+           color=G, bold=True)
+    d.text(20, 42, 1500, 24, "Mỗi ô = một Applied Step trong Power Query Editor (tên bước · hàm M · số dòng). "
+           "Ô cam = bước làm thay đổi số dòng hoặc ghép bảng. Mũi tên đứt = query dùng kết quả của query khác.", size=12)
+    par = d.box(40, 80, 200, 56, "<b>SourceFolder</b><br>tham số thư mục chứa 2 file", stroke=BLUE, fill=BLUE10)
+    W, GAP, X0 = 172, 26, 260
+
+    def chain(y, steps, hl=(), h=74):
+        ids = []
+        for i, (nm, fn, n) in enumerate(steps):
+            lab = f"<b>{nm}</b><br>{fn}" + (f"<br><i>{vn(n)} dòng</i>" if n is not None else "")
+            ids.append(d.box(X0 + i * (W + GAP), y, W, h, lab, stroke=COR if i in hl else G,
+                             fill=COR10 if i in hl else "#FFFFFF", size=11.5))
+        for a, b in zip(ids, ids[1:]):
+            d.edge(a, b, color=GRAY)
+        return ids
+
+    def load(y, prev, text="<b>Data Model</b><br>Only Create Connection<br>+ Add to Data Model", h=74):
+        x = X0 + 6 * (W + GAP)
+        b = d.box(x, y, 190, h, text, stroke=G, fill=G10, size=11.5)
+        d.edge(prev, b, color=G)
+        return b
+
+    d.lane(20, 150, 1640, 110, "fact_sales_line", G10, G)
+    a = chain(168, S["fact_sales_line"], hl=(3,))
+    load(168, a[-1])
+    d.lane(20, 275, 1640, 110, "fact_return", G10, G)
+    b = chain(293, S["fact_return"], hl=(3,))
+    load(293, b[-1])
+    d.edge(a[-1], b[3], "ghép theo order_number + line_item", color=BLUE, dashed=True, exit=(0.5, 1), entry=(0.5, 0))
+    d.lane(20, 400, 1640, 290, "Finance", COR10, COR)
+    fr = chain(418, S["finance_raw"], h=58)
+    mp = chain(488, S["map_store_finance"], h=58)
+    x_note = X0 + 4 * (W + GAP) - 10
+    d.text(x_note, 425, 560, 110, "finance_raw và map_store_finance: Close &amp; Load To → <b>Only Create Connection</b> "
+           "(không nạp vào Data Model, chỉ làm đầu vào cho fact_finance).", size=12)
+    ff = chain(590, S["fact_finance"], hl=(1, 3))
+    load(590, ff[-1])
+    xr = X0 + 3 * (W + GAP)          # đi vòng bên phải hàng finance_raw / map rồi xuống fact_finance
+    d.edge(fr[-1], ff[0], color=BLUE, dashed=True, exit=(1, 0.5), entry=(0.5, 0),
+           pts=[(xr + 14, 447), (xr + 14, 562), (X0 + W / 2, 562)])
+    d.edge(mp[-1], ff[1], color=BLUE, dashed=True, exit=(1, 0.5), entry=(0.5, 0),
+           pts=[(xr + 4, 517), (xr + 4, 575), (X0 + W + GAP + W / 2, 575)])
+    d.lane(20, 705, 1640, 150, "6 bảng dim", G10, G)
+    dims = " · ".join(f"{k} {vn(v)}" for k, v in J["dims"].items())
+    dm = chain(722, [("Source", "Excel.Workbook", None), ("Navigation", "tbl_dim_*", None),
+                     ("Changed Type", "Table.TransformColumnTypes", None)])
+    load(722, dm[-1])
+    d.text(X0, 802, 1200, 44, "<b>Số dòng:</b> " + dims + " · dim_date: Mark as Date Table trong Power Pivot",
+           size=12)
+    for first in (a[0], b[0], fr[0], mp[0], dm[0]):
+        d.edge(par, first, color=BLUE, dashed=True, exit=(1, 0.5), entry=(0, 0.5), width=1)
+    return d
+
+
+DIAGRAMS = [d_pipeline, d_model, d_recon, d_kpi, d_pq]
 
 
 def export(src):
