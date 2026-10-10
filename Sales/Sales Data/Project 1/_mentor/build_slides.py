@@ -33,6 +33,7 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
 
+from pq_thao_tac import STEPS as PQ_STEPS
 from thuat_ngu import BANG, chuan_hoa
 
 # ------------------------------------------------------------------ đường dẫn
@@ -468,7 +469,7 @@ def table(slide, x, y, w, h, rows, col_w=None, size=12, header_fill=GREEN, heade
     return gf
 
 
-KIT = HV / "excel_build"
+KIT = HERE / "excel_build" if (HERE / "excel_build").exists() else HV / "excel_build"   # DAX gốc, chỉ để kiểm slide
 PQ = json.loads((HERE / "pq_steps.json").read_text(encoding="utf-8"))
 
 
@@ -508,6 +509,29 @@ def m_short(q, keep_types=False):
         code = re.sub(r"\{\n\s+\{.*?\n\s+\}\)", lambda mm: "{ … " + str(mm.group(0).count("{") - 1) + " cột … })",
                       code, flags=re.S)
     return code
+
+
+def step_flow(slide, x, y, w, h, q, title=None, colr=None, size=11):
+    """Chuỗi Applied Step của một query: mỗi bước một khối (tên bước · thao tác · số dòng), mũi tên nối;
+    bước đổi số dòng hoặc ghép bảng tô cam. Không có code."""
+    colr = colr or GREEN
+    steps = PQ_STEPS[q]
+    if title:
+        text(slide, x, y, w, 0.32, [(title, {"bold": True, "color": colr})], size=13)
+        y += 0.36
+        h -= 0.36
+    gap = 0.16
+    bw = (w - gap * (len(steps) - 1)) / len(steps)
+    for i, (nm, short, _, n, kind) in enumerate(steps):
+        bx = x + i * (bw + gap)
+        hl = kind == "dong"
+        paras = [[(nm, {"bold": True, "color": ORANGE if hl else colr})], (short, {"size": size - 1})]
+        if n is not None:
+            paras.append([(vn(n) + " dòng", {"italic": True, "color": GRAY, "size": size - 1})])
+        box(slide, bx, y, bw, h, fill=L_ORANGE if hl else WHITE, line=ORANGE if hl else colr, lw=1.25,
+            paras=paras, size=size, margin=(0.05, 0.03, 0.05, 0.03))
+        if i:
+            arrow(slide, bx - gap + 0.01, y + h / 2, bx - 0.01, y + h / 2, color=GRAY, w=1.5)
 
 
 def code_box(slide, x, y, w, h, code, size=12, title=None):
@@ -1086,7 +1110,7 @@ def build():
                     ("Nên có", {"bold": True, "color": ORANGE}), " → ", ("Sáng tạo", {"bold": True, "color": GREEN})])
     chk = [("Bắt buộc", RED, [f"Bỏ {vn(REF['duplicates'])} dòng trùng, chỉ tính đơn COMPLETED",
                               "4 trang đủ thẻ KPI, biểu đồ, bảng theo yêu cầu",
-                              "3 slicer dùng chung, đồng bộ cả 4 trang",
+                              "4 slicer dùng chung (Năm, Tháng, Kênh, Quốc gia), đồng bộ cả 4 trang",
                               "Thẻ KPI so với tháng trước và cùng tháng năm trước",
                               "Map Finance theo valid_from / valid_to, tách HQ-ADJ",
                               "Bảng đối soát có cờ vượt ngưỡng"]),
@@ -1306,7 +1330,7 @@ def build():
     sec_name = "Phần 4 · Dữ liệu & modeling"
     # ---- 17. Pipeline
     s = dk.content(sec_name, SEC, "Pipeline dữ liệu: từ file nguồn đến dashboard và báo cáo",
-                   ["Học viên làm 5 bước trong Excel: ", ("Power Query (M) → Data Model → DAX → 4 sheet → Báo cáo",
+                   ["Học viên làm 5 bước trong Excel: ", ("Power Query → Data Model → DAX → 4 sheet → Báo cáo",
                                                             {"bold": True, "color": GREEN})])
     picture_fit(s, DIAG / "01_pipeline_du_lieu.png", 0.4, 1.45, 12.55, 5.15)
 
@@ -1470,35 +1494,47 @@ def build():
                     ": kiểm số dòng ngay sau bước đó, trước khi làm bước tiếp"])
     picture_fit(s, DIAG / "05_power_query_pipeline.png", 0.4, 1.42, 12.55, 5.2)
 
-    # ---- 24. M fact_sales_line + fact_return
-    s = dk.content(sec_name, SEC, "M · fact_sales_line và fact_return: bỏ trùng trước, ghép sau",
+    # ---- 24. Các bước fact_sales_line + fact_return (thao tác chuột, không code)
+    s = dk.content(sec_name, SEC, "Power Query · fact_sales_line và fact_return: bỏ trùng trước, ghép sau",
                    ["fact_return ghép với fact_sales_line ", ("đã bỏ trùng", {"bold": True, "color": RED}),
                     " → mỗi dòng trả hàng khớp đúng một dòng bán"])
-    code_box(s, 0.4, 1.5, 6.25, 5.05, m_short("fact_sales_line"), size=9)
-    code_box(s, 6.8, 1.5, 6.15, 3.45, m_short("fact_return"), size=9)
+    step_flow(s, 0.4, 1.45, 12.55, 1.75, "fact_sales_line", "fact_sales_line — 7 bước, làm bằng chuột trong Power Query Editor")
+    step_flow(s, 0.4, 3.35, 8.6, 1.75, "fact_return", "fact_return — ghép 3 khoá từ dòng bán gốc", colr=NAVY)
     srows = [["Bước đổi số dòng", "Trước", "Sau"],
-             ["fact_sales_line · Removed Duplicates", vn(ST["fact_sales_line"][2][2]), vn(ST["fact_sales_line"][3][2])],
-             ["fact_return · Merged + Expanded", vn(ST["fact_return"][2][2]), vn(ST["fact_return"][-1][2])]]
-    table(s, 6.8, 5.1, 6.15, 1.0, srows, col_w=[3.6, 1.2, 1.2], size=12, align=["l", "r", "r"])
-    text(s, 6.8, 6.15, 6.15, 0.4, [("{ … n cột … } = khối đặt kiểu, xem đủ trong excel_build/m/", {"italic": True})],
-         size=11, color=GRAY)
+             ["Removed Duplicates", vn(rows["fact_sales_line"]), vn(rows["fact_sales_line_clean"])],
+             ["Merged Queries + Expand", vn(rows["fact_return"]), vn(rows["fact_return"])]]
+    table(s, 9.2, 3.71, 3.75, 1.39, srows, col_w=[1.95, 0.9, 0.9], size=12, align=["l", "r", "r"])
+    tips = [("Bỏ trùng", ORANGE, "Ctrl+A chọn mọi cột → Home → Remove Rows → Remove Duplicates"),
+            ("Thêm cột tiền", GREEN, "Chọn 2 cột → Add Column → Standard → Multiply / Subtract; bấm đúp tiêu đề để đổi tên"),
+            ("Ghép 2 khoá", NAVY, "Merge Queries: bấm order_number rồi Ctrl + line_item ở cả hai bảng, cùng thứ tự; Left Outer")]
+    for k_, (t, colr, d) in enumerate(tips):
+        x = 0.4 + k_ * 4.2
+        box(s, x, 5.35, 4.0, 1.2, fill=WHITE, line=colr, lw=1.25, align="l", anchor="m",
+            paras=[[(t, {"bold": True, "color": colr})], d], size=12, margin=(0.12, 0.03, 0.1, 0.03))
 
-    # ---- 25. M fact_finance
-    s = dk.content(sec_name, SEC, "M · fact_finance: gắn store_key theo mã và ngày hiệu lực",
+    # ---- 25. Các bước fact_finance (thao tác chuột, không code)
+    s = dk.content(sec_name, SEC, "Power Query · fact_finance: gắn store_key theo mã và ngày hiệu lực",
                    ["Tạo bằng ", ("Reference", {"bold": True, "color": NAVY}), " từ finance_raw; số dòng phải giữ nguyên ",
                     (vn(rows["finance_revenue"]), {"bold": True, "color": NAVY})])
-    code_box(s, 0.4, 1.5, 7.6, 3.75, m_short("fact_finance"), size=10.5)
-    frows = [["#", "Applied Step", "Số dòng"]] + [[str(i), st_[0], vn(st_[2])] for i, st_ in
-                                                     enumerate(ST["fact_finance"], 1)]
-    table(s, 8.2, 1.5, 4.75, 3.75, frows, col_w=[0.5, 2.9, 1.3], size=12, align=["c", "l", "r"])
-    cards = [("finance_raw · map_store_finance", NAVY,
-              "Hai query trung gian: Source → Navigation → Changed Type; nạp Only Create Connection"),
-             ("Filtered Valid", ORANGE,
-              "posting_date nằm trong [valid_from, valid_to]: chốt an toàn khi một cửa hàng đổi mã Finance"),
-             ("HQ-ADJ", GREEN, "3 dòng giữ store_key = null: không gán cho cửa hàng nào, giải thích ở tổng chuỗi")]
-    for i, (t, colr, d) in enumerate(cards):
-        x = 0.4 + i * 4.2
-        box(s, x, 5.4, 4.0, 1.15, fill=WHITE, line=colr, lw=1.25, align="l", anchor="m",
+    step_flow(s, 0.4, 1.45, 12.55, 1.62, "fact_finance", "fact_finance — 7 bước", colr=NAVY)
+    box(s, 0.4, 3.5, 6.2, 1.75, fill=L_ORANGE, line=ORANGE, lw=1.25, align="l", anchor="t",
+        paras=[[("Conditional Column “hieu_luc” (Add Column → Conditional Column)", {"bold": True, "color": ORANGE})],
+               "If posting_date  is before  valid_from  →  0",
+               "Else If posting_date  is after  valid_to  →  0",
+               "Else  →  1      (ô Value chọn Select a column)",
+               [("Rồi lọc hieu_luc = 1 và bỏ 3 cột phụ", {"italic": True})]], size=12, margin=(0.15, 0.08, 0.1, 0.05))
+    step_flow(s, 6.8, 3.5, 2.95, 1.75, "finance_raw", None, colr=GRAY, size=10)
+    step_flow(s, 10.0, 3.5, 2.95, 1.75, "map_store_finance", None, colr=GRAY, size=10)
+    text(s, 6.8, 3.14, 6.15, 0.3, [("Hai query trung gian: finance_raw (trái) · map_store_finance (phải)",
+                                    {"bold": True, "color": GRAY})], size=12)
+    cards = [("Chỉ tạo kết nối", NAVY,
+              "finance_raw, map_store_finance: Close & Load To → Only Create Connection, không nạp Data Model"),
+             ("Lọc theo ngày hiệu lực", ORANGE,
+              "posting_date nằm trong [valid_from, valid_to]: chốt an toàn khi một cửa hàng đổi mã Kế toán"),
+             ("HQ-ADJ", GREEN, "3 dòng giữ store_key trống: không gán cho cửa hàng nào, giải thích ở tổng chuỗi")]
+    for k_, (t, colr, d) in enumerate(cards):
+        x = 0.4 + k_ * 4.2
+        box(s, x, 5.45, 4.0, 1.1, fill=WHITE, line=colr, lw=1.25, align="l", anchor="m",
             paras=[[(t, {"bold": True, "color": colr})], d], size=12, margin=(0.12, 0.03, 0.1, 0.03))
 
     # ---- 26. Nạp Data Model + Power Pivot
@@ -1772,11 +1808,11 @@ def build():
                    ["DAX chỉ tính số; ", ("chữ và % đặt ở ô Excel", {"bold": True, "color": NAVY}),
                     " trỏ vào các ô CUBEVALUE – dễ sửa, đúng sở trường Excel"])
     ways = [("Cách 1 · Hộp thoại", GREEN, ["Power Pivot → Measures → New Measure…",
-                                         "Table name: _Measures · đặt tên · dán công thức",
+                                         "Table name: _Measures · đặt tên · gõ công thức",
                                          "Check formula → chọn Format → OK"]),
             ("Cách 2 · Calculation Area", TEAL, ["Power Pivot → Manage → tab _Measures",
-                                               "Bấm ô trống dưới lưới, dán nguyên dòng Tên := công thức",
-                                               "Nhanh khi dán cả nhóm từ measures.dax"])]
+                                               "Bấm ô trống dưới lưới, gõ Tên := công thức",
+                                               "Nhanh khi gõ liền nhiều số đo"])]
     for i, (t, colr, its) in enumerate(ways):
         y = 1.5 + i * 2.1
         box(s, 0.4, y, 5.6, 1.95, fill=WHITE, line=colr, lw=1.5)
@@ -1787,19 +1823,21 @@ def build():
                 ("không có thư mục hiển thị số đo, không có cửa sổ chạy DAX – kiểm bằng PivotTable", {})]],
         size=12, margin=(0.12, 0.03, 0.1, 0.03))
     code_box(s, 6.2, 1.5, 6.75, 4.15, """
-// Khối ô CUBEVALUE (sheet _pivot)
-Z2 =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_month,1)
-    &"/"&CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_year,1)
-Z3 =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
-    Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-Z4  … [Net Revenue LM]      Z5  … [Net Revenue SPLY]
-Z6 =IFERROR(Z3/Z4-1,"")     Z7 =IFERROR(Z3/Z5-1,"")
+Khối ô trên sheet _pivot (đọc 4 slicer)
+B2  =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_year,1)
+B3  =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_month,1)
+C2  =VALUE(B2)     C3  =VALUE(B3)     (năm, tháng dạng số)
+B8  tháng trước: =IF(C3=1,(C2-1)*100+12,C2*100+C3-1)
+B10 nhãn kỳ: =TEXT(C3,"00")&"/"&C2
+C24 =N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
+       Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country))
+D24  … [Net Revenue LM]       E24  … [Net Revenue SPLY]
+F24 =IF(D24=0,"",(C24-D24)/ABS(D24))
 
-// Câu Điểm chính = công thức Excel thường
-="Net Revenue "&Z2&" đạt "&FIXED(Z3/1000,1)
- &" nghìn USD — "&IF(Z6>=0,"+","-")&FIXED(ABS(Z6)*100,1)
- &"% so với tháng trước, "&IF(Z7>=0,"+","-")&FIXED(ABS(Z7)*100,1)
- &"% so với cùng kỳ năm trước."
+Câu Điểm chính = công thức Excel thường
+="Net Revenue "&B10&" đạt "&FIXED(C24/1000,1)
+ &" nghìn USD — "&IF(F24>=0,"+","−")&FIXED(ABS(F24)*100,1)
+ &"% so với tháng trước."
 """, size=10)
     box(s, 6.2, 5.8, 6.75, 0.75, fill=L_BLUE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[[(f"{RM_LABEL}: ", {"bold": True, "color": NAVY}),
@@ -1839,7 +1877,7 @@ Net Revenue := [Net Sales] - [Returns]
         {"runs": [("CALCULATE + KEEPFILTERS", {"bold": True}), (" thêm điều kiện COMPLETED cho mọi pivot, vẫn giữ slicer", {})],
          "bullet": True, "space_after": 6},
         {"runs": [("Cú pháp Excel ", {"bold": True}), ("Tên := công thức", {"bold": True, "color": NAVY}),
-                  (" – dán vào bảng _Measures (Power Pivot)", {})], "bullet": True, "space_after": 6},
+                  (" – gõ trong bảng _Measures (Power Pivot)", {})], "bullet": True, "space_after": 6},
         {"runs": "Returns không lọc trạng thái: mọi dòng trả hàng đều thuộc đơn COMPLETED (QC đã kiểm)",
          "bullet": True, "space_after": 6},
         {"runs": [("Kiểm chứng ", {"bold": True}), (f"{RM_LABEL}: ", {}),
@@ -1880,7 +1918,7 @@ CALCULATE ( [Net Revenue],
 Net Revenue YTD :=
 CALCULATE ( [Net Revenue], DATESYTD ( dim_date[date] ) )
 
-// % so tháng trước: tính ở ô Excel  =Z3/Z4-1
+// % so tháng trước tính ở ô Excel: =(C24-D24)/ABS(D24)
 """, size=12)
     box(s, 6.8, 5.2, 6.15, 1.35, fill=L_BLUE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[[("Kiểm chứng " + RM_LABEL + ": ", {"bold": True, "color": NAVY}),
@@ -1976,20 +2014,21 @@ Net Sales (cơ sở Finance) :=
             margin=(0.1, 0.03, 0.08, 0.03))
 
     # ---- Đối tượng Excel
-    s = dk.content(sec_name, SEC, "Từ measure đến dashboard Excel: PivotTable, PivotChart, Slicer, CUBEVALUE",
-                   ["Ảnh ở slide trước là ", ("bản HTML tham chiếu", {"bold": True, "color": NAVY}),
+    s = dk.content(sec_name, SEC, "Từ số đo đến dashboard Excel: Slicer, CUBEVALUE, PivotTable, biểu đồ",
+                   ["Ảnh ở slide trước chụp từ ", ("dashboard Excel tham chiếu", {"bold": True, "color": NAVY}),
                     "; trong Excel mỗi khối dựng bằng một trong 4 đối tượng dưới đây"])
     objs = [("Slicer", GREEN, "Bộ lọc dùng chung",
              ["Insert → Slicer (Data Model): Năm, Tháng, Kênh, Quốc gia",
               "Copy sang sheet khác = dùng chung bộ lọc", "Report Connections: chọn pivot bị lọc"]),
             ("CUBEVALUE", NAVY, "Thẻ KPI, câu Điểm chính, tiêu đề",
-             ["Một ô = một measure theo slicer", "Đọc được measure chuỗi", "Đặt tự do, định dạng như ô thường"]),
-            ("PivotTable", ORANGE, "Bảng chi tiết, nguồn biểu đồ",
-             ["Insert → PivotTable → From Data Model", "Value Filters → Top 10; data bar",
-              "Tắt Autofit column widths"]),
-            ("PivotChart / chart thường", RED, "Xu hướng, xếp hạng, waterfall",
-             ["PivotChart từ pivot trên sheet _pivot", "Waterfall: chart thường từ ô CUBEVALUE",
-              "Field Buttons → Hide All"])]
+             ["Một ô = một số đo theo slicer", "So tháng trước: truyền thành viên month_id",
+              "Đặt tự do, định dạng như ô thường"]),
+            ("PivotTable", ORANGE, "Xếp hạng, bảng chi tiết",
+             ["Insert → PivotTable → From Data Model", "Sort giảm dần; Value Filters → Top 10",
+              "Bảng trên sheet trỏ vào pivot ở _pivot"]),
+            ("Biểu đồ thường", RED, "Xu hướng, xếp hạng, waterfall",
+             ["Line, Stacked Bar/Column từ bảng phụ", "Waterfall: Insert → Waterfall, Set as total",
+              "Xoá Chart Title, tiêu đề đặt ở ô"])]
     for i, (t, colr, use, its) in enumerate(objs):
         x = 0.4 + i * 3.15
         box(s, x, 1.5, 2.95, 3.0, fill=WHITE, line=colr, lw=1.5)
@@ -1997,43 +2036,42 @@ Net Sales (cơ sở Finance) :=
         text(s, x + 0.1, 2.05, 2.75, 0.45, [(use, {"bold": True, "color": colr})], size=13)
         text(s, x + 0.1, 2.5, 2.75, 1.95, [{"runs": it, "bullet": True, "space_after": 3} for it in its], size=12)
     code_box(s, 0.4, 4.65, 7.3, 1.9, """
-// Thẻ KPI và dòng so sánh (đổi theo 4 slicer)
-=CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
-           Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-=CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue LM]",
-           Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-=IF(Z6="","–",IF(Z6>=0,"▲ ","▼ ")&FIXED(ABS(Z6)*100,1)
-    &"% so với tháng trước")
+Số đơn tháng trước (không cần viết thêm số đo DAX)
+=N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Orders]",
+   "[dim_date].[month_id].&["&$B$8&"]",
+   Slicer_channel_name,Slicer_country))
+Dòng so sánh trên thẻ KPI
+=IF(F25="","–",IF(F25>0,"▲ ","▼ ")&FIXED(ABS(F25)*100,1)&"% so với tháng trước")
 """, size=10)
     box(s, 7.9, 4.65, 5.05, 1.9, fill=L_GREEN, line=GREEN, lw=1.25, align="l", anchor="m",
         paras=[{"runs": [("Tô màu nhấn bền: ", {"bold": True, "color": GREEN}),
-                         ("bảng phụ 2 cột nhấn = IF(là mục lớn nhất; giá trị; 0) và nền = phần còn lại, vẽ cột chồng", {})],
+                         ("bảng phụ 2 cột nhấn = IF(là mục lớn nhất, giá trị, 0) và nền = phần còn lại, vẽ cột chồng", {})],
                 "bullet": True, "space_after": 4},
                {"runs": [("Xu hướng 24 tháng: ", {"bold": True, "color": GREEN}),
-                         ("bỏ nối slicer Năm/Tháng trong Report Connections", {})], "bullet": True}],
+                         ("bảng phụ CUBEVALUE theo month_id, chỉ truyền slicer Kênh và Quốc gia", {})], "bullet": True}],
         size=12, margin=(0.12, 0.03, 0.1, 0.03))
 
     # ---- Bảng dựng 4 sheet
     s = dk.content(sec_name, SEC, "Bảng dựng 4 sheet: mỗi khối hình là một đối tượng Excel",
                    ["Giữ ", ("cùng vùng ô", {"bold": True, "color": GREEN}),
-                    " cho Điểm chính (B8:Q9) và thẻ KPI (B11:Q14) ở cả 4 sheet để chuyển sheet không nhảy mắt"])
+                    " cho slicer (B4:Q6), Điểm chính (B7:Q9) và thẻ KPI (B11:Q14) ở cả 4 sheet để chuyển sheet không nhảy mắt"])
     mp4 = [["Sheet", "Điểm chính + thẻ KPI (CUBEVALUE)", "Biểu đồ", "Bảng (PivotTable)"],
            ["Tong_quan", "Net Revenue · Orders · AOV · Return Rate · Δ Finance",
-            "Line 24 tháng (chart thường) · Waterfall Gross → Net · Orders, AOV · Δ theo tháng (cột chồng từ bảng phụ)", "—"],
-           ["Doanh_thu", "Net Sales · Units · AOV · ASP",
-            "Danh mục (cột ngang chồng từ bảng phụ: nhấn / nền) · Quốc gia (PivotChart Bar)",
+            "Line 24 tháng · Waterfall Gross → Net · Orders, AOV · Δ theo tháng, đỏ = vượt (cột chồng)", "—"],
+           ["Doanh_thu", "Net Sales · Units · Tỷ trọng online · Chiết khấu / Gross Sales",
+            "Danh mục, Quốc gia (cột ngang chồng: nhấn / nền, nguồn PivotTable)",
             "Kênh · Top 10 cửa hàng (data bar)"],
-           ["Doi_soat", "Net Revenue · Finance · Δ · Δ sau quy đổi · Số cửa hàng vượt ngưỡng",
-            "Phân rã Δ (Waterfall) · Δ theo tháng, đỏ = vượt (cột chồng từ bảng phụ) · Δ online (PivotChart Line)",
+           ["Doi_soat", "Net Revenue · Kế toán · Δ · Δ sau quy đổi · Số cửa hàng vượt ngưỡng",
+            "Phân rã Δ (Waterfall) · Δ theo tháng, đỏ = vượt (cột chồng) · Δ online (Line)",
             "Top 10 cửa hàng theo Δ tuyệt đối, ⚠ Vượt"],
-           ["Hoan_tra", "Returns · Return Rate · Cancelled · Pending; ô ghi 120 dòng trùng đã loại",
-            "Return Rate 24 tháng · Lý do (Bar) · Danh mục (Bar) · Huỷ & chờ giao (Line)", "—"]]
+           ["Hoan_tra", "Returns · Return Rate · Đơn huỷ · Dòng trùng đã loại (+ đơn PENDING)",
+            "Return Rate 24 tháng · Lý do, Danh mục (cột ngang chồng) · Huỷ & chờ giao (Line)", "—"]]
     table(s, 0.4, 1.5, 12.55, 4.2, mp4, col_w=[1.5, 3.6, 5.0, 2.45], size=12, align=["l", "l", "l", "l"],
           bold_first_col=True)
     box(s, 0.4, 5.85, 12.55, 0.7, fill=L_BLUE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[[("Sheet _pivot (ẩn khi nộp): ", {"bold": True, "color": NAVY}),
-                ("chứa mọi PivotTable nguồn và bảng phụ của biểu đồ; 4 sheet dashboard chỉ có ô CUBEVALUE, biểu đồ, "
-                 "slicer và bảng cho người xem", {})]], size=13, margin=(0.12, 0.03, 0.1, 0.03))
+                ("chứa 8 PivotTable nguồn, các ô CUBEVALUE và bảng phụ của biểu đồ; 4 sheet dashboard chỉ có slicer, "
+                 "thẻ KPI, biểu đồ và bảng cho người xem", {})]], size=13, margin=(0.12, 0.03, 0.1, 0.03))
 
     # helper cho slide ảnh + câu hỏi + cách đọc
     def result_slide(sub, img, question, reading, take, colr=GREEN, img_w=7.75):
@@ -2223,7 +2261,7 @@ Net Sales (cơ sở Finance) :=
     text(s, 1.35, 4.1, 3.25, 0.7, [("2  Báo cáo phân tích (PDF)", {"bold": True, "color": ORANGE})], size=17,
          anchor="m")
     text(s, 0.55, 4.85, 4.05, 0.55, ["8 phần kèm Phụ lục bảng cầu nối"], size=14)
-    text(s, 0.4, 5.6, 4.3, 1.0, [{"runs": "Sửa SourceFolder → Refresh All chạy được", "bullet": "☐", "indent": 0.3},
+    text(s, 0.4, 5.6, 4.3, 1.0, [{"runs": "Đổi đường dẫn nguồn → Refresh All chạy được", "bullet": "☐", "indent": 0.3},
                                  {"runs": "Số trong báo cáo khớp dashboard", "bullet": "☐", "indent": 0.3},
                                  {"runs": "Bảng cầu nối có phần chưa giải thích = 0", "bullet": "☐", "indent": 0.3}],
          size=12)

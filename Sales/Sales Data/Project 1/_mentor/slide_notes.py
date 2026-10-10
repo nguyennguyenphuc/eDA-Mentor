@@ -84,7 +84,7 @@ def build_notes(REF, KEY, vn, pct):
     không. Lưu ý kênh online không thuộc quốc gia nào: khi chọn một quốc gia thì online bị loại khỏi phạm vi.""")
     add("Trang Tổng quan: Điểm chính", """
     Trang 1 trả lời: tháng này bán được bao nhiêu, vì sao tăng/giảm, có khớp Finance không. Mở đầu bằng câu Điểm chính
-    tự sinh theo số. Năm thẻ: Net Revenue, số đơn, AOV, tỷ lệ hoàn trả, chênh lệch Finance. Biểu đồ: đường Net Revenue
+    ghép bằng công thức Excel từ các ô số. Năm thẻ: Net Revenue, số đơn, AOV, tỷ lệ hoàn trả, chênh lệch Finance. Biểu đồ: đường Net Revenue
     24 tháng màu xám với tháng chọn tô xanh và điểm cùng kỳ được ghi chú; waterfall Gross → Net; hai biểu đồ nhỏ số
     đơn và AOV đặt cạnh nhau (không dùng hai trục trên một biểu đồ) để thấy ngay doanh thu giảm vì ít đơn; và cột Δ sau
     quy đổi theo tháng để dẫn sang trang Đối soát.""")
@@ -125,8 +125,7 @@ def build_notes(REF, KEY, vn, pct):
     add("Cây KPI", """
     Đọc cây KPI từ trái sang phải: Gross Sales trừ giảm giá ra Net Sales, trừ hoàn trả ra
     Net Revenue, rồi so với Finance Net Revenue ra Δ và cờ ngưỡng. Nhánh trên: Orders và Units là mẫu số của AOV và
-    ASP, với tử số chung là Net Sales. Thông điệp: hiểu định nghĩa và thứ tự trước, viết DAX sau; sơ đồ này nằm ở
-    diagrams/04_cay_kpi.drawio để mentor sửa khi cần.""")
+    ASP, với tử số chung là Net Sales. Thông điệp: hiểu định nghĩa và thứ tự trước, viết DAX sau.""")
     add("Nhóm doanh thu: định nghĩa", f"""
     Đi qua 5 chỉ tiêu nhóm doanh thu và phạm vi: chỉ đơn COMPLETED, đã bỏ dòng trùng; Returns tính theo ngày trả hàng.
     Làm ví dụ tính tay ở khung bên phải (sheet sample_transactions): đơn POS dùng mã BF15, Gross 5.509,99 USD, giảm giá
@@ -154,11 +153,10 @@ def build_notes(REF, KEY, vn, pct):
 
     # ------------------------------------------------------------------ phần 4
     add("Pipeline dữ liệu", """
-    (Phần 4 · khoảng 40 phút.) Đọc sơ đồ theo ba làn: mentor chuẩn bị dữ liệu (nguồn Global Electronics Retailer,
-    script sinh dữ liệu), học viên làm 5 bước trong Excel (Power Query (M) → Data Model → DAX trong Power Pivot →
-    4 sheet dashboard → báo cáo), và
-    các điểm kiểm tra (QC_Summary, số đối soát, rubric). Nhấn mạnh hai file đầu vào của học viên: dataset và
-    finance_revenue.xlsx. Sơ đồ gốc ở diagrams/01_pipeline_du_lieu.drawio.""")
+    (Phần 4 · khoảng 40 phút.) Đọc sơ đồ theo ba làn: mentor chuẩn bị dữ liệu (nguồn Global Electronics Retailer),
+    học viên làm 5 bước trong Excel (Power Query → Data Model → DAX trong Power Pivot → 4 sheet dashboard → báo cáo),
+    và các điểm kiểm tra (QC_Summary, số đối soát, rubric). Nhấn mạnh hai file đầu vào của học viên: dataset và
+    finance_revenue.xlsx.""")
     add("Cấu trúc bộ dữ liệu", f"""
     Hai file, ba bảng fact với ba grain khác nhau: fact_sales_line {vn(rows['fact_sales_line'])} dòng, mỗi dòng là một
     sản phẩm trong một đơn; fact_return {vn(rows['fact_return'])} dòng, mỗi dòng một lần trả hàng; finance_revenue
@@ -192,23 +190,26 @@ def build_notes(REF, KEY, vn, pct):
     học viên đối chiếu số dòng của mình với QC_Summary ngay tại lớp.""")
     st = REF_PQ["steps"]
     add("Pipeline Power Query: mỗi query", f"""
-    Sơ đồ diagrams/05_power_query_pipeline.drawio: mỗi làn là một query, mỗi ô là một Applied Step, số dưới ô là số
-    dòng sau bước. Tạo query theo đúng thứ tự trong excel_build/m/ (SourceFolder → dim → fact_sales_line → fact_return
-    → finance_raw, map_store_finance → fact_finance → _Measures) vì query sau tham chiếu query trước. Ô cam là ba chỗ
-    hay sai: Removed Duplicates, Merged Queries và Filtered Valid – dừng lại kiểm số dòng ngay sau các bước này.
-    Giải thích tham số SourceFolder: đổi máy chỉ sửa một chỗ rồi Refresh All.""")
-    add("M · fact_sales_line và fact_return", f"""
-    Đọc code M từ trên xuống: mỗi dòng là một Applied Step, bước sau gọi tên bước trước. fact_sales_line: chọn Table
-    tbl_fact_sales_line (không chọn sheet), đặt kiểu, rồi Table.Distinct bỏ trùng – {vn(st['fact_sales_line'][2][2])} →
-    {vn(st['fact_sales_line'][3][2])} dòng – rồi thêm gross_amount và net_amount. fact_return merge với fact_sales_line
-    theo hai cột order_number + line_item (giữ Ctrl để chọn) để lấy store_key, channel_code, product_key; số dòng giữ
-    {vn(st['fact_return'][-1][2])}. Hỏi lớp: “Nếu merge trước khi bỏ trùng thì sao?” – 120 dòng trả hàng có thể bị nhân
-    đôi. Hoạt động: học viên làm fact_sales_line bằng chuột, so tên bước với slide.""")
-    add("M · fact_finance: gắn store_key", f"""
-    fact_finance tạo bằng Reference từ finance_raw, merge với map_store_finance theo fin_store_code, expand store_key,
-    valid_from, valid_to, rồi lọc posting_date trong khoảng hiệu lực. Bước Filtered Valid viết bằng cách lọc tạm một
-    điều kiện rồi sửa công thức trên thanh công thức. Số dòng giữ {vn(st['fact_finance'][-1][2])} ở mọi bước; 3 dòng
-    HQ-ADJ có store_key trống là đúng thiết kế. finance_raw và map_store_finance chỉ là query trung gian.""")
+    Sơ đồ: mỗi làn là một query, mỗi ô là một Applied Step, số dưới ô là số dòng sau bước. Mọi bước làm bằng chuột
+    trong Power Query Editor, Excel tự ghi lại thành Applied Steps. Chỉ cần hai lượt Get Data: lượt 1 chọn cùng lúc
+    mọi Table trong file dataset (Navigator → Select multiple items), lượt 2 lấy finance_revenue.xlsx. Làm sạch theo
+    thứ tự dim → fact_sales_line → fact_return → finance_raw, map_store_finance → fact_finance vì query sau dùng query
+    trước. Ô cam là ba chỗ hay sai: Removed Duplicates, Merged Queries và Filtered Rows – dừng lại kiểm số dòng ngay
+    sau các bước này. Đổi máy: Data Source Settings → Change Source rồi Refresh All.""")
+    add("Power Query · fact_sales_line và fact_return", f"""
+    Demo trực tiếp. fact_sales_line: chọn Table tbl_fact_sales_line (không chọn sheet), kiểm kiểu cột, Ctrl+A rồi
+    Remove Duplicates – {vn(rows['fact_sales_line'])} → {vn(rows['fact_sales_line_clean'])} dòng – rồi thêm gross_amount
+    bằng Add Column → Standard → Multiply và net_amount bằng Subtract (chọn gross_amount trước). fact_return: Merge
+    Queries với fact_sales_line theo hai cột order_number + line_item (giữ Ctrl để chọn, cùng thứ tự ở hai bảng), mở
+    rộng lấy store_key, channel_code, product_key; số dòng giữ {vn(rows['fact_return'])}. Hỏi lớp: “Nếu ghép trước khi
+    bỏ trùng thì sao?” – dòng trả hàng có thể bị nhân đôi. Hoạt động: học viên tự làm, so tên bước ở khung Applied
+    Steps với slide.""")
+    add("Power Query · fact_finance: gắn store_key", f"""
+    fact_finance tạo bằng Reference từ finance_raw, Merge với map_store_finance theo fin_store_code, mở rộng store_key,
+    valid_from, valid_to. Điều kiện ngày hiệu lực làm bằng Conditional Column (ô Value chọn Select a column để so hai
+    cột ngày), rồi lọc hieu_luc = 1 và bỏ 3 cột phụ – không cần gõ công thức. Số dòng giữ
+    {vn(rows['finance_revenue'])} ở mọi bước; 3 dòng HQ-ADJ có store_key trống là đúng thiết kế. finance_raw và
+    map_store_finance chỉ là query trung gian.""")
     add("Nạp vào Data Model và cấu hình", f"""
     Close & Load To… chọn Only Create Connection và tick Add this data to the Data Model – không đổ bảng ra sheet vì
     63 nghìn dòng làm file nặng mà không dùng tới. Hai query trung gian chỉ tạo connection. Trong Power Pivot: tạo
@@ -247,13 +248,13 @@ def build_notes(REF, KEY, vn, pct):
     add("Bản đồ số đo", """
     (Phần 6 · khoảng 35 phút.) Bộ bắt buộc chỉ có 21 số đo, chia 5 nhóm theo thứ tự: doanh thu → đơn & giá → Kế toán
     và chênh lệch → quy đổi online → so sánh kỳ; 8 số đo nâng cao để riêng cho phần sáng tạo. Số đo sau dùng lại số đo trước, ví dụ [Net Revenue] = [Net Sales] − [Returns]: sửa định nghĩa
-    ở một chỗ thì đúng ở mọi nơi. Đặt tất cả trong bảng _Measures, tạo theo đúng thứ tự trong excel_build/measures.dax.
+    ở một chỗ thì đúng ở mọi nơi. Đặt tất cả trong bảng _Measures, tạo theo đúng thứ tự trên slide.
     Mỗi số đo mới kiểm ngay bằng PivotTable hoặc một ô CUBEVALUE trước khi dùng tiếp.""")
     add("Tạo số đo trong Power Pivot", f"""
-    Hai cách tạo số đo: hộp thoại Power Pivot → Measures → New Measure (chọn bảng _Measures, đặt tên, dán công thức,
-    chọn định dạng) hoặc dán nguyên khối “Tên := công thức” vào Calculation Area dưới bảng _Measures. Giữ đúng tên như
-    measures.dax vì ô CUBEVALUE gọi theo tên. Điểm mới so với bản trước: DAX chỉ tính số; % thay đổi và câu Điểm chính
-    là công thức Excel thường (TEXT, &) trỏ vào các ô CUBEVALUE, CUBERANKEDMEMBER đọc tháng đang chọn trên slicer.
+    Hai cách tạo số đo: hộp thoại Power Pivot → Measures → New Measure (chọn bảng _Measures, đặt tên, gõ công thức,
+    chọn định dạng) hoặc gõ “Tên := công thức” vào Calculation Area dưới bảng _Measures. Gõ đúng tên như trên slide vì
+    ô CUBEVALUE gọi số đo theo tên. DAX chỉ tính số; % thay đổi và câu Điểm chính là công thức Excel thường (FIXED, &)
+    trỏ vào các ô CUBEVALUE; CUBERANKEDMEMBER đọc tháng đang chọn trên slicer.
     Demo trực tiếp tháng {RM}.""")
 
     add("DAX nhóm doanh thu", f"""
@@ -284,21 +285,22 @@ def build_notes(REF, KEY, vn, pct):
 
     # ------------------------------------------------------------------ phần 7
     add("Bố cục đề xuất 4 trang", """
-    (Phần 7 · khoảng 40 phút.) Ảnh trên slide là bản HTML tham chiếu (Nexa_Sales_P1_Dashboard.html) – mở trực tiếp
-    nếu có thể; học viên dựng lại bố cục này trong Excel theo 2 slide tiếp theo. File Nexa_Sales_P1_Dashboard.xlsx
-    (công thức SUMIFS) dùng để so số. Thứ tự đọc mỗi sheet: câu Điểm chính → thẻ KPI → biểu đồ có tiêu đề nêu kết
+    (Phần 7 · khoảng 40 phút.) Mở trực tiếp file Nexa_Sales_P1_Dashboard.xlsx – dashboard tham chiếu dựng đúng các
+    bước của bài (Power Query, Mô hình Dữ liệu, DAX, slicer, PivotTable, CUBEVALUE); học viên dựng lại bố cục này
+    theo 2 slide tiếp theo và so số với file đó. Thứ tự đọc mỗi sheet: câu Điểm chính → thẻ KPI → biểu đồ có tiêu đề nêu kết
     luận → bảng chi tiết. Luôn bắt đầu từ câu hỏi của trang, không bắt đầu từ biểu đồ.""")
     add("Từ measure đến dashboard Excel", """
     Bốn đối tượng Excel đủ dựng cả 4 sheet. Slicer từ Mô hình Dữ liệu (Năm, Tháng, Kênh, Quốc gia), copy sang sheet khác
-    là dùng chung bộ lọc; Report Connections quyết định pivot nào bị lọc – biểu đồ 24 tháng thì bỏ nối slicer Năm/Tháng.
+    là dùng chung bộ lọc; Report Connections nối slicer với mọi PivotTable trên _pivot. Biểu đồ 24 tháng lấy số từ
+    bảng phụ CUBEVALUE theo month_id, chỉ truyền slicer Kênh và Quốc gia nên luôn đủ 24 tháng.
     CUBEVALUE đưa một số đo ra một ô theo slicer; các ô đó là nguyên liệu cho thẻ KPI, % thay đổi và câu Điểm chính viết
-    bằng công thức Excel. PivotTable From Data Model cho bảng chi tiết và làm nguồn cho PivotChart. Waterfall không làm
-    được từ PivotTable nên vẽ chart thường từ các ô CUBEVALUE. Mẹo tô màu nhấn: bảng phụ hai cột (nhấn = IF là mục lớn
+    bằng công thức Excel. PivotTable From Data Model cho bảng xếp hạng và bảng chi tiết (Top 10). Waterfall vẽ bằng
+    loại biểu đồ Waterfall của Excel từ các ô CUBEVALUE, cột cuối Set as total. Mẹo tô màu nhấn: bảng phụ hai cột (nhấn = IF là mục lớn
     nhất, nền = phần còn lại) rồi vẽ cột chồng.""")
 
     add("Bảng dựng 4 sheet", """
-    Bảng này là “bản vẽ thi công” của 4 sheet. Đặt mọi PivotTable nguồn và bảng phụ ở sheet _pivot (ẩn khi nộp); 4
-    sheet dashboard chỉ chứa slicer, ô CUBEVALUE, biểu đồ và bảng cho người xem. Giữ cùng vùng ô cho câu Điểm chính
+    Bảng này là “bản vẽ thi công” của 4 sheet. Đặt mọi PivotTable nguồn, ô CUBEVALUE và bảng phụ ở sheet _pivot (ẩn
+    khi nộp); 4 sheet dashboard chỉ chứa slicer, thẻ KPI, biểu đồ và bảng cho người xem. Giữ cùng vùng ô cho câu Điểm chính
     và thẻ KPI ở mọi sheet. Hoạt động: mỗi nhóm dựng sheet Tong_quan trong 20 phút, so số với file
     Nexa_Sales_P1_Dashboard.xlsx ở tháng 12/2020.""")
     add("Trang Tổng quan, tháng", f"""
@@ -324,7 +326,7 @@ def build_notes(REF, KEY, vn, pct):
     cùng quy mô. Chất lượng dữ liệu: 120 dòng trùng đã loại và {vn(rows['orders_pending'])} đơn PENDING tại ngày trích –
     hai con số này nên xuất hiện trong phần Data & Preparation của báo cáo.""")
     add("Quy trình đối soát 8 bước", """
-    Đi qua 8 bước theo sơ đồ diagrams/03_quy_trinh_doi_soat.drawio: bỏ trùng, giữ COMPLETED, tính Net Sales và Net
+    Đi qua 8 bước theo sơ đồ: bỏ trùng, giữ COMPLETED, tính Net Sales và Net
     Revenue phía đơn; map Finance theo hiệu lực và tách HQ-ADJ; ghép theo tháng × cửa hàng, tính Δ và Δ %; với ô vượt
     ngưỡng thì xem theo ngày và theo kênh; cuối cùng lập bảng giải thích. Quy tắc vàng: mỗi nguyên nhân phải có số
     tiền, tổng các nguyên nhân bằng Δ, phần chưa giải thích bằng 0. Bảy nguyên nhân cần dò trong khung bên phải sơ đồ
@@ -343,7 +345,7 @@ def build_notes(REF, KEY, vn, pct):
 
     # ------------------------------------------------------------------ phần 8
     add("Hai sản phẩm cần nộp và cấu trúc", """
-    (Phần 8 · khoảng 10 phút.) Nộp file Excel .xlsx: sửa SourceFolder rồi Refresh All phải chạy được, cùng báo cáo PDF 8 phần theo guild_report_template,
+    (Phần 8 · khoảng 10 phút.) Nộp file Excel .xlsx: đổi đường dẫn nguồn (Data Source Settings) rồi Refresh All phải chạy được, cùng báo cáo PDF 8 phần theo guild_report_template,
     phụ lục có bảng cầu nối và danh sách ô vượt ngưỡng. Phần IV (Main Analysis) là đối soát tháng × cửa hàng × kênh;
     phần VII nêu as-of 20/02/2021, đơn PENDING và các giả định ghi nhận. Số trong báo cáo phải khớp dashboard.""")
     add("Thang chấm điểm 100 điểm", """

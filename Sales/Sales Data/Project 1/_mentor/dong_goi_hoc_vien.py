@@ -26,7 +26,6 @@ DANH_SACH = [
     ("Slide_Project_1_hoc_vien.pptx", "Slide buổi học"),
     ("Nexa_Sales_P1_Dataset.xlsx", "Dữ liệu đơn hàng, hàng bán bị trả lại, các bảng chiều, bảng map mã Kế toán"),
     ("finance_revenue.xlsx", "Doanh thu phòng Tài chính – Kế toán đã ghi sổ (để đối soát)"),
-    ("excel_build/", "Code Power Query (m/*.pq), số đo DAX bắt buộc (measures.dax) và nâng cao (measures_nang_cao.dax)"),
     ("so_do/", "Sơ đồ pipeline, mô hình dữ liệu, quy trình đối soát, cây KPI, pipeline Power Query (PDF)"),
     ("guild_report_template.pdf", "Khung báo cáo 8 phần"),
 ]
@@ -49,6 +48,8 @@ def main():
             loi.append(f"thiếu {a}")
     if any("Instructor" in p.name for p in HV.rglob("*")):
         loi.append("có file Instructor Key trong hoc_vien/")
+    if any(p.suffix in (".pq", ".dax", ".py") for p in HV.rglob("*")):
+        loi.append("có file code (.pq/.dax/.py) trong hoc_vien/ — bài dựng bằng tay")
     d = docx.Document(HV / "Huong_dan_hoc_vien.docx")
     txt = "\n".join(p.text for p in d.paragraphs) + "\n".join(c.text for t in d.tables for r in t.rows for c in r.cells)
     loi += [f"hướng dẫn học viên có chữ «{w}»" for w in CAM if w in txt]

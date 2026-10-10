@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Sinh bộ dựng dashboard bằng Excel: ../excel_build/m/*.pq (Power Query M), ../excel_build/measures.dax (Power Pivot)
+"""Sinh _mentor/excel_build/m/*.pq (Power Query M), _mentor/excel_build/measures.dax (Power Pivot) — CHỈ MENTOR
+(học viên làm Power Query bằng thao tác chuột theo guideline Bước 2, gõ DAX theo Bước 4)
 và _mentor/pq_steps.json (số dòng sau từng bước M, dùng cho sơ đồ 05, guideline và slide).
 
 Máy dựng tài liệu không có Excel, nên mỗi bước M được "chạy song song" bằng pandas (cùng logic) để lấy số dòng và
@@ -14,7 +15,7 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 P1 = HERE.parent
 HV = P1 / "hoc_vien"                  # bộ file giao học viên
-KIT = HV / "excel_build"
+KIT = HERE / "excel_build"          # chỉ mentor: code M + DAX gốc để đối chiếu và dựng file tham chiếu
 REF = json.loads((HERE / "ref_numbers.json").read_text(encoding="utf-8"))
 THR_ABS, THR_PCT = REF["threshold"]["abs_usd"], REF["threshold"]["pct"]
 

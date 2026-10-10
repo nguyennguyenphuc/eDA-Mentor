@@ -18,6 +18,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
+from pq_thao_tac import DIMS, DOI_TEN, NAP_DATASET, ORDER, STEPS
 from thuat_ngu import BANG, bat_dau, chuan_hoa
 
 bat_dau()
@@ -25,7 +26,7 @@ bat_dau()
 HERE = Path(__file__).resolve().parent
 P1 = HERE.parent
 BANK = P1.parents[2] / "Bank" / "Project 1" / "Dashboard_Guideline (dành cho mentor).docx"
-HOC_VIEN = "--hoc-vien" in sys.argv                  # bản học viên: bỏ Bước 6 (đáp án) và Phụ lục B (script mentor)
+HOC_VIEN = "--hoc-vien" in sys.argv                  # bản học viên: bỏ Bước 6 (đáp án)
 OUT = (P1 / "hoc_vien" / "Huong_dan_hoc_vien.docx") if HOC_VIEN else (P1 / "Dashboard_Guideline (dành cho mentor).docx")
 PNG = P1 / "diagrams" / "png"
 R = json.loads((HERE / "ref_numbers.json").read_text(encoding="utf-8"))
@@ -190,7 +191,7 @@ hq20 = float(anom[(anom.type == "E_MANUAL_ADJ") & (pd.to_datetime(anom.date_from
 n_canc_2020 = int(((anom.type == "A_CANCELLED_BOOKED") & (pd.to_datetime(anom.date_from).dt.year == 2020)).sum())
 mstr = lambda m: f"{m % 100:02d}/{m // 100}"
 PQ = json.loads((HERE / "pq_steps.json").read_text(encoding="utf-8"))
-KIT = HV / "excel_build"
+KIT = HERE / "excel_build" if (HERE / "excel_build").exists() else HV / "excel_build"   # DAX gốc (chỉ mentor)
 DAX_TXT = (KIT / "measures.dax").read_text(encoding="utf-8")
 
 
@@ -211,19 +212,20 @@ _fin = pd.read_excel(HV / "finance_revenue.xlsx", sheet_name="finance_revenue")
 fin_online = int(_fin.fin_store_code.isin(DS["map_store_finance"].query("store_key == 0").fin_store_code).sum())
 ten_so_do = lambda secs: [l.split(":=")[0].strip() for _, ls in secs for l in ls if ":=" in l and not l.startswith(" ")]
 MEAS, MEAS_NC = ten_so_do(DAXS), ten_so_do(DAXS_NC)
-PL = dict(zip(["so_do", "script", "m", "thuat_ngu"], "ABCD")) if not HOC_VIEN else dict(so_do="A", m="B", thuat_ngu="C")
+PL = dict(so_do="A", thuat_ngu="B")
 def chg(a, b): return pct((a - b) / abs(b)) if b else "–"
+def rr_(k): return k["returns"] / k["net_sales"]     # tỷ lệ chưa làm tròn
 
 # ------------------------------------------------------------------ NỘI DUNG
 H1(("Hướng dẫn học viên" if HOC_VIEN else "Hướng dẫn xây dựng") + " Dashboard Excel: Kết quả bán hàng và đối soát doanh thu "
    "(Nexa Home · Sales Project 1)")
-P("Cập nhật: 10/10/2026 · Dataset v" + R["version"] + f" · seed {R['seed']}", first=True)
+P("Cập nhật: 10/10/2026 · Dataset v" + R["version"], first=True)
 
 H2("Giới thiệu và cách dùng tài liệu")
 P("Tài liệu này hướng dẫn dựng dashboard **Excel** 4 sheet (Tổng quan, Doanh thu, Đối soát, Hoàn trả & chất lượng) "
   "từ dataset Nexa Home, rồi dùng chính dashboard đó để đối soát (đối chiếu số liệu) doanh thu với số của phòng "
   "Tài chính – Kế toán (Finance, file finance_revenue.xlsx) và viết báo cáo. "
-  "Quy trình gồm 4 tầng: **Power Query (M)** nạp và làm sạch → **Data Model** trong Power Pivot nối các bảng → "
+  "Quy trình gồm 4 tầng, làm hoàn toàn trên giao diện Excel: **Power Query** nạp và làm sạch → **Data Model** trong Power Pivot nối các bảng → "
   "**DAX** tính chỉ số hiệu suất then chốt (KPI) → **PivotTable, PivotChart, Slicer và CUBEVALUE** trình bày. "
   "Đây là project đầu tiên của nhóm Sales, mức hỗ trợ của mentor khoảng 80 %: mentor đi cùng học viên qua từng bước, "
   "học viên tự làm phần giải thích chênh lệch.", first=True)
@@ -231,7 +233,7 @@ if HOC_VIEN:
     P("**Đối tượng.** Học viên làm theo từng bước; mentor hỗ trợ trên lớp. Số kiểm tra và đáp án đối soát do mentor giữ.")
 else:
     P("**Đối tượng.** Bản dành cho mentor và trợ giảng. **Bước 6** chứa số đối soát và đáp án các chênh lệch. Học viên "
-      "nhận bản riêng `hoc_vien/Huong_dan_hoc_vien.docx`: Bước 6 chỉ có phương pháp (không có số và đáp án), không có Phụ lục B.")
+      "nhận bản riêng `hoc_vien/Huong_dan_hoc_vien.docx`: Bước 6 chỉ có phương pháp (không có số và đáp án).")
 P("**Sản phẩm đầu ra.** Một file .xlsx gồm các truy vấn Power Query, Mô hình Dữ liệu có quan hệ và bộ số đo DAX, cùng 4 sheet "
   "dashboard; kèm báo cáo 8 phần theo guild_report_template.pdf, trong đó phần chính là bảng giải thích chênh lệch "
   "vượt ngưỡng năm 2020.")
@@ -242,7 +244,6 @@ LIST(["**Excel cho Windows**, bản Microsoft 365 hoặc Excel 2016 trở lên. 
       "**Bật add-in Power Pivot.** File → Options → Add-ins → ô Manage chọn **COM Add-ins** → Go… → tick "
       "**Microsoft Power Pivot for Excel** → OK. Ribbon có thêm tab **Power Pivot**.",
       "Power Query có sẵn trong tab Data (nhóm Get & Transform Data), không cần cài thêm.",
-      "Toàn bộ code M và DAX nằm trong thư mục excel_build/; tài liệu này in lại đúng code đó.",
       "Tên menu ghi theo giao diện tiếng Việt của Microsoft kèm tên tiếng Anh trong ngoặc, vì máy học viên có thể dùng một trong hai."])
 
 H3("Bộ file và ai được xem")
@@ -252,19 +253,16 @@ FILES = [
     ["hoc_vien/finance_revenue.xlsx", "Doanh thu phòng Tài chính – Kế toán đã ghi sổ, theo ngày × mã cửa hàng của Kế toán (bản rút gọn)", "Học viên"],
     ["hoc_vien/Huong_dan_hoc_vien.docx", "Hướng dẫn từng bước, bản học viên (không có số kiểm tra và đáp án đối soát)", "Học viên"],
     ["hoc_vien/Slide_Project_1_hoc_vien.pptx", "Slide giảng 8 phần, đã bỏ phụ lục đáp án và lời thuyết trình", "Học viên"],
-    ["hoc_vien/excel_build/", f"{len(PQ['order'])} truy vấn M (m/*.pq), {len(MEAS)} số đo bắt buộc (measures.dax), {len(MEAS_NC)} số đo nâng cao (measures_nang_cao.dax)", "Học viên"],
     ["hoc_vien/so_do/*.pdf", "Sơ đồ pipeline, mô hình, quy trình đối soát, cây KPI, pipeline Power Query", "Học viên"],
     ["hoc_vien/guild_report_template.pdf", "Khung báo cáo 8 phần", "Học viên"],
 ]
 if not HOC_VIEN:
     FILES += [
         ["Nexa_Sales_P1_Dashboard.html", "Dashboard tham chiếu (bố cục, màu, câu chữ); có thể gửi học viên sau buổi 1", "Mentor (học viên sau buổi 1)"],
-        ["Nexa_Sales_P1_Dashboard.xlsx", "Dashboard Excel tham chiếu 4 sheet dựng bằng công thức (không dùng Mô hình Dữ liệu) để so số", "Mentor (học viên sau buổi 1)"],
+        ["Nexa_Sales_P1_Dashboard.xlsx", "Dashboard Excel tham chiếu dựng đúng các bước của tài liệu này: Power Query, Mô hình Dữ liệu, số đo DAX, 4 slicer, PivotTable, CUBEVALUE", "Mentor (học viên sau buổi 1)"],
         ["Dashboard_Guideline (dành cho mentor).docx", "Tài liệu này, bản đầy đủ có Bước 6 đáp án", "Chỉ mentor"],
         ["Slide_Project_1.pptx", "Slide bản đầy đủ: 4 slide phụ lục đáp án (ẩn) + lời thuyết trình", "Chỉ mentor"],
-        ["diagrams/*.drawio", "Bản gốc sửa được của sơ đồ", "Chỉ mentor"],
         ["_mentor/Nexa_Sales_P1_Instructor_Key.xlsx", "Đáp án: 31 chênh lệch cài sẵn, cầu nối từng tháng × cửa hàng", "Chỉ mentor"],
-        ["_mentor/*.py", "Sinh lại dữ liệu, bộ M/DAX, tài liệu; đóng gói bộ học viên (dong_goi_hoc_vien.py)", "Chỉ mentor"],
     ]
     TABLE(["File", "Công dụng", "Ai được xem"], FILES, widths=[5.4, 8.8, 3.3])
 else:
@@ -286,7 +284,7 @@ TABLE(["Nội dung", "Giá trị"], [
 H3("Lộ trình 7 bước")
 TABLE(["Bước", "Việc chính", "Công cụ Excel", "Thời lượng gợi ý"], [
     ["1. Hiểu dữ liệu", "Đọc README, Data_Dictionary, KPI_Definitions, sample_transactions", "Mở file dataset", "30 phút"],
-    ["2. Power Query (M)", f"{len(PQ['order'])} query theo pipeline: nạp, đặt kiểu, bỏ dòng trùng, map mã Finance → fact_finance", "Data → Get Data, Advanced Editor", "60 phút"],
+    ["2. Power Query", f"{len(ORDER)} query: nạp, đặt kiểu, bỏ dòng trùng, ghép bảng, gắn mã Kế toán → fact_finance", "Data → Get Data → From Excel Workbook; Merge Queries", "60 phút"],
     ["3. Data Model", "Quan hệ lược đồ hình sao, Mark as Date Table, quan hệ inactive cho delivery_date", "Power Pivot → Manage → Diagram View", "30 phút"],
     ["4. DAX", f"{len(MEAS)} số đo bắt buộc trong bảng _Measures ({len(MEAS_NC)} số đo nâng cao tuỳ chọn)", "Power Pivot → Measures → New Measure", "60 phút"],
     ["5. Dashboard", "4 sheet theo bảng visual → đối tượng Excel", "PivotTable, PivotChart, Slicer, CUBEVALUE", "120 phút"],
@@ -302,7 +300,7 @@ LIST(["Tên bảng và cột viết dạng `fact_sales_line[order_date]`; tên m
       "Tên file, cột và số đo giữ chữ `Finance` (vd `finance_revenue.xlsx`, `[Finance Net Revenue]`, `[Δ Finance]`): đều chỉ số của phòng Tài chính – Kế toán.",
       "Tên chỉ tiêu theo Chuẩn mực kế toán VAS 14: doanh thu bán hàng (Gross Sales) − chiết khấu thương mại (Discounts) − hàng bán bị trả lại (Returns) = doanh thu thuần (Net Revenue). Bảng thuật ngữ đầy đủ ở Phụ lục " + PL["thuat_ngu"] + ".",
       "Số viết theo kiểu Việt Nam: dấu chấm phân cách nghìn, dấu phẩy thập phân."])
-FIG("01_pipeline_du_lieu.png", "Hình 1: Pipeline từ nguồn dữ liệu đến báo cáo (nguồn: diagrams/01_pipeline_du_lieu.drawio)")
+FIG("01_pipeline_du_lieu.png", "Hình 1: Pipeline từ nguồn dữ liệu đến báo cáo")
 
 # ---------------------------------------------------------------- Bước 1
 H2("Bước 1. Hiểu dữ liệu và chỉ tiêu")
@@ -330,7 +328,7 @@ H3("1.2 Từ chỉ tiêu nghiệp vụ đến cột dữ liệu")
 kpi = DS["KPI_Definitions"]
 TABLE(["Chỉ tiêu", "Công thức", "Ghi chú"], [[r.kpi, r.formula, "" if pd.isna(r.scope_note) else r.scope_note]
                                             for r in kpi.itertuples()], widths=[3.6, 6.4, 7.5])
-FIG("04_cay_kpi.png", "Hình 2: Cây KPI (nguồn: diagrams/04_cay_kpi.drawio)")
+FIG("04_cay_kpi.png", "Hình 2: Cây KPI")
 H3("1.3 Chín quy tắc dữ liệu cần nhớ")
 LIST([
     "**Chỉ đơn COMPLETED.** CANCELLED (khách huỷ) và PENDING (online chưa giao tại 20/02/2021) không phải doanh thu. "
@@ -351,115 +349,85 @@ P("fact_sales_line[delivery_date] trống với mọi đơn POS và mọi đơn 
   "trống ở HQ-ADJ. Mọi cột khác phải đầy đủ.", first=True)
 
 # ---------------------------------------------------------------- Bước 2
-H2("Bước 2. Power Query (M): nạp và làm sạch theo pipeline")
-P("Dữ liệu ở đây **chưa sạch hoàn toàn**: có dòng trùng và file Finance dùng mã cửa hàng riêng. Hai việc làm sạch này "
-  "là một phần của bài. Trong Power Query, mỗi thao tác chuột được ghi thành một **Applied Step**; trong code M, mỗi "
-  "step là một dòng `TênBước = Hàm(bước trước, …)` nằm giữa `let` và `in`. Đọc từ trên xuống là đọc đúng thứ tự xử lý.",
-  first=True)
-FIG("05_power_query_pipeline.png", "Hình 3: Pipeline Power Query — mỗi ô là một Applied Step, số là số dòng sau bước "
-    "(nguồn: diagrams/05_power_query_pipeline.drawio)")
-P("Đọc Hình 3 theo làn: ô cam là bước **thay đổi số dòng hoặc ghép bảng** (bỏ trùng, merge, lọc hiệu lực) — chỗ hay sai "
-  "nhất, phải kiểm số dòng ngay sau bước đó. Mũi tên nét đứt là phụ thuộc giữa các query: fact_return cần "
+H2("Bước 2. Power Query: nạp và làm sạch bằng thao tác chuột")
+P("Dữ liệu ở đây **chưa sạch hoàn toàn**: có dòng trùng, dòng hàng bán bị trả lại chưa biết thuộc cửa hàng nào, và file "
+  "Kế toán dùng mã cửa hàng riêng. Ba việc làm sạch này là một phần của bài. Mọi việc ở bước này làm **bằng chuột** "
+  "trong cửa sổ Power Query Editor: mỗi thao tác được Excel tự ghi thành một dòng ở khung **Applied Steps** (bên phải). "
+  "Bấm vào một bước để xem dữ liệu tại bước đó; làm sai thì bấm dấu ✕ cạnh tên bước để xoá rồi làm lại.", first=True)
+FIG("05_power_query_pipeline.png", "Hình 3: Quy trình Power Query — mỗi ô là một Applied Step, số là số dòng sau bước")
+P("Đọc Hình 3 theo làn: ô cam là bước **làm đổi số dòng hoặc ghép bảng** (bỏ trùng, ghép bảng, lọc theo ngày hiệu lực) — "
+  "chỗ hay sai nhất, phải kiểm số dòng ngay sau bước đó. Mũi tên nét đứt là phụ thuộc giữa các query: fact_return cần "
   "fact_sales_line; fact_finance cần finance_raw và map_store_finance.")
 
-H3("2.1 Chuẩn bị: thư mục dữ liệu và tham số SourceFolder")
-LIST(["Chép Nexa_Sales_P1_Dataset.xlsx và finance_revenue.xlsx vào cùng một thư mục, ví dụ `C:\\NexaP1\\`.",
-      "Mở một workbook Excel trắng, lưu ngay thành `Nexa_P1_<HoTen>.xlsx` (file nộp).",
-      "Data → Get Data → Launch Power Query Editor → Home → Manage Parameters → New Parameter: Name `SourceFolder`, "
-      "Type **Text**, Current Value là đường dẫn thư mục **kết thúc bằng dấu \\\\**.",
-      "Mọi query nguồn đọc file qua `SourceFolder & \"tên file\"`; đổi máy chỉ cần sửa tham số này rồi Refresh All."],
-     numbered=True)
-P("Có hai cách tạo từng query, kết quả giống nhau:", first=True)
-LIST(["**Thao tác chuột** (khuyên dùng cho fact_sales_line và fact_finance để hiểu bước): Get Data → From File → From "
-      "Excel Workbook → chọn file → trong Navigator chọn **Table** `tbl_…` (biểu tượng bảng xanh), không chọn sheet cùng tên → "
-      "Transform Data; làm từng bước và so tên bước ở khung Applied Steps với bảng bên dưới.",
-      "**Dán code**: Home → New Source → Other Sources → Blank Query → Advanced Editor → dán nội dung file "
-      "excel_build/m/<số>_<tên>.pq → Done → đổi tên query (khung Query Settings → Name) đúng như tên file, bỏ số thứ tự."])
+H3("2.1 Chuẩn bị")
+LIST(["Chép Nexa_Sales_P1_Dataset.xlsx và finance_revenue.xlsx vào cùng một thư mục, ví dụ C:\\NexaP1.",
+      "Mở một workbook Excel trắng, lưu ngay thành Nexa_P1_<HoTen>.xlsx (file nộp).",
+      "Tên lệnh: các lệnh chính ghi theo tên tiếng Việt của Microsoft, lần đầu kèm tiếng Anh trong ngoặc (đối chiếu ở "
+      "Phụ lục " + PL["thuat_ngu"] + "); lệnh phụ giữ tiếng Anh. Tên Applied Step Excel tự đặt cũng theo "
+      "ngôn ngữ giao diện (ví dụ Removed Duplicates).",
+      "Đổi máy hoặc đổi thư mục: Data → Get Data → **Data Source Settings** → chọn đường dẫn cũ → **Change Source…** → "
+      "Browse tới thư mục mới → Close → Data → Refresh All. Không cần sửa từng query."], numbered=True)
 
 H3("2.2 Thứ tự tạo query")
-STEPS = PQ["steps"]
-TAIL = {"SourceFolder": "Tham số đường dẫn", "_Measures": "Bảng rỗng chứa measure"}
-q_rows = []
-for i, q in enumerate(PQ["order"], 1):
-    if q in STEPS:
-        main = " → ".join(st[0] for st in STEPS[q][1:])
-        n = nf(STEPS[q][-1][2])
-    elif q in PQ["dims"]:
-        main, n = "Navigation → Changed Type", nf(PQ["dims"][q])
-    else:
-        main, n = TAIL[q], "—"
-    q_rows.append([str(i), q, main, PQ["load"].get(q, "Connection + Data Model"), n])
-TABLE(["#", "Query", "Các bước (sau Source)", "Nạp (Close & Load To)", "Số dòng"], q_rows,
-      widths=[0.9, 3.4, 7.4, 3.9, 1.9], align="llllr")
-P("Tạo theo đúng thứ tự này: query sau tham chiếu query trước (fact_return dùng fact_sales_line; fact_finance dùng "
-  "finance_raw và map_store_finance), tạo ngược sẽ báo lỗi *Expression.Error: The name … wasn't recognized*.".replace("*", ""))
-
-STEP_VI = {
-    "Source": "Mở file từ thư mục SourceFolder (Excel.Workbook trả về danh sách sheet và Table trong file)",
-    "Navigation": "Chọn đúng Excel Table tbl_… — có sẵn tiêu đề cột, không dính dòng trống",
-    "Changed Type": "Đặt kiểu từng cột: Date, Whole number, Fixed decimal (Currency), Text",
-    "Removed Duplicates": "Home → Remove Rows → Remove Duplicates trên toàn bộ cột: bỏ 120 dòng trùng hoàn toàn",
-    "Added gross_amount": "Add Column → Custom Column: quantity × unit_price, kiểu Fixed decimal",
-    "Added net_amount": "Custom Column: gross_amount − discount_amount",
-    "Merged Queries": "Home → Merge Queries (Left Outer)",
-    "Expanded sales": "Bấm nút ⇄ ở cột sales, chỉ tick store_key, channel_code, product_key, bỏ tick “Use original column name as prefix”",
-    "Changed Type2": "Đặt kiểu cho 3 cột vừa lấy",
-    "Expanded map": "Bấm nút ⇄ ở cột map, tick store_key, valid_from, valid_to",
-    "Filtered Valid": "Lọc tạm một điều kiện bất kỳ trên posting_date rồi sửa công thức trên thanh công thức thành `each [posting_date] >= [valid_from] and [posting_date] <= [valid_to]`",
-    "Removed Columns": "Bỏ valid_from, valid_to (chỉ dùng để lọc)",
-}
-MERGE_VI = {"fact_return": "Ghép dòng bán gốc theo **order_number + line_item** (giữ Ctrl để chọn 2 cột ở cả hai bảng)",
-            "fact_finance": "Ghép map_store_finance theo fin_store_code"}
+P("Chỉ cần hai lượt Get Data: lượt 1 lấy cùng lúc mọi Excel Table trong file dataset, lượt 2 lấy file Kế toán. Sau đó "
+  "làm sạch từng query theo thứ tự trong bảng — query sau dùng query trước (fact_return cần fact_sales_line đã bỏ trùng; "
+  "fact_finance cần finance_raw và map_store_finance).", first=True)
+LIST([NAP_DATASET + ". Chọn 9 Table: 6 bảng dim, tbl_fact_sales_line, tbl_fact_return, tbl_map_store_finance.",
+      "Đổi tên: " + DOI_TEN + ".",
+      "Lượt 2: Home → New Source → File → Excel Workbook → finance_revenue.xlsx → Table tbl_finance_revenue → OK; đổi tên "
+      "thành finance_raw."], numbered=True)
+TABLE(["#", "Query", "Tạo bằng", "Các bước chính (Applied Steps)", "Nạp (Close & Load To)", "Số dòng"],
+      [[str(i), q, cach, buoc, nap, nf(n)] for i, (q, cach, buoc, nap, n) in enumerate(ORDER, 1)],
+      widths=[0.9, 3.0, 3.2, 5.5, 3.3, 1.6], align="lllllr")
 
 
 def pq_block(q, sub, note=None):
     H3(sub)
     if note:
         P(note, first=True)
-    rows_ = []
-    for k, (stp, fn, n) in enumerate(STEPS[q], 1):
-        why = MERGE_VI[q] if stp == "Merged Queries" else (
-            "Home → Reference từ query finance_raw" if fn.startswith("=") else STEP_VI.get(stp, ""))
-        rows_.append([str(k), stp, fn, "—" if n is None else nf(n), why])
-    TABLE(["#", "Applied Step", "Hàm M", "Số dòng", "Thao tác / ý nghĩa"], rows_,
-          widths=[0.7, 3.1, 4.3, 1.5, 7.9], align="lllrl")
-    CODE(PQ["queries"][q]["code"])
+    TABLE(["#", "Applied Step", "Thao tác chuột", "Số dòng sau bước"],
+          [[str(k), stp, how, "—" if n is None else nf(n)] for k, (stp, _, how, n, _) in enumerate(STEPS[q], 1)],
+          widths=[0.7, 3.6, 10.9, 2.3], align="lllr")
 
 
-pq_block("fact_sales_line", "2.3 Pipeline fact_sales_line: bỏ dòng trùng, thêm cột tiền",
+pq_block("fact_sales_line", "2.3 fact_sales_line: bỏ dòng trùng, thêm cột tiền",
          "Bảng lớn nhất và là nơi duy nhất có dòng trùng. Bỏ trùng **sau** khi đặt kiểu, để hai dòng giống nhau về giá trị "
-         "nhưng khác kiểu (ví dụ ngày dạng text) không bị coi là khác nhau.")
-P(f"Kiểm tra: thanh trạng thái của Power Query Editor chỉ hiện “999+ ROWS” và Column profile mặc định chỉ xét 1.000 dòng đầu; muốn đếm đủ, chọn Transform → "
-  f"Count Rows ở một bản Reference tạm (xoá sau khi xem). Sau Removed Duplicates phải còn {nf(rows['fact_sales_line_clean'])} dòng.")
-pq_block("fact_return", "2.4 Pipeline fact_return: ghép cửa hàng, kênh, sản phẩm từ dòng bán gốc",
-         "fact_return không có store_key nên không lọc được theo cửa hàng, kênh hay danh mục. Merge với fact_sales_line "
-         "(đã bỏ trùng, nên mỗi dòng trả ghép đúng một dòng bán) để mang 3 khoá này sang.")
-P(f"Kiểm tra: số dòng trước và sau merge đều là {nf(rows['fact_return'])}; nếu tăng là do merge với fact_sales_line "
+         "nhưng khác kiểu (ví dụ ngày dạng chữ) không bị coi là khác nhau. Cột tiền làm bằng Add Column → Standard, "
+         "không cần gõ công thức.")
+P("Kiểm tra: thanh trạng thái của Power Query Editor chỉ hiện “999+ ROWS” và Column profile mặc định chỉ xét 1.000 dòng "
+  "đầu. Muốn đếm đủ: chuột phải query → Reference → Transform → Count Rows, xem xong xoá query tạm. Sau Removed "
+  f"Duplicates phải còn {nf(rows['fact_sales_line_clean'])} dòng (bỏ {nf(rows['fact_sales_line'] - rows['fact_sales_line_clean'])} dòng trùng).")
+pq_block("fact_return", "2.4 fact_return: ghép cửa hàng, kênh, sản phẩm từ dòng bán gốc",
+         "fact_return không có store_key nên không lọc được theo cửa hàng, kênh hay danh mục. Ghép (Merge) với "
+         "fact_sales_line đã bỏ trùng — mỗi dòng trả hàng ghép đúng một dòng bán — để mang 3 khoá này sang.")
+P(f"Kiểm tra: số dòng trước và sau ghép đều là {nf(rows['fact_return'])}; nếu tăng là do ghép với fact_sales_line "
   "**chưa** bỏ trùng. Lọc thử store_key = null: phải không còn dòng nào.")
-H3("2.5 Pipeline Finance: finance_raw, map_store_finance → fact_finance")
-P("finance_raw và map_store_finance là query trung gian (chỉ tạo connection, không nạp vào Data Model). Cả hai đều gồm "
-  "Source → Navigation → Changed Type như các bảng dim. File Finance chỉ có mã cửa hàng của Finance (fin_store_code); "
-  "fact_finance gắn store_key bằng bảng map theo **mã và ngày hiệu lực**:", first=True)
+H3("2.5 Kế toán: finance_raw, map_store_finance → fact_finance")
+P("finance_raw và map_store_finance là query trung gian (chỉ tạo kết nối, không nạp vào Mô hình Dữ liệu). File Kế toán "
+  "chỉ có mã cửa hàng của Kế toán (fin_store_code); fact_finance gắn store_key bằng bảng map theo **mã và ngày hiệu lực** "
+  "(cửa hàng 38 đổi mã GBR-03 → GBR-03N từ 01/07/2019):", first=True)
 pq_block("fact_finance", "Các bước của fact_finance")
-P(f"Kiểm tra: fact_finance có đúng {nf(fin_rows)} dòng như finance_raw, và đúng 3 dòng HQ-ADJ có store_key = null "
-  "(giữ lại để giải thích ở tổng chuỗi, không gán cho cửa hàng nào). Với dữ liệu hiện tại bước Filtered Valid giữ nguyên "
+P(f"Kiểm tra: fact_finance có đúng {nf(fin_rows)} dòng như finance_raw, và đúng 3 dòng HQ-ADJ có store_key trống "
+  "(giữ lại để giải thích ở tổng chuỗi, không gán cho cửa hàng nào). Với dữ liệu hiện tại bước Filtered Rows giữ nguyên "
   "số dòng: mã cũ GBR-03 chỉ có bút toán đến 27/06/2019, mã mới GBR-03N từ 01/07/2019. Bước này là chốt an toàn — nếu "
-  "Finance còn hạch toán mã cũ sau ngày đổi, dòng đó bị loại và số dòng giảm, là tín hiệu cần hỏi lại Finance.")
+  "Kế toán còn hạch toán mã cũ sau ngày đổi, dòng đó bị loại và số dòng giảm, là tín hiệu cần hỏi lại Kế toán.")
 H3("2.6 Các bảng dim và bảng _Measures")
 dim_note = {"dim_date": "1 dòng/ngày 2016–2021; month_label dạng 12/2020", "dim_store": "66 cửa hàng + dòng 0 = Online",
             "dim_product": "category, subcategory, brand", "dim_channel": "POS, ONLINE",
             "dim_promotion": "Mã khuyến mãi", "dim_order_status": "COMPLETED, CANCELLED, PENDING"}
 TABLE(["Query", "Excel Table nguồn", "Số dòng", "Ghi chú"],
-      [[d, "tbl_" + d, nf(n), dim_note[d]] for d, n in PQ["dims"].items()], widths=[3.5, 4, 2, 8], align="llrl")
-P("Mọi bảng dim cùng một mẫu 3 bước (Source → Navigation → Changed Type). Mẫu dim_date:")
-CODE(PQ["queries"]["dim_date"]["code"])
-P("Bảng `_Measures` là một bảng một dòng tạo bằng M, chỉ để chứa measure (Excel bắt buộc measure phải thuộc một bảng):")
-CODE(PQ["queries"]["_Measures"]["code"])
-H3("2.7 Nạp vào Data Model")
+      [[d, "tbl_" + d, nf(n), dim_note[d]] for d, n in DIMS.items()], widths=[3.5, 4, 2, 8], align="llrl")
+P("Bảng dim chỉ cần kiểm bước Changed Type: dim_date[date] và month_end_date là Date; các khoá là Whole Number.")
+P("Bảng **_Measures** chỉ để chứa số đo (Excel bắt buộc số đo phải thuộc một bảng). Tạo bằng tay:", first=True)
+LIST(["Thêm sheet tên _Measures; ô A1 gõ ghi_chu, ô A2 gõ bảng chứa số đo.",
+      "Chọn A1:A2 → Insert → Table (tick My table has headers) → tab Table Design → Table Name: _Measures.",
+      "Data → From Table/Range → trong Power Query Editor không cần làm gì thêm → Close & Load To (bước 2.7)."],
+     numbered=True)
+H3("2.7 Nạp vào Mô hình Dữ liệu")
 LIST(["Home → **Close & Load To…** (không bấm Close & Load, vì lệnh đó đổ mọi bảng ra sheet).",
       "Chọn **Only Create Connection** và tick **Add this data to the Data Model** cho các dim, fact_sales_line, "
       "fact_return, fact_finance và _Measures.",
-      "finance_raw và map_store_finance: chỉ **Only Create Connection**, không tick Data Model.",
+      "finance_raw và map_store_finance: chỉ **Only Create Connection**, không tick Mô hình Dữ liệu.",
       "Lỡ nạp sai: Data → Queries & Connections → chuột phải query → Load To… để đổi lại.",
       "Kiểm số dòng: Power Pivot → Manage, mỗi tab bảng ghi số dòng ở góc dưới (Record: 1 of …)."], numbered=True)
 H3("2.8 Số dòng cần khớp sau khi nạp")
@@ -468,9 +436,9 @@ TABLE(["Query", "Số dòng"], [
     ["fact_return", nf(rows["fact_return"])],
     ["fact_finance (trong đó HQ-ADJ có store_key trống)", f"{nf(fin_rows)} (3)"],
     ["dim_date", nf(rows["dim_date"])], ["dim_store", nf(rows["dim_store"])], ["dim_product", nf(rows["dim_product"])],
-    ["map_store_finance (connection)", nf(rows["map_store_finance"])],
+    ["map_store_finance (chỉ kết nối)", nf(rows["map_store_finance"])],
 ], widths=[12, 5.5], align="lr")
-P("Sai khác số dòng thường do quên bỏ trùng, chọn nhầm sheet thay vì Table, hoặc merge fact_return với bản "
+P("Sai khác số dòng thường do quên bỏ trùng, chọn nhầm sheet thay vì Table ở Navigator, hoặc ghép fact_return với "
   "fact_sales_line chưa bỏ trùng (fact_return dư dòng).")
 
 # ---------------------------------------------------------------- Bước 3
@@ -478,7 +446,7 @@ H2("Bước 3. Data Model trong Power Pivot")
 P("Lược đồ hình sao (star schema): bảng dữ kiện ở giữa, bảng chiều xung quanh, quan hệ 1 → nhiều và lọc một chiều. fact_sales_line và fact_finance "
   "không nối trực tiếp với nhau; chúng gặp nhau qua dim_date và dim_store. Mở Power Pivot → **Manage** → Home → "
   "**Diagram View** để thấy mọi bảng đã nạp.", first=True)
-FIG("02_mo_hinh_du_lieu.png", "Hình 4: Mô hình dữ liệu (nguồn: diagrams/02_mo_hinh_du_lieu.drawio)")
+FIG("02_mo_hinh_du_lieu.png", "Hình 4: Mô hình dữ liệu")
 H3("3.1 Quan hệ cần tạo")
 TABLE(["Từ (1)", "Đến (nhiều)", "Trạng thái"], [
     ["dim_date[date]", "fact_sales_line[order_date]", "Active"],
@@ -534,14 +502,14 @@ H3("4.1 Tạo số đo trong Excel")
 LIST(["**Cách 1 — hộp thoại:** Power Pivot → Measures → **New Measure…** → Table name: `_Measures` → Measure name → "
       "Formula (phần sau dấu `:=`) → Check formula → Category/Format → OK.",
       "**Cách 2 — Calculation Area:** Power Pivot → Manage → Data View → mở tab bảng _Measures → bấm một ô trong vùng lưới "
-      "dưới bảng → dán nguyên khối `Tên := công thức` từ excel_build/measures.dax → Enter.",
-      "Tên số đo phải giữ **đúng như trong measures.dax**, vì các ô CUBEVALUE ở Bước 5 gọi số đo theo tên.",
+      "dưới bảng → gõ `Tên := công thức` theo các mục 4.3–4.8 → Enter.",
+      "Tên số đo phải gõ **đúng như trong tài liệu** (kể cả dấu cách, chữ hoa, ký hiệu Δ), vì các ô CUBEVALUE ở Bước 5 gọi số đo theo tên.",
       "Sửa số đo: Power Pivot → Measures → Manage Measures → Edit."], numbered=True)
 H3("4.2 Nguyên tắc chung")
 LIST(["Dùng DIVIDE thay cho phép chia “/” để tránh lỗi chia cho 0 (DIVIDE trả về trống).",
       "Bộ lọc trạng thái đặt **trong** số đo (KEEPFILTERS), không đặt ở filter của PivotTable, để mọi sheet dùng chung một định nghĩa.",
       "Định dạng: tiền `#,##0` USD; tỷ lệ `0.0%`; chênh lệch `+#,##0;-#,##0;0`.",
-      "Excel không có thư mục hiển thị (display folder) cho số đo: tạo theo đúng thứ tự trong measures.dax để danh sách dễ tìm.",
+      "Excel không có thư mục hiển thị (display folder) cho số đo: tạo theo thứ tự các mục 4.3–4.7 để danh sách dễ tìm.",
       "Excel không có cửa sổ chạy truy vấn DAX: kiểm số đo bằng PivotTable (Bước 3.3) hoặc một ô CUBEVALUE."])
 DAX_SUB = {1: "4.3 Nhóm Doanh thu", 2: "4.4 Nhóm Đơn hàng và giá", 3: "4.5 Nhóm Kế toán (Finance) và đối soát",
            4: "4.6 Quy đổi online về ngày giao", 5: "4.7 So sánh kỳ"}
@@ -562,8 +530,9 @@ for i, (title, lines) in enumerate(DAXS, 1):
         P(DAX_NOTE[i], first=True)
     CODE("\n".join(lines))
 H3("4.8 Số đo nâng cao (tuỳ chọn)")
-P(f"{len(MEAS_NC)} số đo trong excel_build/measures_nang_cao.dax dành cho phần sáng tạo: bút toán điều chỉnh HQ-ADJ, "
-  "đơn huỷ/đang giao, cơ cấu doanh thu và so sánh cùng kỳ cho các thẻ KPI khác. Chỉ tạo khi bộ bắt buộc đã khớp số.",
+P(f"{len(MEAS_NC)} số đo dưới đây dành cho các thẻ KPI nâng cao và phần sáng tạo: bút toán điều chỉnh HQ-ADJ, "
+  "đơn huỷ/đang giao, cơ cấu doanh thu và so sánh cùng kỳ. Dashboard tham chiếu dùng Tỷ trọng online, Tỷ lệ chiết khấu, "
+  "Cancelled Orders, Pending Orders ở thẻ KPI sheet Doanh_thu và Hoan_tra. Tạo sau khi bộ bắt buộc đã khớp số.",
   first=True)
 CODE("\n".join(l for _, ls in DAXS_NC for l in ls))
 H3("4.9 Năm lỗi hay gặp")
@@ -577,8 +546,8 @@ LIST(["**Quên lọc COMPLETED** → Net Sales cao hơn, AOV sai; Δ âm ở m�
 H2("Bước 5. Dựng 4 sheet dashboard")
 H3("5.1 Nguyên tắc trình bày: Storytelling with Data")
 P("Dashboard dùng để ra quyết định trước cuộc họp chốt số, nên áp dụng 6 bài học của Cole Nussbaumer Knaflic "
-  "(Storytelling with Data). Bản HTML tham chiếu làm theo các quy tắc dưới đây; khi chấm phần trải nghiệm (6 điểm) và "
-  "lập luận, đối chiếu với bảng này.", first=True)
+  "(Storytelling with Data); khi chấm phần trải nghiệm (6 điểm) và "
+  "lập luận, đối chiếu với bảng này. Dashboard tham chiếu (Excel và HTML) làm theo đúng các quy tắc đó.", first=True)
 TABLE(["Bài học", "Áp dụng trong dashboard", "Lỗi hay gặp cần tránh"], [
     ["1. Hiểu bối cảnh", "Mỗi sheet mở bằng câu “Điểm chính” (Big Idea) tự sinh theo số: chuyện gì xảy ra, vì sao, cần làm gì.", "Sheet chỉ có biểu đồ, người xem phải tự đoán kết luận"],
     ["2. Chọn hình phù hợp", "Đường cho xu hướng; cột ngang xếp hạng cho danh mục/quốc gia; waterfall cho cầu doanh thu và phân rã Δ; bảng cho chi tiết.", "Pie/donut/treemap để so sánh, biểu đồ hai trục y, 3D"],
@@ -591,106 +560,119 @@ P("Trong Excel, tiêu đề hành động là **một ô công thức** đặt n
   "với số lấy từ các ô CUBEVALUE, ví dụ `=B20&\" chiếm \"&FIXED(C20/C30*100,0)&\"% doanh thu sau chiết khấu\"` "
   "(B20 = tên danh mục lớn nhất, C20 = Net Sales của nó, C30 = tổng).")
 H3("5.2 Khung chung: 4 sheet, 1 sheet pivot, 4 slicer")
-LIST(["**Sheet.** `Tong_quan`, `Doanh_thu`, `Doi_soat`, `Hoan_tra` cho người xem; `_pivot` chứa mọi PivotTable nguồn của "
-      "biểu đồ và bảng phụ (ẩn khi nộp: chuột phải tab → Hide).",
+LIST(["**Sheet.** `Tong_quan`, `Doanh_thu`, `Doi_soat`, `Hoan_tra` cho người xem; `_pivot` chứa mọi PivotTable nguồn, "
+      "các ô CUBEVALUE và bảng phụ của biểu đồ (ẩn khi nộp: chuột phải tab → Hide).",
       "**Lưới.** Mỗi sheet dashboard: View → bỏ tick Gridlines và Headings; cột A rộng 2; cột B–Q rộng 11 (≈ 1.280 px); "
-      "nền trắng, font Segoe UI.",
-      "**4 slicer từ Data Model** (Insert → Slicer → tab Data Model): dim_date[year], dim_date[month], "
-      "dim_channel[channel_name], dim_store[country]. Đặt ở Tong_quan, vùng B4:Q6; tab Slicer → Columns để slicer nằm ngang (Tháng 12 cột, Năm 6 cột), "
-      "Slicer Settings → tick **Hide items with no data**.",
-      "**Tên slicer.** Slicer Settings → *Name to use in formulas*: kiểm đúng `Slicer_year`, `Slicer_month`, "
-      "`Slicer_channel_name`, `Slicer_country` (Excel thêm số 1 nếu tạo lặp — sửa lại cho khớp công thức).".replace("*", ""),
-      "**Dùng chung slicer cho 4 sheet.** Copy slicer ở Tong_quan → Paste sang sheet khác: bản dán dùng chung bộ lọc "
-      "(cùng slicer cache), chọn ở sheet nào cũng đổi cả 4 sheet.",
-      "**Report Connections.** Chuột phải từng slicer → Report Connections → tick mọi PivotTable trên `_pivot`, **trừ** các "
-      "pivot xu hướng 24 tháng và theo tháng với slicer Năm và Tháng (mục 5.9).",
+      "nền trắng, font Segoe UI. Hàng 2–3: tiêu đề trang và dòng phụ (nguồn, ngày dữ liệu); hàng 4–6: slicer; hàng 7–9: "
+      "Điểm chính; hàng 11–14: thẻ KPI; hàng 16 và 34: tiêu đề hành động, biểu đồ từ hàng 18 và 36; hàng 52: chân trang.",
+      "**4 slicer từ Mô hình Dữ liệu** (Insert → Slicer → tab Data Model): dim_date[year], dim_date[month], "
+      "dim_channel[channel_name], dim_store[country]. Đặt ở vùng B4:Q6 (Năm B4:E6, Tháng F4:K6, Kênh L4:M6, Quốc gia N4:Q6); "
+      "tab Slicer → Columns để slicer nằm ngang (Năm 6 cột, Tháng 12 cột, Quốc gia 3 cột). Mặc định chọn 2020 và 12.",
+      "**Tên slicer.** Slicer Settings → Name to use in formulas: kiểm đúng `Slicer_year`, `Slicer_month`, "
+      "`Slicer_channel_name`, `Slicer_country` (Excel thêm số 1 nếu tạo lặp — sửa lại cho khớp công thức).",
+      "**Dùng chung slicer cho 4 sheet.** Copy 4 slicer ở Tong_quan → Paste sang cùng vùng ở 3 sheet còn lại: bản dán dùng "
+      "chung bộ lọc, chọn ở sheet nào cũng đổi cả 4 sheet.",
+      "**Report Connections.** Chuột phải từng slicer → Report Connections → tick mọi PivotTable trên `_pivot`. Các bảng phụ "
+      "24 tháng dùng CUBEVALUE nên không cần nối (mục 5.4).",
       "**Màu.** Xám #B9B7B0 cho bối cảnh; xanh dương #2A78D6 nhấn; tốt = #1C5CAB, xấu = cam #EB6834; đỏ #D03B3B chỉ cho ⚠ vượt ngưỡng.",
-      "Bố cục, màu và câu chữ mẫu: dashboard tham chiếu (HTML và Excel) mentor gửi sau buổi 1."])
+      "Bố cục, màu và câu chữ mẫu: dashboard tham chiếu (Excel và HTML) mentor gửi sau buổi 1."])
 H3("5.3 Thẻ KPI và câu Điểm chính bằng CUBEVALUE")
-P("CUBEVALUE lấy một số đo từ Mô hình Dữ liệu theo đúng lựa chọn hiện tại của các slicer truyền vào. Đặt các ô CUBEVALUE "
-  "ở một khối riêng (ví dụ sheet `_pivot`, cột Y:Z), rồi thẻ KPI, % thay đổi và câu Điểm chính chỉ là công thức Excel "
-  "thường trỏ vào các ô đó:", first=True)
-CODE('''Z2  Tháng chọn   =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_month,1)&"/"&
-                   CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_year,1)
-Z3  Net Revenue  =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
-                   Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-Z4  LM           =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue LM]",
-                   Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-Z5  SPLY         =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue SPLY]",
-                   Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-Z6  % so LM      =IFERROR(Z3/Z4-1,"")
-Z7  % so SPLY    =IFERROR(Z3/Z5-1,"")
+P("CUBEVALUE lấy một số đo từ Mô hình Dữ liệu theo đúng lựa chọn hiện tại của các slicer truyền vào. Đặt các ô CUBE "
+  "ở một khối riêng trên sheet `_pivot`, rồi thẻ KPI, % thay đổi và câu Điểm chính chỉ là công thức Excel thường trỏ vào "
+  "các ô đó. Khối tham số đọc tháng đang chọn từ slicer:", first=True)
+CODE('''B2  Năm chọn        =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_year,1)
+C2                  =IFERROR(VALUE(B2),"")
+B3  Tháng chọn      =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_month,1)
+C3                  =IFERROR(VALUE(B3),"")
+B6  Đúng 1 tháng?   =AND(CUBESETCOUNT(Slicer_year)=1,CUBESETCOUNT(Slicer_month)=1)
+B7  month_id chọn   =C2*100+C3
+B8  tháng trước     =IF(C3=1,(C2-1)*100+12,B7-1)
+B9  cùng kỳ         =B7-100
+B10 Nhãn kỳ         =TEXT(C3,"00")&"/"&C2''')
+P("Mỗi chỉ tiêu một hàng: kỳ chọn, tháng trước (LM), cùng kỳ (SPLY). Net Revenue dùng hai số đo DAX [Net Revenue LM], "
+  "[Net Revenue SPLY]; các chỉ tiêu khác truyền thẳng tháng cần so bằng thành viên month_id, không phải viết thêm số đo. "
+  "Bọc N(…) để ô trống thành 0, công thức % không lỗi:")
+CODE('''C24 Net Revenue     =N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
+                        Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country))
+D24 LM              =N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue LM]",
+                        Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country))
+C25 Orders          =N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Orders]",
+                        Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country))
+D25 Orders LM       =N(CUBEVALUE("ThisWorkbookDataModel","[Measures].[Orders]",
+                        "[dim_date].[month_id].&["&$B$8&"]",Slicer_channel_name,Slicer_country))
+F24 % so LM         =IF(D24=0,"",(C24-D24)/ABS(D24))
 
-Thẻ KPI (giá trị) : =Z3
-Dòng so sánh      : =IF(Z6="","–",IF(Z6>=0,"▲ ","▼ ")&FIXED(ABS(Z6)*100,1)&"% so với tháng trước")
-Câu Điểm chính    : ="Net Revenue "&Z2&" đạt "&FIXED(Z3/1000,1)&" nghìn USD — "
-                    &IF(Z6>=0,"+","-")&FIXED(ABS(Z6)*100,1)&"% so với tháng trước, "
-                    &IF(Z7>=0,"+","-")&FIXED(ABS(Z7)*100,1)&"% so với cùng kỳ năm trước."''')
+Thẻ KPI (giá trị) : =C24/1000                      (định dạng #,##0.0" nghìn USD")
+Dòng so sánh      : =IF(F24="","– so với tháng trước",IF(F24>0,"▲ ","▼ ")&FIXED(ABS(F24)*100,1)&"% so với tháng trước")
+Câu Điểm chính    : ="Net Revenue "&B10&" đạt "&FIXED(C24/1000,1)&" nghìn USD — "
+                    &IF(F24>=0,"+","−")&FIXED(ABS(F24)*100,1)&"% so với tháng trước."''')
 P("Dùng FIXED(số; số_chữ_số_lẻ) thay cho TEXT(số; \"#,##0.0\") khi ghép số vào câu: FIXED tự dùng dấu thập phân của máy, "
   "còn chuỗi định dạng của TEXT đọc khác nhau giữa máy cài định dạng Việt Nam và máy cài định dạng Mỹ.")
-LIST(["Màu dòng so sánh: Home → Conditional Formatting → New Rule → Use a formula, ví dụ `=LEFT(C14,1)=\"▲\"` → chữ "
-      "#1C5CAB; `=LEFT(C14,1)=\"▼\"` → chữ #EB6834 (với Return Rate và Δ thì đảo màu: tăng là xấu).",
-      "Dải Điểm chính: gộp ô B8:Q9, Wrap Text, viền trái dày màu nhấn, nền #F2F6FC.",
-      "CUBERANKEDMEMBER(…, Slicer_month, 1) trả về mục đang chọn của slicer – dùng làm dòng phụ của tiêu đề trang.",
-      "Khi người xem chọn nhiều tháng, số đo so sánh kỳ trả về trống → ô hiện “–” nhờ IFERROR/IF, không hiện lỗi."])
-H3("5.4 Biểu đồ: PivotChart, chart thường và bảng")
+LIST(["Màu dòng so sánh: Home → Conditional Formatting → New Rule → Use a formula, ví dụ `=LEFT($B$13,1)=\"▲\"` → chữ "
+      "#1C5CAB; `=LEFT($B$13,1)=\"▼\"` → chữ #EB6834 (với Return Rate, hàng trả lại, đơn huỷ thì đảo màu: tăng là xấu).",
+      "Dải Điểm chính: B7 là nhãn nhỏ (“Điểm chính · 12/2020 · mọi kênh”); gộp B8:Q8 cho câu chính, gộp B9:Q9 cho hai gạch "
+      "đầu dòng nối bằng CHAR(10), bật Wrap Text; viền trái dày màu nhấn, nền #F2F6FC.",
+      "Khi người xem chọn nhiều tháng, ô “Đúng 1 tháng?” = FALSE → các ô LM/SPLY để 0 → dòng so sánh hiện “–”, không hiện lỗi."])
+H3("5.4 Biểu đồ và bảng: PivotTable, bảng phụ, chart thường")
 TABLE(["Loại hình", "Cách dựng trong Excel", "Ghi chú"], [
-    ["Đường 24 tháng có điểm nhấn", "PivotTable trên _pivot: Rows dim_date[month_label], Filter dim_date[year] = 2019, 2020, "
-     "Values measure; bảng phụ 3 cột: tháng, giá trị (=ô pivot), nhấn = IF(tháng = ô Tháng chọn, giá trị, NA()); "
-     "Insert → Line chart thường từ bảng phụ", "Chuỗi giá trị màu xám; chuỗi nhấn chỉ hiện marker xanh. Pivot không nối slicer Năm/Tháng"],
-    ["Waterfall (cầu doanh thu, phân rã Δ)", "Các ô CUBEVALUE: Gross Sales, −Discounts, −Returns, Net Revenue → Insert → "
-     "Waterfall; bấm cột cuối → Set as total", "Excel 2016+; không làm được từ PivotTable"],
-    ["Cột ngang xếp hạng", "PivotTable: Rows dim_product[category], Values [Net Sales], sort Largest to Smallest; bảng phụ 3 cột: "
-     "tên, nhấn = IF(giá trị = MAX(cột), giá trị, 0), nền = giá trị − nhấn → Insert → Stacked Bar thường; "
-     "Vertical axis → Categories in reverse order", "Chuỗi nhấn xanh, chuỗi nền xám; đổi slicer màu tự đi theo"],
-    ["Cột theo tháng có cờ đỏ", "PivotTable: Rows dim_date[month_label] (năm 2020), Values [Δ sau quy đổi] và [Số cửa hàng vượt ngưỡng]; "
-     "bảng phụ: đỏ = IF(số cửa hàng > 0, Δ, 0), xám = Δ − đỏ → Stacked Column thường", "Chuỗi vượt ngưỡng đỏ #D03B3B, chuỗi khác xám"],
-    ["Bảng chi tiết", "PivotTable đặt thẳng trên sheet dashboard: Design → Report Layout → Tabular; tắt Grand Total khi không cần; "
-     "Value Filters → Top 10; Conditional Formatting (data bar, chữ đỏ)", "Đặt Number Format trong Value Field Settings"],
+    ["Đường 24 tháng có điểm nhấn", "Bảng phụ 24 dòng trên _pivot: cột month_id lùi dần từ tháng chọn (dùng DATE), cột giá trị "
+     "=CUBEVALUE(…, \"[dim_date].[month_id].&[\"&ô month_id&\"]\", Slicer_channel_name, Slicer_country), cột nhấn chỉ có giá trị ở "
+     "dòng cuối (các dòng khác NA()) → Insert → Line thường", "Chỉ truyền slicer Kênh, Quốc gia nên luôn đủ 24 tháng; chuỗi xám, chuỗi nhấn chỉ hiện marker xanh"],
+    ["Waterfall (cầu doanh thu, phân rã Δ)", "4 ô nằm ngang trên _pivot (hàng nhãn, hàng giá trị) trỏ vào các ô CUBEVALUE: Gross Sales, "
+     "−Discounts, −Returns, Net Revenue → Insert → Waterfall; bấm cột cuối → Format Data Point → Set as total",
+     "Excel 2016+; đặt dữ liệu nằm ngang để Excel vẽ thành một chuỗi"],
+    ["Cột ngang xếp hạng", "PivotTable trên _pivot: Rows dim_product[category], Values [Net Sales], sort Largest to Smallest, Report "
+     "Layout → Tabular, tắt Grand Totals; bảng phụ 4 cột: tên, giá trị, nhấn = giá trị dòng 1, nền = giá trị các dòng sau → Insert → "
+     "Stacked Bar thường; Vertical axis → Categories in reverse order", "Dùng cho danh mục, quốc gia, lý do trả hàng, tỷ lệ trả theo danh mục; đổi slicer màu nhấn tự đi theo"],
+    ["Cột theo tháng có cờ đỏ", "Bảng phụ 24 tháng: [Δ sau quy đổi] và [Số cửa hàng vượt ngưỡng] chỉ tính cửa hàng POS (thêm thành viên "
+     "\"[dim_channel].[channel_code].&[POS]\" vào CUBEVALUE); đỏ = IF(số cửa hàng > 0, Δ, 0), xám = Δ − đỏ → Stacked Column thường",
+     "Chuỗi vượt ngưỡng đỏ #D03B3B, chuỗi khác xám"],
+    ["Bảng chi tiết", "PivotTable trên _pivot (Rows store_name hoặc store_code; Value Filters → Top 10; sort giảm dần) → bảng trên "
+     "sheet dashboard là các ô trỏ vào pivot để giữ bố cục; cột so với LM/SPLY bằng CUBEVALUE thêm thành viên cửa hàng",
+     "Conditional Formatting: data bar cho Net Sales, chữ đỏ cho dòng ⚠ Vượt"],
 ], widths=[3.6, 9.4, 4.5])
-LIST(["Mọi PivotChart: PivotChart Analyze → Field Buttons → **Hide All**; xoá legend khi chỉ một chuỗi; Gap Width 60 %.",
+LIST(["Mọi biểu đồ: xoá Chart Title (tiêu đề nằm ở ô phía trên), xoá legend khi chỉ một chuỗi, Gap Width 60 %.",
       "PivotTable → Options → bỏ tick **Autofit column widths on update** để bố cục không nhảy khi đổi slicer."])
 VIS = {
     "5.5 Sheet Tong_quan": [
-        ["Điểm chính", "Ô công thức (gộp ô)", "Ghép chữ từ ô CUBEVALUE: Net Revenue, % so LM/SPLY, số đơn và AOV so cùng kỳ", "B8:Q9"],
-        ["5 thẻ KPI", "Ô CUBEVALUE", "Net Revenue · Orders · AOV · Return Rate · Δ Finance (+ Số cửa hàng vượt ngưỡng); dòng so sánh % tính bằng công thức", "B11:Q14"],
-        ["Xu hướng 24 tháng", "Line chart thường + bảng phụ", "Net Revenue theo month_label 2019–2020, tháng chọn nhấn", "B16:J32"],
-        ["Cầu doanh thu", "Waterfall từ ô CUBEVALUE", "Gross Sales → −Discounts → −Returns → Net Revenue", "K16:Q32"],
-        ["Động lực", "2 Line chart thường + bảng phụ", "Orders (nhấn) và AOV (xám) — 2 biểu đồ riêng, cùng trục tháng, không dùng 2 trục y", "B34:J48"],
-        ["Đối soát theo tháng", "Stacked Column từ bảng phụ", "[Δ sau quy đổi] tách đỏ/xám theo [Số cửa hàng vượt ngưỡng], năm 2020", "K34:Q48"]],
+        ["Điểm chính", "Ô công thức (gộp ô)", "Net Revenue, % so LM/SPLY; số đơn hay AOV quyết định biến động; Δ Kế toán và số cửa hàng vượt ngưỡng", "B7:Q9"],
+        ["5 thẻ KPI", "Ô trỏ vào CUBEVALUE", "Net Revenue · Orders · AOV · Return Rate · Δ Finance (+ % trên số Kế toán, số cửa hàng vượt ngưỡng)", "B11:Q14"],
+        ["Xu hướng 24 tháng", "Line + bảng phụ CUBEVALUE", "Net Revenue theo tháng đặt hàng, tháng chọn nhấn", "B16:J32"],
+        ["Cầu doanh thu", "Waterfall", "Gross Sales → −Discounts → −Returns → Net Revenue (total)", "K16:Q32"],
+        ["Động lực", "2 Line + bảng phụ", "Orders (nhấn) và AOV (xám) — 2 biểu đồ riêng, cùng trục tháng, không dùng 2 trục y", "B34:J48"],
+        ["Đối soát theo tháng", "Stacked Column + bảng phụ", "[Δ sau quy đổi] tách đỏ/xám theo số cửa hàng POS vượt ngưỡng", "K34:Q48"]],
     "5.6 Sheet Doanh_thu": [
-        ["Điểm chính", "Ô công thức", "Danh mục lớn nhất và tỷ trọng (từ PivotTable danh mục), thị trường lớn nhất", "B8:Q9"],
-        ["4 thẻ KPI", "Ô CUBEVALUE", "Net Sales · Units · AOV · ASP (nâng cao: Tỷ trọng online, Tỷ lệ chiết khấu)", "B11:Q14"],
-        ["Danh mục", "Stacked Bar từ bảng phụ", "[Net Sales] theo category; mục lớn nhất xanh, còn lại xám", "B16:G34"],
-        ["Quốc gia", "PivotChart Bar", "Net Sales theo dim_store[country] (Online là một dòng), sort giảm dần; tô tay thanh đầu", "H16:L34"],
-        ["Kênh", "PivotTable", "channel_name; Net Sales, Orders, AOV", "M16:Q34"],
-        ["Top 10 cửa hàng", "PivotTable Top 10", "store_name; Net Sales (data bar), Orders, AOV; Value Filters → Top 10 theo Net Sales", "B36:Q48"]],
+        ["Điểm chính", "Ô công thức", "Danh mục lớn nhất và tỷ trọng, thị trường lớn nhất; tỷ trọng online; tỷ lệ chiết khấu", "B7:Q9"],
+        ["4 thẻ KPI", "Ô trỏ vào CUBEVALUE", "Net Sales · Units · Tỷ trọng online · Chiết khấu / Gross Sales (2 thẻ sau dùng số đo nâng cao [Tỷ trọng online], [Tỷ lệ chiết khấu])", "B11:Q14"],
+        ["Danh mục", "Stacked Bar từ PivotTable", "[Net Sales] theo category; mục lớn nhất xanh, còn lại xám", "B16:G34"],
+        ["Quốc gia", "Stacked Bar từ PivotTable", "[Net Sales] theo dim_store[country] (Online là một dòng)", "H16:L34"],
+        ["Kênh", "Bảng trỏ vào PivotTable", "channel_name; Net Sales, Orders, AOV; so với LM và SPLY bằng CUBEVALUE", "M16:Q34"],
+        ["Top 10 cửa hàng", "Bảng trỏ vào PivotTable Top 10", "store_name, quốc gia; Net Sales (data bar), Orders, AOV, so với LM, SPLY", "B36:Q48"]],
     "5.7 Sheet Doi_soat": [
-        ["Điểm chính", "Ô công thức", "Δ Finance, Δ sau quy đổi, số cửa hàng vượt ngưỡng ghép thành câu", "B8:Q9"],
-        ["5 thẻ KPI", "Ô CUBEVALUE", "Net Revenue · Finance Net Revenue · Δ Finance · Δ sau quy đổi · Số cửa hàng vượt ngưỡng (đỏ khi > 0)", "B11:Q14"],
-        ["Phân rã Δ", "Waterfall từ ô CUBEVALUE", "Lệch thời điểm online (= Δ Finance − Δ sau quy đổi) → Δ sau quy đổi → Δ Finance (total)", "B16:G32"],
-        ["Theo tháng", "Stacked Column từ bảng phụ", "[Δ sau quy đổi] đỏ/xám theo [Số cửa hàng vượt ngưỡng]; không nối slicer Năm/Tháng", "H16:Q32"],
-        ["Chi tiết cửa hàng", "PivotTable Top 10", "store_code; Net Revenue, Finance Net Revenue, Δ Finance, Δ Finance %, Δ sau quy đổi, Vượt ngưỡng, Δ tuyệt đối; Top 10 theo [Δ tuyệt đối], sort giảm dần", "B34:L50"],
-        ["Online", "PivotChart Line", "Filter channel_code = ONLINE; [Δ Finance] (xám) và [Δ sau quy đổi] (nhấn) theo tháng 2020", "M34:Q50"]],
+        ["Điểm chính", "Ô công thức", "Δ Finance, phần lệch thời điểm online, Δ sau quy đổi, các cửa hàng ⚠, HQ-ADJ", "B7:Q9"],
+        ["5 thẻ KPI", "Ô trỏ vào CUBEVALUE", "Net Revenue · Finance Net Revenue · Δ Finance (% trên số Kế toán) · Δ sau quy đổi · Số cửa hàng vượt ngưỡng / số cửa hàng có số liệu (đỏ khi > 0)", "B11:Q14"],
+        ["Phân rã Δ", "Waterfall", "Online lệch thời điểm (= Δ Finance − Δ sau quy đổi) → Cửa hàng ⚠ (Δ sau quy đổi của các cửa hàng POS vượt ngưỡng) → Còn lại → Δ Kế toán − đơn (total)", "B16:G32"],
+        ["Theo tháng", "Stacked Column + bảng phụ", "[Δ sau quy đổi] đỏ/xám theo số cửa hàng POS vượt ngưỡng, 24 tháng", "H16:Q32"],
+        ["Chi tiết cửa hàng", "Bảng trỏ vào PivotTable Top 10", "store_code; Net Revenue, Finance Net Revenue, Δ Finance, Δ Finance %, Δ sau quy đổi, Vượt ngưỡng; Top 10 theo [Δ tuyệt đối]", "B34:J50"],
+        ["Online", "Line + bảng phụ CUBEVALUE", "Thêm thành viên kênh ONLINE: [Δ Finance] (xám) và [Δ sau quy đổi] (xanh) theo tháng", "K34:Q50"]],
     "5.8 Sheet Hoan_tra": [
-        ["Điểm chính", "Ô công thức", "Return Rate và thay đổi bằng điểm % so cùng kỳ; dòng trùng và đơn PENDING đã loại", "B8:Q9"],
-        ["4 thẻ KPI", "Ô CUBEVALUE + 1 ô ghi chú", "Returns · Return Rate · Orders · ô “120 dòng trùng đã loại ở Power Query” (nâng cao: Cancelled/Pending Orders)", "B11:Q14"],
-        ["Xu hướng", "Line chart thường + bảng phụ", "Return Rate 24 tháng, tháng chọn nhấn", "B16:J32"],
-        ["Lý do", "PivotChart Bar", "Returns theo fact_return[return_reason], sort giảm dần", "K16:Q32"],
-        ["Danh mục", "PivotChart Bar", "Return Rate theo category", "B34:J48"],
-        ["Huỷ và chờ giao", "PivotChart Line", "PivotTable Distinct Count order_number theo order_status (CANCELLED nhấn, PENDING xám) theo tháng", "K34:Q48"]],
+        ["Điểm chính", "Ô công thức", "Hàng trả lại và Return Rate (điểm % so cùng kỳ); lý do lớn nhất; dòng trùng và đơn PENDING đã loại", "B7:Q9"],
+        ["4 thẻ KPI", "Ô trỏ vào CUBEVALUE + ô ghi chú", "Returns · Return Rate · Đơn huỷ ([Cancelled Orders]) · Dòng trùng đã loại ở Power Query (kèm số đơn [Pending Orders])", "B11:Q14"],
+        ["Xu hướng", "Line + bảng phụ CUBEVALUE", "Return Rate 24 tháng, tháng chọn nhấn", "B16:J32"],
+        ["Lý do", "Stacked Bar từ PivotTable", "Returns theo fact_return[return_reason], lý do lớn nhất xanh", "K16:Q32"],
+        ["Danh mục", "Stacked Bar từ PivotTable", "Return Rate theo category; nhãn kèm Net Sales để đọc cùng quy mô", "B34:J48"],
+        ["Huỷ và chờ giao", "Line + bảng phụ CUBEVALUE", "[Cancelled Orders] (xanh) và [Pending Orders] (xám) theo tháng đặt hàng", "K34:Q48"]],
 }
 for title, rows_ in VIS.items():
     H3(title)
     TABLE(["Khối hình", "Đối tượng Excel", "Trường / số đo", "Vùng ô"], rows_, widths=[2.8, 3.6, 9.2, 1.9])
-P("Cột Vùng ô là gợi ý theo lưới B–Q; giữ cùng vùng cho Điểm chính và KPI ở cả 4 sheet để người xem chuyển sheet "
-  "không bị nhảy mắt. Dòng 2–3 của mỗi sheet là tiêu đề trang và dòng phụ (as-of, tháng chọn).")
+P("Giữ cùng vùng cho slicer, Điểm chính và KPI ở cả 4 sheet để người xem chuyển sheet không bị nhảy mắt.")
 H3("5.9 Tương tác và hoàn thiện")
-LIST(["**Biểu đồ xu hướng không lọc theo tháng.** Pivot nguồn của biểu đồ 24 tháng và biểu đồ theo tháng: Report "
-      "Connections bỏ tick slicer Năm và Tháng; lọc khoảng thời gian bằng Filter của chính pivot đó.",
+LIST(["**Biểu đồ xu hướng không lọc theo tháng.** Bảng phụ 24 tháng chỉ truyền slicer Kênh và Quốc gia vào CUBEVALUE, "
+      "nên luôn đủ 24 tháng; cửa sổ kết thúc ở tháng đang chọn.",
       "**Xem chi tiết.** Bấm đúp một ô giá trị trong PivotTable (Show Details) để Excel đổ ra sheet mới tối đa 1.000 dòng chi "
       "tiết của ô đó — cách dò nguyên nhân một ô cửa hàng × tháng.",
-      "**Làm mới.** Data → Refresh All khi đổi SourceFolder hoặc dữ liệu; CUBEVALUE tự cập nhật theo.",
+      "**Làm mới.** Data → Refresh All khi đổi đường dẫn nguồn hoặc dữ liệu; CUBEVALUE tự cập nhật theo.",
       "**Tiêu đề và đơn vị.** Ô tiêu đề nêu kết luận; dòng phụ ghi đơn vị (USD, nghìn USD, %, điểm %) và phạm vi.",
       "**Chân trang.** Mỗi sheet một dòng chữ xám nhỏ: nguồn, ngày dữ liệu, quy ước Δ và ngưỡng.",
       "**Khoá bố cục (tuỳ chọn).** Review → Protect Sheet, tick Use PivotTable & PivotChart và Edit objects để người xem vẫn "
@@ -700,7 +682,7 @@ LIST(["**Biểu đồ xu hướng không lọc theo tháng.** Pivot nguồn củ
 # ---------------------------------------------------------------- Bước 6
 if not HOC_VIEN:
     H2("Bước 6. Đối soát số (DÀNH CHO MENTOR — ẩn khi giao đề)")
-    P(f"Các số dưới đây tính độc lập bằng pandas từ chính file giao học viên và đã khớp với dashboard tham chiếu. "
+    P(f"Các số dưới đây tính độc lập từ chính file giao học viên và đã khớp với dashboard tham chiếu. "
       f"Tháng báo cáo {mstr(R['report_month'])}, đủ bộ lọc “Tất cả”.", first=True)
     H3(f"6.1 KPI tháng {mstr(R['report_month'])}")
     krow = lambda name, k, d=0: [name, nf(cur[k], d), nf(lm[k], d), chg(cur[k], lm[k]), nf(sp[k], d), chg(cur[k], sp[k])]
@@ -708,8 +690,8 @@ if not HOC_VIEN:
         krow("Gross Sales (USD)", "gross_sales", 2), krow("Discounts (USD)", "discounts", 2), krow("Net Sales (USD)", "net_sales", 2),
         krow("Returns (USD)", "returns", 2), krow("Net Revenue (USD)", "net_revenue", 2), krow("Orders", "orders"),
         krow("Units", "units"), krow("AOV (USD/đơn)", "aov", 2), krow("ASP (USD/sp)", "asp", 2),
-        ["Return Rate", pct(cur["return_rate"], 2), pct(lm["return_rate"], 2), nf((cur["return_rate"] - lm["return_rate"]) * 100, 2) + " điểm %",
-         pct(sp["return_rate"], 2), nf((cur["return_rate"] - sp["return_rate"]) * 100, 2) + " điểm %"],
+        ["Return Rate", pct(rr_(cur), 2), pct(rr_(lm), 2), nf((rr_(cur) - rr_(lm)) * 100, 2) + " điểm %",
+         pct(rr_(sp), 2), nf((rr_(cur) - rr_(sp)) * 100, 2) + " điểm %"],
     ], widths=[3.6, 2.9, 2.9, 1.9, 2.9, 2.0], align="lrrrrr")
     fin12 = R["finance_month"][str(R["report_month"])]
     P(f"Finance Net Revenue tháng 12/2020 (gồm cả HQ-ADJ {nf(hq20, 2)} USD): {nf(fin12, 2)} USD; chưa gồm HQ-ADJ: "
@@ -723,7 +705,7 @@ if not HOC_VIEN:
          chg(R["finance_year"]["2020"], R["finance_year"]["2019"])],
     ], widths=[6.5, 4, 4, 3], align="lrrr")
     H3("6.3 Cầu nối năm 2020: từ dữ liệu đơn đến Finance")
-    FIG("03_quy_trinh_doi_soat.png", "Hình 5: Quy trình đối soát (nguồn: diagrams/03_quy_trinh_doi_soat.drawio)")
+    FIG("03_quy_trinh_doi_soat.png", "Hình 5: Quy trình đối soát")
     bridge_rows = [["Net Revenue theo dữ liệu đơn (order_date, return_date)", nf(br["orders_net_revenue"], 2)]]
     for k, name in CAUSE_VI.items():
         bridge_rows.append([("+ " if br[k] >= 0 else "− ") + name, nf(br[k], 2)])
@@ -766,7 +748,7 @@ if HOC_VIEN:
     H2("Bước 6. Đối soát: tự lập bảng giải thích chênh lệch")
     P("Dùng chính dashboard vừa dựng để tìm vì sao số của mình lệch số Kế toán. Mỗi ô tháng × cửa hàng vượt ngưỡng phải "
       "có nguyên nhân và số tiền; tổng các nguyên nhân bằng Δ, phần chưa giải thích bằng 0.", first=True)
-    FIG("03_quy_trinh_doi_soat.png", "Hình 5: Quy trình đối soát (nguồn: so_do/03_quy_trinh_doi_soat.pdf)")
+    FIG("03_quy_trinh_doi_soat.png", "Hình 5: Quy trình đối soát")
     H3("6.1 Thứ tự dò tìm")
     LIST(["Tổng chuỗi: so [Net Revenue] với [Finance Net Revenue] theo tháng năm 2020.",
           "Theo kênh: kênh online so thêm [Δ sau quy đổi]; nếu Δ về gần 0 thì đó là lệch thời điểm, không phải lỗi.",
@@ -810,7 +792,7 @@ LIST(["Sheet chi tiết theo ngày cho một cửa hàng: PivotTable posting_dat
       "Quy đổi về tiền tệ thanh toán bằng fx_rate; phân tích theo vùng khách hàng bằng dim_customer."])
 H3("7.5 Sản phẩm nộp")
 LIST(["File Nexa_P1_<HoTen>.xlsx: các truy vấn Power Query, Mô hình Dữ liệu, số đo DAX và 4 sheet dashboard (+ sheet sáng tạo nếu có). "
-      "Mentor mở file, sửa tham số SourceFolder theo máy mình rồi Data → Refresh All.",
+      "Mentor mở file, đổi đường dẫn nguồn (Data → Get Data → Data Source Settings → Change Source) rồi Data → Refresh All.",
       "Báo cáo PDF 8 phần, có bảng giải thích chênh lệch vượt ngưỡng năm 2020 (tháng, cửa hàng, Δ, nguyên nhân, số tiền).",
       "Phụ lục: danh mục số đo, ảnh chụp Applied Steps của fact_sales_line và fact_finance, ảnh chụp từng sheet dashboard."])
 
@@ -819,24 +801,6 @@ H2(f"Phụ lục {PL['so_do']}. Danh mục số đo")
 TABLE(["Nhóm", "Số đo"], [[t.split("(")[0].strip(), " · ".join(ten_so_do([(t, ls)]))] for t, ls in DAXS] +
       [["Nâng cao · " + t.split("·")[-1].strip(), " · ".join(ten_so_do([(t, ls)]))] for t, ls in DAXS_NC],
       widths=[4.5, 13])
-if not HOC_VIEN:
-    H2(f"Phụ lục {PL['script']}. Khi cần sinh lại dữ liệu hoặc sửa sơ đồ")
-    LIST(["Tải Global_Electronics_Retailer.zip từ thư mục Drive của project vào source/ (file .zip không đưa lên git).",
-          "Chạy lần lượt trong _mentor/: generate_dataset.py → build_dashboard.py → build_dashboard_xlsx.py → build_excel_kit.py "
-          "→ chup_dashboard.js → build_diagrams.py → build_guideline.py → build_slides.py. Seed cố định nên số liệu không đổi.",
-          "build_excel_kit.py sinh excel_build/ (code M, measures.dax) và chạy lại từng bước M bằng pandas để kiểm số dòng; "
-          "guideline và slide in lại đúng code đó.",
-          "Sửa sơ đồ: mở diagrams/*.drawio bằng draw.io (app.diagrams.net hoặc bản desktop), sửa, lưu; rồi chạy "
-          "`python build_diagrams.py --chi-xuat` để xuất lại PDF/PNG mà không ghi đè bản đã sửa tay; chạy lại build_guideline.py để cập nhật hình.",
-          "Dashboard Excel không cần sửa M hay DAX khi dữ liệu đổi: Data → Refresh All. Code M và DAX dùng lại được nguyên vẹn "
-          "nếu sau này chuyển sang Power BI."])
-H2(f"Phụ lục {PL['m']}. Toàn bộ code Power Query (M)")
-P("Đúng nội dung các file trong excel_build/m/, theo thứ tự tạo query.", first=True)
-for i, q in enumerate(PQ["order"], 1):
-    H3(f"{PL['m']}.{i} {q}")
-    P(PQ["queries"][q]["desc"] + " — Nạp: " + PQ["load"].get(q, "Only Create Connection + Add this data to the Data Model") + ".",
-      first=True)
-    CODE(PQ["queries"][q]["code"])
 H2(f"Phụ lục {PL['thuat_ngu']}. Bảng thuật ngữ")
 P("Tên chỉ tiêu doanh thu theo Chuẩn mực kế toán Việt Nam VAS 14 và chế độ kế toán doanh nghiệp Thông tư 99/2025/TT-BTC "
   "(thay Thông tư 200/2014/TT-BTC từ 01/01/2026); tên menu Excel theo trang hỗ trợ tiếng Việt của Microsoft. "
