@@ -1,0 +1,216 @@
+{
+ "steps": {
+  "fact_sales_line": [
+   [
+    "Source",
+    "Excel.Workbook",
+    null
+   ],
+   [
+    "Navigation",
+    "tbl_fact_sales_line",
+    63004
+   ],
+   [
+    "Changed Type",
+    "Table.TransformColumnTypes",
+    63004
+   ],
+   [
+    "Removed Duplicates",
+    "Table.Distinct",
+    62884
+   ],
+   [
+    "Added gross_amount",
+    "Table.AddColumn",
+    62884
+   ],
+   [
+    "Added net_amount",
+    "Table.AddColumn",
+    62884
+   ]
+  ],
+  "fact_return": [
+   [
+    "Source",
+    "Excel.Workbook",
+    null
+   ],
+   [
+    "Navigation",
+    "tbl_fact_return",
+    2430
+   ],
+   [
+    "Changed Type",
+    "Table.TransformColumnTypes",
+    2430
+   ],
+   [
+    "Merged Queries",
+    "Table.NestedJoin ← fact_sales_line",
+    2430
+   ],
+   [
+    "Expanded sales",
+    "Table.ExpandTableColumn",
+    2430
+   ],
+   [
+    "Changed Type2",
+    "Table.TransformColumnTypes",
+    2430
+   ]
+  ],
+  "finance_raw": [
+   [
+    "Source",
+    "Excel.Workbook",
+    null
+   ],
+   [
+    "Navigation",
+    "tbl_finance_revenue",
+    19400
+   ],
+   [
+    "Changed Type",
+    "Table.TransformColumnTypes",
+    19400
+   ]
+  ],
+  "map_store_finance": [
+   [
+    "Source",
+    "Excel.Workbook",
+    null
+   ],
+   [
+    "Navigation",
+    "tbl_map_store_finance",
+    69
+   ],
+   [
+    "Changed Type",
+    "Table.TransformColumnTypes",
+    69
+   ]
+  ],
+  "fact_finance": [
+   [
+    "Source",
+    "= finance_raw",
+    19400
+   ],
+   [
+    "Merged Queries",
+    "Table.NestedJoin ← map_store_finance",
+    19400
+   ],
+   [
+    "Expanded map",
+    "Table.ExpandTableColumn",
+    19400
+   ],
+   [
+    "Filtered Valid",
+    "Table.SelectRows (ngày hiệu lực)",
+    19400
+   ],
+   [
+    "Removed Columns",
+    "Table.RemoveColumns",
+    19400
+   ],
+   [
+    "Changed Type",
+    "Table.TransformColumnTypes",
+    19400
+   ]
+  ]
+ },
+ "dims": {
+  "dim_date": 1917,
+  "dim_store": 67,
+  "dim_product": 2517,
+  "dim_channel": 2,
+  "dim_promotion": 7,
+  "dim_order_status": 3
+ },
+ "order": [
+  "SourceFolder",
+  "dim_date",
+  "dim_store",
+  "dim_product",
+  "dim_channel",
+  "dim_promotion",
+  "dim_order_status",
+  "fact_sales_line",
+  "fact_return",
+  "finance_raw",
+  "map_store_finance",
+  "fact_finance",
+  "_Measures"
+ ],
+ "load": {
+  "SourceFolder": "—",
+  "finance_raw": "Only Create Connection",
+  "map_store_finance": "Only Create Connection"
+ },
+ "queries": {
+  "SourceFolder": {
+   "code": "\"C:\\NexaP1\\\" meta [IsParameterQuery = true, Type = \"Text\",\n    IsParameterQueryRequired = true]",
+   "desc": "Tham số: thư mục chứa 2 file dữ liệu (kết thúc bằng dấu \\). Sửa một chỗ này khi đổi máy."
+  },
+  "fact_sales_line": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_fact_sales_line\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"order_number\", Int64.Type},\n            {\"line_item\", Int64.Type},\n            {\"order_date\", type date},\n            {\"delivery_date\", type date},\n            {\"customer_key\", Int64.Type},\n            {\"store_key\", Int64.Type},\n            {\"channel_code\", type text},\n            {\"product_key\", Int64.Type},\n            {\"quantity\", Int64.Type},\n            {\"unit_price\", Currency.Type},\n            {\"promo_code\", type text},\n            {\"discount_amount\", Currency.Type},\n            {\"order_status\", type text},\n            {\"currency_code\", type text},\n            {\"unit_cost\", Currency.Type}\n        }),\n    // 120 dòng trùng hoàn toàn (mọi cột giống nhau) -> giữ 1\n    RemovedDuplicates = Table.Distinct(ChangedType),\n    AddedGross = Table.AddColumn(RemovedDuplicates, \"gross_amount\",\n        each [quantity] * [unit_price], Currency.Type),\n    AddedNet = Table.AddColumn(AddedGross, \"net_amount\",\n        each [gross_amount] - [discount_amount], Currency.Type)\nin\n    AddedNet",
+   "desc": "Dòng bán: đặt kiểu, bỏ dòng trùng, thêm cột tiền dòng (gross, net)."
+  },
+  "fact_return": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_fact_return\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"return_id\", type text},\n            {\"order_number\", Int64.Type},\n            {\"line_item\", Int64.Type},\n            {\"return_date\", type date},\n            {\"return_qty\", Int64.Type},\n            {\"return_amount\", Currency.Type},\n            {\"return_reason\", type text}\n        }),\n    // lấy cửa hàng, kênh, sản phẩm từ dòng bán gốc\n    MergedSales = Table.NestedJoin(ChangedType, {\"order_number\", \"line_item\"},\n        fact_sales_line, {\"order_number\", \"line_item\"}, \"sales\",\n        JoinKind.LeftOuter),\n    ExpandedSales = Table.ExpandTableColumn(MergedSales, \"sales\",\n        {\"store_key\", \"channel_code\", \"product_key\"}),\n    ChangedType2 = Table.TransformColumnTypes(ExpandedSales,\n        {{\"store_key\", Int64.Type}, {\"channel_code\", type text},\n         {\"product_key\", Int64.Type}})\nin\n    ChangedType2",
+   "desc": "Hoàn trả: đặt kiểu, ghép store_key/channel/product từ dòng bán gốc."
+  },
+  "finance_raw": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"finance_revenue.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_finance_revenue\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"posting_date\", type date},\n            {\"fin_store_code\", type text},\n            {\"fin_channel\", type text},\n            {\"entry_type\", type text},\n            {\"revenue_recognized\", Currency.Type},\n            {\"refunds\", Currency.Type},\n            {\"net_revenue\", Currency.Type},\n            {\"vat_amount\", Currency.Type},\n            {\"total_incl_vat\", Currency.Type}\n        })\nin\n    ChangedType",
+   "desc": "File Finance gốc (chỉ tạo connection, không nạp vào Data Model)."
+  },
+  "map_store_finance": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_map_store_finance\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"fin_store_code\", type text},\n            {\"store_key\", Int64.Type},\n            {\"fin_channel\", type text},\n            {\"valid_from\", type date},\n            {\"valid_to\", type date},\n            {\"note\", type text}\n        })\nin\n    ChangedType",
+   "desc": "Bảng quy đổi mã Finance → store_key (chỉ tạo connection)."
+  },
+  "fact_finance": {
+   "code": "let\n    Source = finance_raw,\n    MergedMap = Table.NestedJoin(Source, {\"fin_store_code\"},\n        map_store_finance, {\"fin_store_code\"}, \"map\", JoinKind.LeftOuter),\n    ExpandedMap = Table.ExpandTableColumn(MergedMap, \"map\",\n        {\"store_key\", \"valid_from\", \"valid_to\"}),\n    // giữ mã có hiệu lực tại ngày hạch toán (S38: GBR-03 -> GBR-03N từ 01/07/2019)\n    FilteredValid = Table.SelectRows(ExpandedMap,\n        each [posting_date] >= [valid_from] and [posting_date] <= [valid_to]),\n    RemovedColumns = Table.RemoveColumns(FilteredValid, {\"valid_from\", \"valid_to\"}),\n    // HQ-ADJ: store_key = null -> không thuộc cửa hàng nào\n    ChangedType = Table.TransformColumnTypes(RemovedColumns,\n        {{\"store_key\", Int64.Type}})\nin\n    ChangedType",
+   "desc": "Finance đã gắn store_key theo mã và ngày hiệu lực."
+  },
+  "dim_date": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_date\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"date\", type date},\n            {\"date_key\", Int64.Type},\n            {\"year\", Int64.Type},\n            {\"quarter\", type text},\n            {\"month\", Int64.Type},\n            {\"month_id\", Int64.Type},\n            {\"month_label\", type text},\n            {\"day\", Int64.Type},\n            {\"weekday_no\", Int64.Type},\n            {\"weekday_name\", type text},\n            {\"is_weekend\", type logical},\n            {\"has_data\", type logical},\n            {\"month_end_date\", type date}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "dim_store": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_store\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"store_key\", Int64.Type},\n            {\"store_code\", type text},\n            {\"store_name\", type text},\n            {\"channel_code\", type text},\n            {\"country\", type text},\n            {\"region\", type text},\n            {\"state\", type text},\n            {\"square_meters\", Int64.Type},\n            {\"open_date\", type date}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "dim_product": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_product\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"product_key\", Int64.Type},\n            {\"product_name\", type text},\n            {\"brand\", type text},\n            {\"color\", type text},\n            {\"subcategory_key\", type text},\n            {\"subcategory\", type text},\n            {\"category_key\", type text},\n            {\"category\", type text},\n            {\"list_price_usd\", Currency.Type},\n            {\"unit_cost_usd\", Currency.Type}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "dim_channel": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_channel\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"channel_code\", type text},\n            {\"channel_name\", type text},\n            {\"fin_channel\", type text},\n            {\"revenue_recognition_rule\", type text}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "dim_promotion": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_promotion\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"promo_code\", type text},\n            {\"promo_name\", type text},\n            {\"discount_pct\", Percentage.Type},\n            {\"window_from_mmdd\", type text},\n            {\"window_to_mmdd\", type text},\n            {\"channel\", type text}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "dim_order_status": {
+   "code": "let\n    Source = Excel.Workbook(\n        File.Contents(SourceFolder & \"Nexa_Sales_P1_Dataset.xlsx\"), null, true),\n    Navigation = Source{[Item = \"tbl_dim_order_status\", Kind = \"Table\"]}[Data],\n    ChangedType = Table.TransformColumnTypes(Navigation, {\n            {\"order_status\", type text},\n            {\"status_name\", type text},\n            {\"count_in_revenue\", type text},\n            {\"rule\", type text}\n        })\nin\n    ChangedType",
+   "desc": "Bảng dim: nạp và đặt kiểu."
+  },
+  "_Measures": {
+   "code": "let\n    Source = #table(type table [ghi_chu = text],\n        {{\"bảng chứa measure\"}})\nin\n    Source",
+   "desc": "Bảng một dòng để chứa mọi measure (ẩn cột ghi_chu trong Power Pivot)."
+  }
+ }
+}
