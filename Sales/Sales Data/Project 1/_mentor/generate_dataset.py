@@ -497,108 +497,188 @@ assert (QC["Trạng thái"] == "PASS").all(), QC[QC["Trạng thái"] != "PASS"]
 
 # ---------------------------------------------------------------- 10. README + Data_Dictionary
 README = [
-    f"Nexa Home — Sales Project 1: Kết quả bán hàng và đối soát doanh thu · Dataset v{VERSION} · seed {SEED}",
-    f"Ngày trích dữ liệu (as-of): {AS_OF:%d/%m/%Y}. Dữ liệu đơn hàng: 01/01/2016 → 20/02/2021. Tiền tệ: USD.",
-    "Nguồn nền: Global Electronics Retailer (Maven Analytics). Giữ nguyên địa lý gốc: 66 cửa hàng ở 8 quốc gia "
-    "+ 1 kênh online (store_key = 0). Phần giảm giá, trạng thái đơn, hoàn trả và file Finance là giả lập có kiểm soát.",
-    "Bảng dim: dim_date, dim_store, dim_product, dim_customer, dim_channel, dim_promotion, dim_order_status.",
-    "Bảng fact: fact_sales_line (mỗi dòng = 1 sản phẩm trong 1 đơn), fact_return (mỗi dòng = 1 lần trả hàng).",
-    "Bảng hỗ trợ đối soát: map_store_finance (mã cửa hàng của Finance → store_key, có hiệu lực theo ngày), "
-    "KPI_Definitions, sample_transactions. File Finance nằm riêng: finance_revenue.xlsx.",
-    "Bảng bổ sung (phần sáng tạo, không bắt buộc): fx_rate, các cột unit_cost / currency_code / customer.",
-    "Quan hệ đề xuất: fact_sales_line[order_date] → dim_date[date] (active), fact_sales_line[delivery_date] → "
-    "dim_date[date] (inactive, dùng USERELATIONSHIP), fact_return[return_date] → dim_date[date]; store_key, "
-    "product_key, customer_key, promo_code, order_status, channel_code tới các dim cùng tên.",
-    "Quy tắc trạng thái: chỉ đơn COMPLETED được tính vào KPI doanh thu. CANCELLED và PENDING bị loại (xem dim_order_status).",
-    "Quy tắc ghi nhận của Finance: POS ghi nhận ngày đặt hàng; Online ghi nhận ngày giao hàng; hoàn tiền hạch toán "
-    "theo ngày Finance xử lý (có thể trễ vài ngày sau return_date).",
-    f"Ngưỡng chênh lệch cho phép (tháng × cửa hàng): |Δ| ≤ {THRESH_ABS:.0f} USD HOẶC |Δ %| ≤ {THRESH_PCT:.0%}. "
-    "Vượt cả hai mới phải giải thích.",
-    "Dữ liệu CHƯA sạch hoàn toàn: có dòng trùng cần loại; đọc sheet QC_Summary để biết số dòng cần khớp sau khi làm sạch.",
-    "Gợi ý: dựng measure theo thứ tự Gross Sales → Discounts → Net Sales → Returns → Net Revenue, rồi mới đối soát.",
-    "Bộ dữ liệu còn các nguyên nhân chênh lệch cài sẵn ở phía Finance. Đáp án nằm trong file riêng của mentor.",
+    ("Tiêu đề", f"Nexa Home — Sales Project 1: Kết quả bán hàng và đối soát doanh thu · Dataset v{VERSION} · seed {SEED}"),
+    ("Thời gian", f"Đơn hàng 01/01/2016 → 20/02/2021. Ngày trích dữ liệu (as-of): {AS_OF:%d/%m/%Y}."),
+    ("Đơn vị", "Mọi số tiền là USD, chưa gồm VAT. VAT 10 % chỉ xuất hiện trong finance_revenue.xlsx."),
+    ("Nguồn", "Global Electronics Retailer (Maven Analytics): giữ nguyên 66 cửa hàng ở 8 quốc gia + 1 kênh online "
+              "(store_key = 0). Giảm giá, trạng thái đơn, hoàn trả và file Finance là giả lập có kiểm soát."),
+    ("Bảng cần nạp", "dim_date, dim_store, dim_product, dim_channel, dim_promotion, dim_order_status, fact_sales_line, "
+                     "fact_return, map_store_finance (+ file finance_revenue.xlsx). Mỗi sheet dữ liệu là một Excel Table "
+                     "tên tbl_<tên sheet> — trong Power Query chọn Table thay vì Sheet."),
+    ("Bảng bổ sung", "dim_customer, fx_rate và các cột unit_cost, currency_code, customer_key: chỉ dùng cho phần sáng tạo."),
+    ("Không nạp", "README, Data_Dictionary, QC_Summary, KPI_Definitions, sample_transactions là tài liệu tham khảo."),
+    ("Quan hệ", "dim_date[date] → fact_sales_line[order_date] (active) và [delivery_date] (inactive, dùng USERELATIONSHIP); "
+                "dim_date[date] → fact_return[return_date]; các khoá store_key, product_key, promo_code, order_status "
+                "nối tới dim cùng tên."),
+    ("Quy tắc trạng thái", "Chỉ đơn COMPLETED tính vào KPI doanh thu; CANCELLED và PENDING bị loại (xem dim_order_status)."),
+    ("Quy tắc Finance", "POS ghi nhận ngày đặt hàng; online ghi nhận ngày giao (delivery_date); hoàn tiền hạch toán theo "
+                        "ngày Finance xử lý, có thể trễ vài ngày sau return_date."),
+    ("Ngưỡng", f"Ô tháng × cửa hàng chỉ phải giải thích khi |Δ| > {THRESH_ABS:.0f} USD VÀ |Δ %| > {THRESH_PCT:.0%} "
+               "(Δ = Finance − dữ liệu đơn)."),
+    ("Làm sạch", "Dữ liệu CHƯA sạch hoàn toàn: có dòng trùng cần loại. Đối chiếu số dòng sau khi làm sạch với QC_Summary."),
+    ("Thứ tự gợi ý", "Gross Sales → Discounts → Net Sales → Returns → Net Revenue, rồi mới đối soát với Finance."),
+    ("Lưu ý", "Bộ dữ liệu còn các nguyên nhân chênh lệch cài sẵn phía Finance; đáp án nằm trong file riêng của mentor."),
 ]
-dict_rows = []
-DESC = {
+REQ, OPT = "Bắt buộc theo đề bài", "Bổ sung cho người học"
+COLINFO = {  # bảng: {cột: (nhóm, kiểu, đơn vị, ý nghĩa)}
     "fact_sales_line": {
-        "order_number": ("Bắt buộc theo đề bài", "Mã đơn hàng; đếm phân biệt ra số đơn"),
-        "line_item": ("Bắt buộc theo đề bài", "Số thứ tự dòng trong đơn; cùng order_number tạo khoá dòng"),
-        "order_date": ("Bắt buộc theo đề bài", "Ngày đặt hàng; mốc thời gian chính của dữ liệu đơn"),
-        "delivery_date": ("Bắt buộc theo đề bài", "Ngày giao thành công (chỉ đơn online COMPLETED); mốc ghi nhận doanh thu online của Finance"),
-        "customer_key": ("Bổ sung cho người học", "Khách hàng đặt đơn"),
-        "store_key": ("Bắt buộc theo đề bài", "Cửa hàng xử lý đơn; 0 = kênh online"),
-        "channel_code": ("Bắt buộc theo đề bài", "POS hoặc ONLINE"),
-        "product_key": ("Bắt buộc theo đề bài", "Sản phẩm"),
-        "quantity": ("Bắt buộc theo đề bài", "Số lượng bán"),
-        "unit_price": ("Bắt buộc theo đề bài", "Đơn giá niêm yết USD (chưa VAT)"),
-        "promo_code": ("Bắt buộc theo đề bài", "Mã khuyến mãi áp cho cả đơn; NONE = không khuyến mãi"),
-        "discount_amount": ("Bắt buộc theo đề bài", "Số tiền giảm của dòng = quantity × unit_price × discount_pct"),
-        "order_status": ("Bắt buộc theo đề bài", "COMPLETED / CANCELLED / PENDING (xem dim_order_status)"),
-        "currency_code": ("Bổ sung cho người học", "Tiền tệ khách thanh toán; số tiền trong bảng đã quy USD"),
-        "unit_cost": ("Bổ sung cho người học", "Giá vốn USD mỗi sản phẩm (dùng cho Project 4)"),
+        "order_number": (REQ, "Số nguyên", "", "Mã đơn hàng; đếm phân biệt ra số đơn"),
+        "line_item": (REQ, "Số nguyên", "", "Số thứ tự dòng trong đơn; cùng order_number tạo khoá dòng"),
+        "order_date": (REQ, "Ngày", "", "Ngày đặt hàng; mốc thời gian chính của dữ liệu đơn"),
+        "delivery_date": (REQ, "Ngày", "", "Ngày giao thành công (chỉ đơn online COMPLETED); mốc ghi nhận online của Finance"),
+        "customer_key": (OPT, "Số nguyên", "", "Khách hàng đặt đơn → dim_customer"),
+        "store_key": (REQ, "Số nguyên", "", "Cửa hàng xử lý đơn → dim_store; 0 = kênh online"),
+        "channel_code": (REQ, "Văn bản", "", "POS hoặc ONLINE → dim_channel"),
+        "product_key": (REQ, "Số nguyên", "", "Sản phẩm → dim_product"),
+        "quantity": (REQ, "Số nguyên", "sản phẩm", "Số lượng bán"),
+        "unit_price": (REQ, "Số thập phân", "USD", "Đơn giá niêm yết, chưa VAT"),
+        "promo_code": (REQ, "Văn bản", "", "Mã khuyến mãi áp cho cả đơn; NONE = không khuyến mãi"),
+        "discount_amount": (REQ, "Số thập phân", "USD", "Tiền giảm của dòng = quantity × unit_price × discount_pct"),
+        "order_status": (REQ, "Văn bản", "", "COMPLETED / CANCELLED / PENDING → dim_order_status"),
+        "currency_code": (OPT, "Văn bản", "", "Tiền tệ khách thanh toán; số tiền trong bảng đã quy USD"),
+        "unit_cost": (OPT, "Số thập phân", "USD", "Giá vốn mỗi sản phẩm (dùng cho Project 4)"),
     },
     "fact_return": {
-        "return_id": ("Bắt buộc theo đề bài", "Mã lần trả hàng"),
-        "order_number": ("Bắt buộc theo đề bài", "Đơn gốc"),
-        "line_item": ("Bắt buộc theo đề bài", "Dòng gốc trong đơn"),
-        "return_date": ("Bắt buộc theo đề bài", "Ngày khách trả hàng; mốc tính Returns"),
-        "return_qty": ("Bắt buộc theo đề bài", "Số lượng trả"),
-        "return_amount": ("Bắt buộc theo đề bài", "Số tiền hoàn = giá trị sau giảm giá của phần trả"),
-        "return_reason": ("Bổ sung cho người học", "DEFECT / CHANGE_MIND / WRONG_ITEM / LATE_DELIVERY"),
+        "return_id": (REQ, "Văn bản", "", "Mã lần trả hàng"),
+        "order_number": (REQ, "Số nguyên", "", "Đơn gốc"),
+        "line_item": (REQ, "Số nguyên", "", "Dòng gốc trong đơn"),
+        "return_date": (REQ, "Ngày", "", "Ngày khách trả hàng; mốc tính Returns"),
+        "return_qty": (REQ, "Số nguyên", "sản phẩm", "Số lượng trả (có thể trả một phần)"),
+        "return_amount": (REQ, "Số thập phân", "USD", "Tiền hoàn = giá trị sau giảm giá của phần trả"),
+        "return_reason": (OPT, "Văn bản", "", "DEFECT / CHANGE_MIND / WRONG_ITEM / LATE_DELIVERY"),
+    },
+    "dim_date": {
+        "date": (REQ, "Ngày", "", "Khoá ngày, liên tục 01/01/2016–31/03/2021; đánh dấu Mark as date table"),
+        "date_key": (REQ, "Số nguyên", "", "Khoá ngày dạng yyyymmdd"),
+        "year": (REQ, "Số nguyên", "", "Năm"), "quarter": (REQ, "Văn bản", "", "Quý (Q1–Q4)"),
+        "month": (REQ, "Số nguyên", "", "Tháng 1–12"),
+        "month_id": (REQ, "Số nguyên", "", "Tháng dạng yyyymm; dùng để sắp xếp month_label"),
+        "month_label": (REQ, "Văn bản", "", "Nhãn tháng mm/yyyy"), "day": (REQ, "Số nguyên", "", "Ngày trong tháng"),
+        "weekday_no": (REQ, "Số nguyên", "", "Thứ trong tuần, 1 = Thứ 2"),
+        "weekday_name": (REQ, "Văn bản", "", "Tên thứ"), "is_weekend": (REQ, "Đúng/Sai", "", "Thứ 7 hoặc Chủ nhật"),
+        "has_data": (REQ, "Đúng/Sai", "", "Ngày ≤ ngày trích dữ liệu"),
+        "month_end_date": (REQ, "Ngày", "", "Ngày cuối tháng"),
+    },
+    "dim_store": {
+        "store_key": (REQ, "Số nguyên", "", "Khoá cửa hàng; 0 = Nexa Online"),
+        "store_code": (REQ, "Văn bản", "", "Mã ngắn hiển thị (S01…S66, ONL)"),
+        "store_name": (REQ, "Văn bản", "", "Tên cửa hàng"), "channel_code": (REQ, "Văn bản", "", "POS hoặc ONLINE"),
+        "country": (REQ, "Văn bản", "", "Quốc gia; Online với kênh online"),
+        "region": (REQ, "Văn bản", "", "Nhóm quốc gia: Bắc Mỹ, Châu Âu, APAC, Online"),
+        "state": (REQ, "Văn bản", "", "Bang / vùng"), "square_meters": (OPT, "Số nguyên", "m²", "Diện tích; trống với online"),
+        "open_date": (REQ, "Ngày", "", "Ngày mở cửa"),
+    },
+    "dim_product": {
+        "product_key": (REQ, "Số nguyên", "", "Khoá sản phẩm"), "product_name": (REQ, "Văn bản", "", "Tên sản phẩm"),
+        "brand": (REQ, "Văn bản", "", "Thương hiệu"), "color": (OPT, "Văn bản", "", "Màu"),
+        "subcategory_key": (REQ, "Văn bản", "", "Mã nhóm hàng con"), "subcategory": (REQ, "Văn bản", "", "Nhóm hàng con"),
+        "category_key": (REQ, "Văn bản", "", "Mã nhóm hàng"), "category": (REQ, "Văn bản", "", "Nhóm hàng (8 nhóm)"),
+        "list_price_usd": (REQ, "Số thập phân", "USD", "Giá niêm yết theo catalogue"),
+        "unit_cost_usd": (OPT, "Số thập phân", "USD", "Giá vốn theo catalogue"),
+    },
+    "dim_customer": {
+        "customer_key": (OPT, "Số nguyên", "", "Khoá khách hàng (đã bỏ tên)"), "gender": (OPT, "Văn bản", "", "Giới tính"),
+        "birth_year": (OPT, "Số nguyên", "", "Năm sinh"), "city": (OPT, "Văn bản", "", "Thành phố"),
+        "state": (OPT, "Văn bản", "", "Bang / vùng"), "country": (OPT, "Văn bản", "", "Quốc gia của khách"),
+        "continent": (OPT, "Văn bản", "", "Châu lục"),
+    },
+    "dim_channel": {
+        "channel_code": (REQ, "Văn bản", "", "POS / ONLINE"), "channel_name": (REQ, "Văn bản", "", "Tên hiển thị"),
+        "fin_channel": (REQ, "Văn bản", "", "Tên kênh trong file Finance"),
+        "revenue_recognition_rule": (REQ, "Văn bản", "", "Mốc ngày Finance ghi nhận doanh thu của kênh"),
+    },
+    "dim_promotion": {
+        "promo_code": (REQ, "Văn bản", "", "Mã khuyến mãi"), "promo_name": (REQ, "Văn bản", "", "Tên chương trình"),
+        "discount_pct": (REQ, "Tỷ lệ", "%", "% giảm trên giá niêm yết"),
+        "window_from_mmdd": (REQ, "Văn bản", "", "Ngày bắt đầu hằng năm (mm-dd); trống = không theo mùa"),
+        "window_to_mmdd": (REQ, "Văn bản", "", "Ngày kết thúc hằng năm (mm-dd)"),
+        "channel": (REQ, "Văn bản", "", "Kênh áp dụng"),
+    },
+    "dim_order_status": {
+        "order_status": (REQ, "Văn bản", "", "Mã trạng thái"), "status_name": (REQ, "Văn bản", "", "Tên trạng thái"),
+        "count_in_revenue": (REQ, "Văn bản", "", "Có / Không tính vào doanh thu"), "rule": (REQ, "Văn bản", "", "Diễn giải quy tắc"),
+    },
+    "map_store_finance": {
+        "fin_store_code": (REQ, "Văn bản", "", "Mã cửa hàng trong file Finance"),
+        "store_key": (REQ, "Số nguyên", "", "store_key tương ứng; trống với HQ-ADJ"),
+        "fin_channel": (REQ, "Văn bản", "", "Kênh theo cách gọi của Finance"),
+        "valid_from": (REQ, "Ngày", "", "Mã có hiệu lực từ ngày"), "valid_to": (REQ, "Ngày", "", "Mã có hiệu lực đến ngày"),
+        "note": (REQ, "Văn bản", "", "Ghi chú (đổi mã, bút toán HQ)"),
+    },
+    "fx_rate": {
+        "date": (OPT, "Ngày", "", "Ngày tỷ giá"), "currency_code": (OPT, "Văn bản", "", "Mã tiền tệ"),
+        "rate_to_usd": (OPT, "Số thập phân", "đơn vị tiền / 1 USD", "Tỷ giá so với USD"),
+    },
+    "finance_revenue.xlsx": {
+        "posting_date": (REQ, "Ngày", "", "Ngày Finance hạch toán"),
+        "fin_store_code": (REQ, "Văn bản", "", "Mã cửa hàng Finance → map_store_finance"),
+        "fin_channel": (REQ, "Văn bản", "", "Retail / E-commerce / Head office"),
+        "entry_type": (REQ, "Văn bản", "", "SALES hoặc ADJUSTMENT"),
+        "revenue_recognized": (REQ, "Số thập phân", "USD", "Doanh thu sau giảm giá được ghi nhận"),
+        "refunds": (REQ, "Số thập phân", "USD", "Tiền hoàn cho khách"),
+        "net_revenue": (REQ, "Số thập phân", "USD", "revenue_recognized − refunds; con số đem đối soát"),
+        "vat_amount": (REQ, "Số thập phân", "USD", "VAT 10 % × net_revenue"),
+        "total_incl_vat": (REQ, "Số thập phân", "USD", "net_revenue + vat_amount; KHÔNG dùng để đối soát"),
     },
 }
-for tname, cols in DESC.items():
-    for f, (grp, mean) in cols.items():
-        dict_rows.append([tname, f, grp, mean])
-GENERIC = {
-    "dim_date": "Bảng ngày chuẩn 01/01/2016–31/03/2021; month_id = yyyymm; has_data = ngày ≤ as-of",
-    "dim_store": "Cửa hàng; store_key 0 = Nexa Online; region nhóm quốc gia",
-    "dim_product": "Sản phẩm; list_price_usd và unit_cost_usd theo catalogue",
-    "dim_customer": "Khách hàng (đã bỏ tên); dùng nếu muốn phân tích theo vùng khách",
-    "dim_channel": "Kênh bán và quy tắc ghi nhận doanh thu tương ứng",
-    "dim_promotion": "Chương trình khuyến mãi, % giảm, khung ngày áp dụng hằng năm",
-    "dim_order_status": "Quy tắc trạng thái đơn: có tính vào doanh thu hay không",
-    "map_store_finance": "Mã cửa hàng Finance → store_key, có valid_from/valid_to (1 cửa hàng đổi mã 07/2019)",
-    "fx_rate": "Tỷ giá ngày so với USD (bổ sung)",
-    "finance_revenue.xlsx": "Doanh thu Finance theo ngày × mã cửa hàng: revenue_recognized, refunds, net_revenue, VAT 10 %",
-}
-tables_for_generic = {"dim_date": dim_date, "dim_store": dim_store, "dim_product": dim_product,
-                      "dim_customer": dim_customer, "dim_channel": dim_channel, "dim_promotion": dim_promotion,
-                      "dim_order_status": dim_order_status, "map_store_finance": map_store_finance,
-                      "fx_rate": fx, "finance_revenue.xlsx": finance}
-for tname, df in tables_for_generic.items():
-    grp = "Bổ sung cho người học" if tname in ("dim_customer", "fx_rate") else "Bắt buộc theo đề bài"
-    for i, f in enumerate(df.columns):
-        dict_rows.append([tname, f, grp, GENERIC[tname] if i == 0 else ""])
-Data_Dictionary = pd.DataFrame(dict_rows, columns=["Bảng", "Trường", "Nhóm trường", "Ý nghĩa"])
+_tables = {"fact_sales_line": fact_sales_line, "fact_return": fact_return, "dim_date": dim_date, "dim_store": dim_store,
+           "dim_product": dim_product, "dim_customer": dim_customer, "dim_channel": dim_channel,
+           "dim_promotion": dim_promotion, "dim_order_status": dim_order_status, "map_store_finance": map_store_finance,
+           "fx_rate": fx, "finance_revenue.xlsx": finance}
+dict_rows = []
+for tname, df in _tables.items():
+    assert set(df.columns) == set(COLINFO[tname]), (tname, set(df.columns) ^ set(COLINFO[tname]))
+    for col in df.columns:
+        grp, typ, unit, mean = COLINFO[tname][col]
+        ex = df[col].dropna()
+        ex = "" if ex.empty else str(ex.iloc[0])[:40]
+        dict_rows.append([tname, col, grp, typ, unit, mean, ex])
+Data_Dictionary = pd.DataFrame(dict_rows, columns=["Bảng", "Trường", "Nhóm trường", "Kiểu dữ liệu", "Đơn vị",
+                                                   "Ý nghĩa", "Ví dụ"])
 
 
 # ---------------------------------------------------------------- 11. ghi file Excel
-def write_xlsx(path, sheets, widths=None):
+MONEY = {"unit_price", "discount_amount", "unit_cost", "return_amount", "list_price_usd", "unit_cost_usd",
+         "revenue_recognized", "refunds", "net_revenue", "vat_amount", "total_incl_vat", "effect_usd"}
+DOC_SHEETS = {"README", "Data_Dictionary", "QC_Summary", "KPI_Definitions"}
+
+
+def write_xlsx(path, sheets):
+    """Sheet tài liệu: bảng chữ có xuống dòng. Sheet dữ liệu: Excel Table tbl_<tên> + định dạng số theo cột."""
     with pd.ExcelWriter(path, engine="xlsxwriter", datetime_format="yyyy-mm-dd",
                         date_format="yyyy-mm-dd") as xw:
         wb = xw.book
         wb.set_properties({"title": path.stem, "author": "EDA Mentor",
                            "created": pd.Timestamp("2026-10-10").to_pydatetime()})
-        hdr = wb.add_format({"bold": True, "bg_color": "#447A2A", "font_color": "white", "border": 1})
+        F = {"money": wb.add_format({"num_format": "#,##0.00"}), "pct": wb.add_format({"num_format": "0%"}),
+             "rate": wb.add_format({"num_format": "#,##0.0000"}), "int": wb.add_format({"num_format": "0"}),
+             "wrap": wb.add_format({"text_wrap": True, "valign": "top"}),
+             "hdr": wb.add_format({"bold": True, "font_color": "#FFFFFF", "bg_color": "#3A3A3A", "valign": "top",
+                                   "text_wrap": True})}
         for name, df in sheets.items():
-            df.to_excel(xw, sheet_name=name, index=False)
+            df = df.reset_index(drop=True)
+            df.to_excel(xw, sheet_name=name, index=False, header=False, startrow=1)
             ws = xw.sheets[name]
+            n, m = len(df), len(df.columns)
+            ws.add_table(0, 0, max(n, 1), m - 1, {
+                "name": "tbl_" + "".join(ch if ch.isalnum() else "_" for ch in name),
+                "columns": [{"header": str(c)} for c in df.columns],
+                "style": "Table Style Light 1" if name in DOC_SHEETS else "Table Style Light 15"})
             for j, col in enumerate(df.columns):
-                ws.write(0, j, col, hdr)
-                w = 10
-                if len(df):
-                    w = int(df[col].astype(str).str.len().quantile(.9)) + 2
-                ws.set_column(j, j, min(60, max(10, len(str(col)) + 2, w)))
+                w = int(df[col].astype(str).str.len().quantile(.9)) + 2 if n else 10
+                w = min(60 if name not in DOC_SHEETS else 90, max(10, len(str(col)) + 3, w))
+                is_money = col in MONEY or (df[col].dtype.kind == "f" and col not in ("square_meters", "rate_to_usd")
+                                            and not str(col).endswith("pct"))
+                fmt = (F["wrap"] if name in DOC_SHEETS else F["pct"] if str(col).endswith("pct") else
+                       F["rate"] if col == "rate_to_usd" else F["money"] if is_money else None)
+                ws.set_column(j, j, w, fmt)
             ws.freeze_panes(1, 0)
-            if len(df):
-                ws.autofilter(0, 0, len(df), len(df.columns) - 1)
 
 
 dt_cols_conv = lambda df: df.assign(**{k: pd.to_datetime(df[k]) for k in df.columns
                                        if k.endswith("date") or k in ("valid_from", "valid_to")})
 dataset_sheets = {
-    "README": pd.DataFrame({"README": README}),
+    "README": pd.DataFrame(README, columns=["Mục", "Nội dung"]),
     "Data_Dictionary": Data_Dictionary,
     "QC_Summary": QC,
     "KPI_Definitions": kpi,
@@ -613,18 +693,21 @@ dataset_sheets = {
     "fact_return": dt_cols_conv(fact_return),
     "map_store_finance": dt_cols_conv(map_store_finance),
     "sample_transactions": dt_cols_conv(sample_transactions),
-    "fx_rate (bổ sung)": dt_cols_conv(fx),
+    "fx_rate": dt_cols_conv(fx),
 }
 write_xlsx(OUT_DATA, dataset_sheets)
 write_xlsx(OUT_FIN, {
-    "README": pd.DataFrame({"README": [
-        "finance_revenue.xlsx — Doanh thu đã được Finance xác nhận (bản rút gọn), đơn vị USD, chưa gồm VAT trừ cột total_incl_vat.",
-        "Mỗi dòng = 1 ngày hạch toán × 1 mã cửa hàng của Finance. entry_type = SALES hoặc ADJUSTMENT.",
-        "revenue_recognized: doanh thu sau giảm giá được ghi nhận (POS theo ngày bán, online theo ngày giao).",
-        "refunds: tiền hoàn cho khách, hạch toán theo ngày Finance xử lý. net_revenue = revenue_recognized − refunds.",
-        "vat_amount = 10 % × net_revenue; total_incl_vat = net_revenue + vat_amount.",
-        "fin_store_code KHÔNG trùng store_key: dùng sheet map_store_finance trong file dataset để quy đổi.",
-    ]}),
+    "README": pd.DataFrame([
+        ("Nội dung", "Doanh thu đã được Finance xác nhận (bản rút gọn). USD; chưa gồm VAT trừ cột total_incl_vat."),
+        ("Hạt dữ liệu", "Mỗi dòng = 1 ngày hạch toán × 1 mã cửa hàng của Finance. entry_type = SALES hoặc ADJUSTMENT."),
+        ("revenue_recognized", "Doanh thu sau giảm giá được ghi nhận: POS theo ngày bán, online theo ngày giao."),
+        ("refunds", "Tiền hoàn cho khách, hạch toán theo ngày Finance xử lý."),
+        ("net_revenue", "= revenue_recognized − refunds. Đây là cột dùng để đối soát."),
+        ("VAT", "vat_amount = 10 % × net_revenue; total_incl_vat = net_revenue + vat_amount."),
+        ("Mã cửa hàng", "fin_store_code KHÔNG trùng store_key: dùng sheet map_store_finance của file dataset, "
+                        "map theo valid_from / valid_to."),
+        ("Power Query", "Dữ liệu nằm trong Excel Table tbl_finance_revenue."),
+    ], columns=["Mục", "Nội dung"]),
     "finance_revenue": dt_cols_conv(finance),
 })
 

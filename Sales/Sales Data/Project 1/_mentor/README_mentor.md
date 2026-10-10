@@ -16,13 +16,19 @@ Không gửi thư mục này cho học viên: `Nexa_Sales_P1_Instructor_Key.xlsx
 ## Chạy lại toàn bộ (Python 3 + pandas, numpy, openpyxl, xlsxwriter, python-docx, python-pptx)
 ```
 python generate_dataset.py   # dataset, finance_revenue.xlsx, Instructor Key, ref_numbers.json (seed 2026)
-python build_dashboard.py    # ../Nexa_Sales_P1_Dashboard.html (đọc lại file giao học viên, assert khớp generator)
+python build_dashboard.py    # ../Nexa_Sales_P1_Dashboard.html — Storytelling with Data (số từ aggregate.py)
+python build_dashboard_xlsx.py   # ../Nexa_Sales_P1_Dashboard.xlsx — dashboard Excel (SUMIFS, chọn tháng/kênh)
+cd /opt/node-tools && node <repo>/Sales/Sales\ Data/Project\ 1/_mentor/chup_dashboard.js <thư mục assets> <file html>   # ảnh cho slide
 python build_diagrams.py     # ../diagrams/*.drawio → .pdf + png/ (cần draw.io desktop; Linux chạy qua xvfb-run)
 python build_guideline.py    # ../Dashboard_Guideline (dành cho mentor).docx (khuôn: guideline Bank)
 python build_slides.py       # ../Slide_Project_1.pptx (khuôn: slide Bank)
 ```
 - Seed cố định, nên chạy lại cho đúng các con số cũ.
 - Dấu vân tay dữ liệu được in ở cuối `generate_dataset.py`.
+
+## Kiểm dashboard Excel
+`recalc.py` của skill xlsx (hoặc LibreOffice) tính lại công thức trên **bản sao** để kiểm số; file giao giữ nguyên bản
+openpyxl (Excel tự tính lại khi mở vì đã bật fullCalcOnLoad). Ô vàng ở sheet Dashboard là ô chọn tháng / kênh.
 
 ## Sửa sơ đồ
 - **Bản gốc:** các sơ đồ lưu trong `../diagrams/*.drawio`.

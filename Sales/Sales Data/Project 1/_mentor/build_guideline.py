@@ -201,6 +201,7 @@ TABLE(["File", "Công dụng", "Ai được xem"], [
     ["Nexa_Sales_P1_Dataset.xlsx", "Dữ liệu đơn hàng, hoàn trả, các bảng dim, bảng map mã Finance, định nghĩa KPI, giao dịch mẫu", "Học viên"],
     ["finance_revenue.xlsx", "Doanh thu Finance đã xác nhận theo ngày × mã cửa hàng Finance (bản rút gọn)", "Học viên"],
     ["Nexa_Sales_P1_Dashboard.html", "Bản dashboard tham chiếu mở bằng trình duyệt, dùng để so hình và so số", "Học viên (sau buổi 1) / mentor"],
+    ["Nexa_Sales_P1_Dashboard.xlsx", "Dashboard Excel một trang (chọn tháng/kênh, KPI bằng SUMIFS, sheet Doi_soat có cờ) cho ai không dùng Power BI", "Học viên (sau buổi 1) / mentor"],
     ["Slide_Project_1.pptx", "Slide giảng 8 phần; phụ lục mentor đặt ẩn", "Học viên + mentor"],
     ["guild_report_template.pdf", "Khung báo cáo 8 phần", "Học viên"],
     ["diagrams/*.drawio (+ .pdf)", "Sơ đồ pipeline, mô hình, quy trình đối soát, cây KPI; sửa ở .drawio rồi xuất lại", "Học viên + mentor"],
@@ -258,7 +259,7 @@ TABLE(["Bảng", "Vai trò", "Grain (mỗi dòng là)", "Khoá", "Số dòng", "
     ["dim_order_status", "Dim", "1 trạng thái đơn", "order_status", nf(cnt["dim_order_status"]), "Bắt buộc"],
     ["map_store_finance", "Map", "1 mã Finance trong 1 khoảng hiệu lực", "fin_store_code", nf(cnt["map_store_finance"]), "Bắt buộc"],
     ["dim_customer", "Dim", "1 khách hàng", "customer_key", nf(cnt["dim_customer"]), "Bổ sung"],
-    ["fx_rate (bổ sung)", "Tham khảo", "1 ngày × 1 tiền tệ", "date + currency_code", nf(cnt["fx_rate (bổ sung)"]), "Bổ sung"],
+    ["fx_rate", "Tham khảo", "1 ngày × 1 tiền tệ", "date + currency_code", nf(cnt["fx_rate"]), "Bổ sung"],
 ], widths=[3.6, 1.6, 4.2, 3.6, 1.8, 1.8], align="lllllr")
 P("Nhóm “Bắt buộc” đủ để dựng 4 trang và đối soát. Nhóm “Bổ sung” dành cho phần sáng tạo (20 điểm trong rubric), "
   "ví dụ phân tích theo vùng khách hàng hoặc quy đổi tiền tệ.")
@@ -447,52 +448,70 @@ LIST(["**Quên lọc COMPLETED** → Net Sales cao hơn, AOV sai; Δ âm ở m�
 
 # ---------------------------------------------------------------- Bước 5
 H2("Bước 5. Dựng 4 trang dashboard")
-H3("5.1 Khung chung")
-LIST(["Canvas 1280 × 720. Header cao 64 px, nền #447A2A, tiêu đề trắng “Kết quả bán hàng và đối soát doanh thu”.",
+H3("5.1 Nguyên tắc trình bày: Storytelling with Data")
+P("Dashboard dùng để ra quyết định trước cuộc họp chốt số, nên áp dụng 6 bài học của Cole Nussbaumer Knaflic "
+  "(Storytelling with Data). Bản HTML và Excel tham chiếu đều làm theo các quy tắc dưới đây; khi chấm phần trải "
+  "nghiệm (6 điểm) và lập luận, đối chiếu với bảng này.", first=True)
+TABLE(["Bài học", "Áp dụng trong dashboard", "Lỗi hay gặp cần tránh"], [
+    ["1. Hiểu bối cảnh", "Mỗi trang mở bằng câu “Điểm chính” (Big Idea) tự sinh theo số: chuyện gì xảy ra, vì sao, cần làm gì.", "Trang chỉ có biểu đồ, người xem phải tự đoán kết luận"],
+    ["2. Chọn hình phù hợp", "Đường cho xu hướng; cột ngang xếp hạng cho danh mục/quốc gia; waterfall cho cầu doanh thu và phân rã Δ; bảng cho chi tiết.", "Pie/donut/treemap để so sánh, biểu đồ hai trục y, 3D"],
+    ["3. Gỡ rối", "Card phẳng không nền màu, lưới mờ, nhãn trực tiếp ở cuối thanh/điểm, bỏ chú giải khi chỉ có một chuỗi.", "Khung đậm, nền màu ở mọi tiêu đề, số trên mọi điểm"],
+    ["4. Dẫn mắt", "Xám cho bối cảnh, một màu nhấn (xanh dương) cho tháng chọn / mục lớn nhất; đỏ chỉ cho ⚠ vượt ngưỡng; ▲▼ luôn kèm chữ.", "Mỗi chuỗi một màu, đỏ/xanh lá cho mọi thay đổi"],
+    ["5. Nghĩ như nhà thiết kế", "Lưới thẳng hàng, định dạng số thống nhất (nghìn USD 1 chữ số lẻ), bảng màu an toàn cho người mù màu, tooltip.", "Số lẻ khác nhau giữa các visual, chữ bị cắt"],
+    ["6. Kể chuyện", "Tiêu đề hành động (“Máy tính chiếm 43% Net Sales”), mạch trang: Tổng quan → Doanh thu đến từ đâu → Đối soát → Hoàn trả; chân trang ghi nguồn, as-of, quy ước Δ.", "Tiêu đề chỉ mô tả (“Cơ cấu theo danh mục”)"],
+], widths=[3.2, 8.8, 5.5])
+P("Trong Power BI: tiêu đề hành động làm bằng measure trả về chuỗi (Format → Title → fx → chọn measure), ví dụ "
+  "`Tiêu đề danh mục = MAXX(TOPN(1, VALUES(dim_product[category]), [Net Sales]), dim_product[category]) & \" chiếm \" "
+  "& FORMAT(DIVIDE(MAXX(TOPN(1, VALUES(dim_product[category]), [Net Sales]), [Net Sales]), [Net Sales]), \"0%\") & \" Net Sales\"`.")
+H3("5.2 Khung chung")
+LIST(["Canvas 1280 × 720, nền xám rất nhạt #F6F6F4, card trắng không viền. Header trắng: tiêu đề + dòng phụ ghi ngày dữ liệu.",
       "3 slicer đặt trong header, đồng bộ cho cả 4 trang (View → Sync slicers): Tháng báo cáo (dropdown, chọn một), "
-      "Kênh bán (Cửa hàng / Website-app), Quốc gia.",
-      "Card KPI: nhãn xám, giá trị xanh đậm, 2 dòng so sánh LM và SPLY có ▲▼; Δ Finance và cờ vượt ngưỡng dùng màu #993C1D.",
-      "Font Segoe UI; mỗi visual có caption “Hình n: …” ngay dưới, nêu rõ đơn vị.",
+      "Kênh bán (Cửa hàng / Website-app), Quốc gia. Tab trang đặt ngay dưới header.",
+      "Dải “Điểm chính” (text box hoặc card dùng measure chuỗi) ngay dưới tab, viền trái màu nhấn.",
+      "Card KPI: nhãn xám, giá trị đen 28 px, 2 dòng so sánh LM và SPLY có ▲▼; tốt = xanh dương #1C5CAB, xấu = cam #EB6834; "
+      "Δ Finance và cờ vượt ngưỡng dùng đỏ #D03B3B kèm ký hiệu ⚠.",
+      "Màu chuỗi: xám #B9B7B0 cho bối cảnh, xanh dương #2A78D6 cho điểm nhấn. Font Segoe UI.",
       "Mở Nexa_Sales_P1_Dashboard.html để xem bố cục và màu mẫu."])
 VIS = {
-    "5.2 Trang Tổng quan": [
-        ["Card", "KPI", "Gross Sales", "16, 80, 200, 150"], ["Card", "KPI", "Net Revenue", "224, 80, 200, 150"],
-        ["Card", "KPI", "Orders", "432, 80, 200, 150"], ["Card", "KPI", "AOV", "640, 80, 200, 150"],
-        ["Card", "KPI", "ASP", "848, 80, 200, 150"], ["Card", "KPI", "Δ Finance, Δ Finance %, Số cửa hàng vượt ngưỡng", "1056, 80, 208, 150"],
-        ["Line chart", "Xu hướng", "Net Revenue và Finance Net Revenue theo month_label (24 tháng gần nhất)", "16, 240, 408, 460"],
-        ["Line chart", "Xu hướng", "Orders theo month_label", "432, 240, 408, 460"],
-        ["Waterfall / column", "Cầu doanh thu", "Gross Sales, −Discounts, Net Sales, −Returns, Net Revenue", "848, 240, 416, 460"]],
-    "5.3 Trang Doanh thu": [
-        ["Card", "KPI", "Net Sales", "16, 80, 200, 150"], ["Card", "KPI", "Units", "224, 80, 200, 150"],
-        ["Table", "Theo kênh", "channel_name; Net Sales, tỷ trọng, Orders, LM, Δ%, SPLY, Δ%", "432, 80, 832, 150"],
-        ["Pie / donut", "Cơ cấu", "Net Sales theo dim_product[category]", "16, 240, 408, 230"],
-        ["Treemap", "Địa lý", "Net Sales theo dim_store[country]", "432, 240, 520, 230"],
-        ["Clustered column", "So sánh", "AOV theo channel_name", "960, 240, 304, 230"],
-        ["Table", "Xếp hạng", "Top 10 store_name theo Net Sales; Orders, LM, Δ%, SPLY, Δ%", "16, 480, 1248, 224"]],
-    "5.4 Trang Đối soát": [
-        ["Card", "KPI", "Net Revenue (dữ liệu đơn)", "16, 80, 308, 150"], ["Card", "KPI", "Finance Net Revenue", "332, 80, 308, 150"],
-        ["Card", "KPI", "Δ Finance, Δ Finance %, Δ sau quy đổi", "648, 80, 308, 150"], ["Card", "KPI", "Số cửa hàng vượt ngưỡng", "964, 80, 300, 150"],
-        ["Line chart", "Xu hướng", "Δ Finance và Δ sau quy đổi theo tháng", "16, 240, 480, 270"],
-        ["Table", "Chi tiết", "store_code, channel; Net Revenue, Finance, Δ, Δ%, Δ sau quy đổi, Vượt ngưỡng (conditional format); sắp theo |Δ|", "504, 240, 760, 270"],
-        ["Line chart", "Kênh POS", "Δ Finance, lọc channel = POS", "16, 520, 624, 184"],
-        ["Line chart", "Kênh online", "Δ Finance và Δ sau quy đổi, lọc channel = ONLINE", "648, 520, 616, 184"]],
-    "5.5 Trang Hoàn trả & chất lượng": [
-        ["Card", "KPI", "Returns", "16, 80, 308, 150"], ["Card", "KPI", "Return Rate (so sánh bằng điểm %)", "332, 80, 308, 150"],
-        ["Card", "KPI", "Cancelled Orders", "648, 80, 308, 150"], ["Card", "KPI", "Dòng trùng đã loại (đo trong Power Query), Pending Orders", "964, 80, 300, 150"],
-        ["Pie", "Lý do", "Returns theo return_reason", "16, 240, 480, 270"],
-        ["Table", "Danh mục", "category; Net Sales, Returns, Return Rate, LM, SPLY", "504, 240, 760, 270"],
-        ["Line chart", "Xu hướng", "Return Rate theo tháng", "16, 520, 624, 184"],
-        ["Line chart", "Xu hướng", "Cancelled Orders và Pending Orders theo tháng", "648, 520, 616, 184"]],
+    "5.3 Trang Tổng quan": [
+        ["Text / card", "Điểm chính", "Measure chuỗi: Net Revenue, % so với LM/SPLY, nguyên nhân chính (số đơn hay AOV), Δ Finance", "16, 64, 1248, 70"],
+        ["Card × 5", "KPI", "Net Revenue · Orders · AOV · Return Rate · Δ Finance (kèm số cửa hàng vượt ngưỡng)", "16, 142, 1248, 96"],
+        ["Line chart", "Xu hướng", "Net Revenue 24 tháng; màu xám, tháng chọn tô nhấn, ghi chú điểm SPLY", "16, 246, 828, 230"],
+        ["Waterfall", "Cầu doanh thu", "Gross Sales → −Discounts → −Returns → Net Revenue", "852, 246, 412, 230"],
+        ["Line chart × 2", "Động lực", "Orders (nhấn) và AOV (xám) là 2 visual riêng, cùng trục thời gian — không dùng 2 trục y", "16, 484, 828, 220"],
+        ["Column chart", "Đối soát", "Δ sau quy đổi theo tháng; tháng có cửa hàng vượt ngưỡng tô đỏ (conditional format)", "852, 484, 412, 220"]],
+    "5.4 Trang Doanh thu đến từ đâu": [
+        ["Text / card", "Điểm chính", "Danh mục dẫn đầu, thị trường lớn nhất, tỷ trọng online", "16, 64, 1248, 70"],
+        ["Card × 4", "KPI", "Net Sales · Units · Tỷ trọng online · Giảm giá / Gross", "16, 142, 1248, 96"],
+        ["Bar (ngang)", "Danh mục", "Net Sales theo category, sắp giảm dần; mục lớn nhất màu nhấn, còn lại xám; nhãn giá trị + %", "16, 246, 408, 300"],
+        ["Bar (ngang)", "Quốc gia", "Net Sales theo country (Online là một dòng)", "432, 246, 408, 300"],
+        ["Table", "Kênh", "channel_name; Net Sales, Orders, AOV, Δ% LM, Δ% SPLY", "848, 246, 416, 300"],
+        ["Table", "Xếp hạng", "Top 10 cửa hàng; data bar trong cột Net Sales; Δ% LM, Δ% SPLY", "16, 554, 1248, 150"]],
+    "5.5 Trang Đối soát với Finance": [
+        ["Text / card", "Điểm chính", "Δ toàn chuỗi; phần lệch thời điểm online; cửa hàng cần điều tra", "16, 64, 1248, 70"],
+        ["Card × 5", "KPI", "Net Revenue đơn · Finance · Δ · Δ sau quy đổi · Số cửa hàng vượt ngưỡng", "16, 142, 1248, 96"],
+        ["Waterfall", "Phân rã Δ", "Online lệch thời điểm → từng cửa hàng ⚠ → còn lại → Δ", "16, 246, 408, 260"],
+        ["Column chart", "Theo tháng", "Δ sau quy đổi; đỏ = tháng có cửa hàng vượt ngưỡng", "432, 246, 832, 260"],
+        ["Table", "Chi tiết", "store_code; Net Revenue, Finance, Δ, Δ%, Δ sau quy đổi, ⚠ Vượt (conditional format); sắp theo |Δ|", "16, 514, 828, 190"],
+        ["Line chart", "Online", "Δ online gốc (xám) và sau quy đổi (nhấn)", "852, 514, 412, 190"]],
+    "5.6 Trang Hoàn trả & chất lượng dữ liệu": [
+        ["Text / card", "Điểm chính", "Hoàn trả, tỷ lệ, lý do lớn nhất, dòng trùng và PENDING đã loại", "16, 64, 1248, 70"],
+        ["Card × 4", "KPI", "Returns · Return Rate (điểm %) · Cancelled Orders · Dòng trùng đã loại + Pending Orders", "16, 142, 1248, 96"],
+        ["Line chart", "Xu hướng", "Return Rate 24 tháng, tháng chọn tô nhấn", "16, 246, 828, 220"],
+        ["Bar (ngang)", "Lý do", "Returns theo return_reason, lý do lớn nhất tô nhấn", "852, 246, 412, 220"],
+        ["Bar (ngang)", "Danh mục", "Return Rate theo category, nhãn kèm Net Sales", "16, 474, 828, 230"],
+        ["Line chart", "Xu hướng", "Cancelled Orders (nhấn) và Pending Orders (xám) theo tháng", "852, 474, 412, 230"]],
 }
 for title, rows_ in VIS.items():
     H3(title)
     TABLE(["Loại visual", "Khối", "Trường / measure", "Vị trí x, y, rộng, cao (px)"], rows_, widths=[3, 2.2, 8.5, 3.8])
-H3("5.6 Tương tác và hoàn thiện")
+H3("5.7 Tương tác và hoàn thiện")
 LIST(["**Edit interactions.** Biểu đồ xu hướng không bị lọc bởi slicer Tháng (để luôn thấy 24 tháng); dùng measure "
       "có ALL(dim_date) + lọc cửa sổ 24 tháng, hoặc tắt tương tác slicer Tháng với visual đó.",
       "**Drill-through.** Từ bảng đối soát cửa hàng sang một trang chi tiết theo ngày (posting_date) để dò nguyên nhân.",
       "**Tooltip.** Trên bảng đối soát, tooltip hiện Net Sales, Returns, Finance revenue_recognized và refunds tách riêng.",
-      "**Caption và đơn vị.** Mỗi visual ghi rõ USD hay nghìn USD và tháng đang xem."])
+      "**Tiêu đề và đơn vị.** Tiêu đề visual nêu kết luận; dòng phụ ghi đơn vị (USD, nghìn USD, %, điểm %) và phạm vi.",
+      "**Chân trang.** Ghi nguồn, ngày dữ liệu, quy ước Δ và ngưỡng bằng chữ xám nhỏ."])
 
 # ---------------------------------------------------------------- Bước 6
 H2("Bước 6. Đối soát số (DÀNH CHO MENTOR — ẩn khi giao đề)")
@@ -599,7 +618,7 @@ TABLE(["Folder", "Measure"], [
 ], widths=[4, 13.5])
 H2("Phụ lục B. Khi cần sinh lại dữ liệu hoặc sửa sơ đồ")
 LIST(["Tải Global_Electronics_Retailer.zip từ thư mục Drive của project vào source/ (file .zip không đưa lên git).",
-      "Chạy lần lượt trong _mentor/: generate_dataset.py → build_dashboard.py → build_diagrams.py → build_guideline.py → build_slides.py. "
+      "Chạy lần lượt trong _mentor/: generate_dataset.py → build_dashboard.py → build_dashboard_xlsx.py → chup_dashboard.js → build_diagrams.py → build_guideline.py → build_slides.py. "
       "Seed cố định nên số liệu không đổi.",
       "Sửa sơ đồ: mở diagrams/*.drawio bằng draw.io (app.diagrams.net hoặc bản desktop), sửa, lưu; rồi chạy "
       "`python build_diagrams.py --chi-xuat` để xuất lại PDF/PNG mà không ghi đè bản đã sửa tay; chạy lại build_guideline.py để cập nhật hình.",

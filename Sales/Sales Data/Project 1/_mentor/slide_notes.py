@@ -75,38 +75,42 @@ def build_notes(REF, KEY, vn, pct):
     # ------------------------------------------------------------------ phần 2
     add("Hai sản phẩm cần nộp", f"""
     (Phần 2 · khoảng 20 phút.) Hai sản phẩm: file Power BI 4 trang và báo cáo 8 phần theo guild_report_template. Ba
-    bộ lọc dùng chung cho cả 4 trang: Tháng báo cáo (chọn một, mặc định {RM}), Kênh bán (Tất cả / Cửa hàng /
-    Website-app), Quốc gia. Giới thiệu nhanh 4 trang: Tổng quan, Doanh thu, Đối soát, Hoàn trả & chất lượng. Lưu ý
-    kênh online không thuộc quốc gia nào: khi chọn một quốc gia thì online bị loại khỏi phạm vi. Các slide sau đi
-    vào yêu cầu tối thiểu của từng trang.""")
-    add("Trang Tổng quan: 6 thẻ KPI", """
-    Trang 1 trả lời câu: tháng này bán được bao nhiêu và có khớp Finance không. Sáu thẻ KPI, mỗi thẻ có giá trị, so với
-    tháng trước và so với cùng tháng năm trước. Ba biểu đồ: đường Net Revenue của dữ liệu đơn và Finance trong 24
-    tháng (không bị slicer Tháng lọc để luôn thấy xu hướng), đường số đơn hoàn tất, và waterfall từ Gross Sales trừ
-    giảm giá, trừ hoàn trả ra Net Revenue cho tháng đang chọn. Nhắc: thẻ “Chênh lệch Finance” là cầu nối sang trang
-    Đối soát.""")
+    bộ lọc dùng chung cho cả 4 trang: Tháng báo cáo (chọn một, mặc định {RM}), Kênh bán, Quốc gia. Bốn trang đi theo
+    một mạch kể chuyện: chuyện gì xảy ra (Tổng quan) → doanh thu đến từ đâu → lệch Finance ở đâu → doanh thu có sạch
+    không. Lưu ý kênh online không thuộc quốc gia nào: khi chọn một quốc gia thì online bị loại khỏi phạm vi.""")
+    add("Trang Tổng quan: Điểm chính", """
+    Trang 1 trả lời: tháng này bán được bao nhiêu, vì sao tăng/giảm, có khớp Finance không. Mở đầu bằng câu Điểm chính
+    tự sinh theo số. Năm thẻ: Net Revenue, số đơn, AOV, tỷ lệ hoàn trả, chênh lệch Finance. Biểu đồ: đường Net Revenue
+    24 tháng màu xám với tháng chọn tô xanh và điểm cùng kỳ được ghi chú; waterfall Gross → Net; hai biểu đồ nhỏ số
+    đơn và AOV đặt cạnh nhau (không dùng hai trục trên một biểu đồ) để thấy ngay doanh thu giảm vì ít đơn; và cột Δ sau
+    quy đổi theo tháng để dẫn sang trang Đối soát.""")
     add("Trang Doanh thu: doanh thu đến từ", """
-    Trang 2 trả lời: doanh thu tập trung ở đâu, kênh nào tăng. Hai thẻ Net Sales và Units; bảng doanh thu theo kênh có
-    tỷ trọng, số đơn, tháng trước, cùng kỳ; pie theo danh mục (tối đa 7 lát + Khác), treemap theo quốc gia (online là
-    một ô), cột AOV theo kênh và bảng Top 10 cửa hàng. Gợi ý cho học viên: bảng nào cũng phải có cột Thay đổi với
-    ▲/▼, không chỉ đưa số tuyệt đối.""")
+    Trang 2 trả lời: doanh thu tập trung ở đâu, kênh nào tăng. Bốn thẻ: Net Sales, Units, tỷ trọng online, giảm giá trên
+    Gross. Danh mục và quốc gia vẽ bằng cột ngang xếp hạng: mục lớn nhất tô xanh, còn lại xám, nhãn giá trị và % ở cuối
+    thanh. Giải thích vì sao bỏ pie/treemap: mắt so sánh độ dài chính xác hơn góc hay diện tích. Bảng kênh có AOV, so
+    với tháng trước và cùng kỳ; Top 10 cửa hàng có thanh nhỏ trong ô.""")
     add("Trang Đối soát: số của mình lệch", f"""
-    Trang 3 là trọng tâm của project. Δ luôn tính Finance − dữ liệu đơn, nên Δ dương nghĩa là Finance ghi cao hơn. Cờ
-    vượt ngưỡng khi |Δ| > {vn(thr['abs_usd'])} USD và |Δ %| > {pct(thr['pct'], 0)}, xét ở mức tháng × cửa hàng. Bốn thẻ:
-    Net Revenue phía đơn, phía Finance, Δ (kèm Δ sau khi quy online về ngày giao) và số ô vượt ngưỡng. Biểu đồ Δ theo
-    tháng có hai đường: gốc và sau quy đổi; bảng cửa hàng xếp theo |Δ|. Hỏi lớp: “Vì sao cần thêm đường Δ sau quy
-    đổi?” – để tách lệch thời điểm khỏi lỗi thật.""")
+    Trang 3 là trọng tâm. Δ = Finance − dữ liệu đơn; cờ ⚠ khi |Δ| > {vn(thr['abs_usd'])} USD và |Δ %| >
+    {pct(thr['pct'], 0)} ở mức tháng × cửa hàng. Biểu đồ phân rã Δ của tháng chọn: phần lệch thời điểm online (xám) →
+    từng cửa hàng vượt ngưỡng (đỏ) → phần còn lại. Cột Δ sau quy đổi theo tháng chỉ tô đỏ những tháng có cửa hàng vượt
+    ngưỡng. Bảng cửa hàng xếp theo |Δ|. Hỏi lớp: “Vì sao màu đỏ chỉ dùng cho vượt ngưỡng?” – để mắt người xem đi thẳng
+    tới chỗ cần điều tra.""")
     add("Trang Hoàn trả & chất lượng", """
-    Trang 4 trả lời: doanh thu có “sạch” không. Thẻ giá trị hoàn trả, tỷ lệ hoàn trả (thay đổi đo bằng điểm %, không
-    dùng %), số đơn huỷ, số dòng trùng đã loại kèm số đơn đang giao. Biểu đồ lý do trả hàng, bảng tỷ lệ hoàn trả theo
-    danh mục, xu hướng tỷ lệ hoàn trả và xu hướng đơn huỷ/đang giao. Lưu ý màu đảo: tỷ lệ hoàn trả tăng là xấu nên tô
-    đỏ, khác với doanh thu.""")
+    Trang 4 trả lời: doanh thu có “sạch” không. Thẻ giá trị hoàn trả, tỷ lệ hoàn trả (thay đổi đo bằng điểm %), đơn huỷ,
+    dòng trùng đã loại kèm số đơn đang giao. Đường tỷ lệ hoàn trả 24 tháng, cột ngang lý do trả hàng và cột ngang tỷ
+    lệ hoàn trả theo danh mục, nhãn kèm Net Sales để không kết luận vội với danh mục nhỏ. Màu đảo: tỷ lệ hoàn trả tăng
+    là xấu nên ▲ hiển thị màu cam.""")
     add("Bảng tự rà soát", """
     Checklist để học viên tự chấm trước khi nộp, chia 3 mức. Bắt buộc: bỏ 120 dòng trùng, chỉ tính COMPLETED, đủ 4
     trang, slicer đồng bộ, map Finance theo hiệu lực, có cờ vượt ngưỡng. Nên có: Δ sau quy đổi online, line chart đủ 24
-    tháng, caption và đơn vị rõ, nút Đặt lại. Sáng tạo: drill-through cửa hàng – ngày, tooltip, bảng giải thích chênh
-    lệch có tổng nguyên nhân bằng Δ, dùng bảng bổ sung. Khuyến khích học viên chụp lại slide này để rà trước khi nộp.""")
-
+    tháng, tiêu đề hành động và câu Điểm chính, đơn vị rõ, xám + một màu nhấn. Sáng tạo: drill-through cửa hàng – ngày,
+    tooltip, bảng giải thích chênh lệch có tổng nguyên nhân bằng Δ, dùng bảng bổ sung.""")
+    add("Nguyên tắc trình bày: Storytelling", """
+    Sáu bài học của Cole Nussbaumer Knaflic áp vào dashboard này. (1) Bối cảnh: người xem là Sales Manager và Finance
+    trước họp chốt số – viết kết luận thành một câu. (2) Chọn hình: đường cho xu hướng, cột ngang cho xếp hạng, bảng cho
+    chi tiết. (3) Gỡ rối: bỏ khung, nền màu, chú giải thừa. (4) Dẫn mắt: xám cho bối cảnh, một màu nhấn, đỏ chỉ cho
+    vấn đề. (5) Thiết kế: căn thẳng, số thống nhất, màu an toàn cho người mù màu. (6) Kể chuyện: tiêu đề nêu kết luận,
+    nguồn và ngày dữ liệu ở chân trang. Hoạt động: cho học viên sửa một tiêu đề mô tả thành tiêu đề hành động.""")
     # ------------------------------------------------------------------ phần 3
     add("Cây KPI", """
     (Phần 3 · khoảng 20 phút.) Đọc cây KPI từ trái sang phải: Gross Sales trừ giảm giá ra Net Sales, trừ hoàn trả ra
@@ -231,9 +235,9 @@ def build_notes(REF, KEY, vn, pct):
 
     # ------------------------------------------------------------------ phần 7
     add("Bố cục đề xuất 4 trang", """
-    (Phần 7 · khoảng 35 phút.) Mở file Nexa_Sales_P1_Dashboard.html để trình chiếu trực tiếp nếu có thể. Bố cục lưới:
-    thẻ KPI ở trên, biểu đồ ở giữa, bảng chi tiết ở dưới. Mỗi trang gắn với một câu hỏi khai phá; khi đọc dashboard
-    luôn bắt đầu từ câu hỏi chứ không bắt đầu từ biểu đồ.""")
+    (Phần 7 · khoảng 35 phút.) Mở file Nexa_Sales_P1_Dashboard.html để trình chiếu trực tiếp nếu có thể; bản Excel
+    Nexa_Sales_P1_Dashboard.xlsx dùng cho ai không có Power BI. Thứ tự đọc mỗi trang: câu Điểm chính → thẻ KPI → biểu
+    đồ có tiêu đề nêu kết luận → bảng chi tiết. Luôn bắt đầu từ câu hỏi của trang, không bắt đầu từ biểu đồ.""")
     add("Trang Tổng quan, tháng", f"""
     Đọc thẻ: Net Revenue {vn(m['net_revenue'] / 1e3, 1)} nghìn USD, {ch(m['net_revenue'], lm['net_revenue'])} so với
     {LM_}, {ch(m['net_revenue'], sp['net_revenue'])} so với {SP_}. Số đơn {vn(m['orders'])} so với {vn(sp['orders'])} cùng
@@ -241,10 +245,10 @@ def build_notes(REF, KEY, vn, pct):
     Δ Finance {vn(d12)} USD ({pct(d12 / (fin12 - hq20), 2)}), chưa gồm HQ-ADJ {vn(hq20, 0)} USD. Thông điệp: một mốc so
     sánh không đủ để kết luận.""")
     add("Trang Doanh thu, tháng", """
-    Đọc bảng kênh: cửa hàng chiếm khoảng ba phần tư Net Sales; cả hai kênh tăng mạnh so với tháng trước nhưng giảm sâu
-    so với cùng kỳ. Máy tính là danh mục lớn nhất. AOV cửa hàng cao hơn online. Ở bảng Top 10, đọc cột Thay đổi; ô
-    “–” nghĩa là cửa hàng không bán ở kỳ so sánh, không phải lỗi. Hỏi lớp: “Tăng so với tháng trước có phải tin tốt
-    không khi cùng kỳ giảm hơn 70 %?”""")
+    Đọc câu Điểm chính: máy tính dẫn đầu, Mỹ là thị trường lớn nhất. Cột ngang xếp hạng cho thấy ngay mục lớn nhất (tô
+    xanh) mà không cần đọc chú giải. Bảng kênh: cửa hàng chiếm khoảng ba phần tư Net Sales; cả hai kênh tăng mạnh so
+    với tháng trước nhưng giảm sâu so với cùng kỳ; AOV cửa hàng cao hơn online. Hỏi lớp: “Tăng so với tháng trước có
+    phải tin tốt không khi cùng kỳ giảm hơn 70 %?”""")
     add("Trang Đối soát, tháng", f"""
     Đối soát theo thứ tự: tổng chuỗi → kênh → cửa hàng → ngày. Tháng {RM}: Δ toàn chuỗi {vn(d12)} USD. Kênh online lệch
     {vn(onl12.diff_finance_minus_orders)} USD và về {vn(onl12_adj)} sau khi quy về ngày giao → lệch thời điểm. Cửa hàng

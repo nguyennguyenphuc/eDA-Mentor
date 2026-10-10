@@ -915,10 +915,10 @@ def build():
         text(s, x + 0.75, 2.72, 3.2, 0.8, [[(t, {"bold": True, "color": [GREEN, ORANGE, NAVY][i]})], d],
              size=13, anchor="m")
     text(s, 0.4, 3.7, 6, 0.35, [("Bốn trang dashboard", {"bold": True, "color": GREEN})], size=15)
-    pages = [("grid_w", "Tổng quan", "6 thẻ KPI · Net Revenue đơn vs Finance · số đơn · Gross → Net", GREEN),
-             ("pie_w", "Doanh thu", "2 thẻ · bảng kênh · danh mục · quốc gia · AOV · Top 10 cửa hàng", ORANGE),
-             ("scale_b", "Đối soát", "4 thẻ · Δ theo tháng · bảng cửa hàng có cờ · Δ POS và online", NAVY),
-             ("refresh_w", "Hoàn trả & chất lượng", "4 thẻ · lý do trả · tỷ lệ theo danh mục · huỷ/đang giao",
+    pages = [("grid_w", "Tổng quan", "Điểm chính · 5 thẻ · Net Revenue 24 tháng · số đơn vs AOV · Gross → Net", GREEN),
+             ("pie_w", "Doanh thu đến từ đâu", "Danh mục, quốc gia xếp hạng · bảng kênh · Top 10 cửa hàng", ORANGE),
+             ("scale_b", "Đối soát với Finance", "Phân rã Δ · Δ theo tháng · bảng cửa hàng có ⚠ · Δ online", NAVY),
+             ("refresh_w", "Hoàn trả & chất lượng", "Tỷ lệ hoàn trả · lý do · danh mục · huỷ/đang giao",
               RED)]
     for i, (icn, t, d, colr) in enumerate(pages):
         x = 0.4 + i * 3.15
@@ -962,47 +962,47 @@ def build():
                  anchor="m")
         return s
 
-    page_req("Trang 1 · Tổng quan", "Trang Tổng quan: 6 thẻ KPI và 3 biểu đồ",
-             [("Gross Sales", "nghìn USD"), ("Net Revenue", "nghìn USD"), ("Số đơn hoàn tất", "đơn"),
-              ("AOV", "USD/đơn"), ("ASP", "USD/sản phẩm"), ("Chênh lệch Finance", "USD · % · số ô vượt")],
-             [("trend_g", "Line chart Net Revenue: đơn vs Finance",
-               "24 tháng 01/2019–12/2020, hai đường; không bị slicer Tháng lọc"),
-              ("trend_b", "Line chart số đơn hoàn tất", "Theo tháng đặt hàng, cùng 24 tháng"),
-              ("bar_g", "Waterfall Gross → Net Revenue", "Tháng đang chọn: Gross − Giảm giá − Hoàn trả")],
-             "Tháng này bán được bao nhiêu và có khớp Finance không?",
-             ["Tổng quan: ", ("6 thẻ KPI", {"bold": True, "color": ORANGE}), " ở trên, ",
-              ("3 biểu đồ", {"bold": True, "color": ORANGE}), " ở dưới"], GREEN)
-    page_req("Trang 2 · Doanh thu", "Trang Doanh thu: doanh thu đến từ kênh, danh mục, quốc gia nào?",
-             [("Net Sales", "nghìn USD"), ("Số sản phẩm bán (Units)", "sản phẩm")],
-             [("table_g", "Bảng doanh thu theo kênh", "Net Sales, tỷ trọng, số đơn, tháng trước, cùng kỳ, thay đổi"),
-              ("pie_o", "Pie cơ cấu danh mục", "Net Sales theo category, tối đa 7 lát + Khác"),
-              ("tree_t", "Treemap quốc gia", "Net Sales theo country (Online là một ô)"),
-              ("bar_o", "Bar AOV theo kênh", "POS và Website/app"),
-              ("table_r", "Bảng Top 10 cửa hàng", "Net Sales, số đơn, tháng trước, cùng kỳ, ▲/▼")],
+    page_req("Trang 1 · Tổng quan", "Trang Tổng quan: Điểm chính, 5 thẻ KPI và 5 biểu đồ",
+             [("Net Revenue", "nghìn USD"), ("Số đơn hoàn tất", "đơn"), ("AOV", "USD/đơn"),
+              ("Tỷ lệ hoàn trả", "% · điểm %"), ("Chênh lệch Finance", "USD · % · số cửa hàng vượt")],
+             [("trend_g", "Đường Net Revenue 24 tháng", "Xám; tháng chọn tô xanh, ghi chú điểm cùng kỳ"),
+              ("bar_g", "Waterfall Gross → Net Revenue", "Gross − Giảm giá − Hoàn trả, tháng chọn"),
+              ("trend_b", "Số đơn và AOV (2 biểu đồ nhỏ)", "Tách 2 trục: giảm vì ít đơn hay đơn nhỏ?"),
+              ("bar_o", "Cột Δ sau quy đổi theo tháng", "Đỏ = tháng có cửa hàng vượt ngưỡng")],
+             "Tháng này bán được bao nhiêu, vì sao tăng/giảm, có khớp Finance không?",
+             ["Mở trang bằng ", ("câu Điểm chính", {"bold": True, "color": ORANGE}), ", rồi mới đến thẻ và ",
+              ("biểu đồ có tiêu đề nêu kết luận", {"bold": True, "color": ORANGE})], GREEN)
+    page_req("Trang 2 · Doanh thu đến từ đâu", "Trang Doanh thu: doanh thu đến từ kênh, danh mục, quốc gia nào?",
+             [("Net Sales", "nghìn USD"), ("Units", "sản phẩm"), ("Tỷ trọng online", "% Net Sales"),
+              ("Giảm giá / Gross", "% · điểm %")],
+             [("bar_o", "Cột ngang danh mục, xếp hạng", "Mục lớn nhất tô xanh, còn lại xám; nhãn giá trị + %"),
+              ("bar_b", "Cột ngang quốc gia", "Online là một dòng riêng"),
+              ("table_g", "Bảng kênh", "Net Sales, đơn, AOV, so với tháng trước và cùng kỳ"),
+              ("table_r", "Top 10 cửa hàng", "Thanh trong ô + so với tháng trước, cùng kỳ")],
              "Doanh thu tập trung ở đâu, kênh nào tăng?",
-             ["Doanh thu: ", ("bảng kênh", {"bold": True, "color": ORANGE}), ", 3 biểu đồ cơ cấu và ",
-              ("Top 10 cửa hàng", {"bold": True, "color": ORANGE})], ORANGE)
-    page_req("Trang 3 · Đối soát", "Trang Đối soát: số của mình lệch Finance bao nhiêu, ở đâu?",
+             ["Không dùng pie/treemap: ", ("cột ngang xếp hạng", {"bold": True, "color": ORANGE}),
+              " so sánh độ dài nhanh và chính xác hơn"], ORANGE)
+    page_req("Trang 3 · Đối soát với Finance", "Trang Đối soát: số của mình lệch Finance bao nhiêu, ở đâu?",
              [("Net Revenue (đơn)", "nghìn USD"), ("Net Revenue (Finance)", "nghìn USD"),
-              ("Chênh lệch Δ", "USD · Δ% · Δ sau quy đổi online"), ("Số ô vượt ngưỡng", "tháng × cửa hàng")],
-             [("trend_b", "Line chart Δ theo tháng", "Δ gốc và Δ sau khi quy online về ngày giao"),
-              ("table_b", "Bảng đối soát theo cửa hàng", "Đơn, Finance, Δ, Δ%, Δ sau quy đổi, cờ Vượt"),
-              ("trend_r", "Line chart Δ kênh POS", "Theo tháng, USD"),
-              ("trend_g", "Line chart Δ kênh online", "Gốc và sau quy về delivery_date")],
+              ("Δ", "USD · % trên Finance"), ("Δ sau quy đổi online", "USD"), ("Cửa hàng vượt ngưỡng", "/ số cửa hàng")],
+             [("bar_b", "Phân rã Δ tháng chọn", "Online lệch thời điểm → cửa hàng ⚠ → còn lại"),
+              ("bar_o", "Cột Δ sau quy đổi theo tháng", "Đỏ = có cửa hàng vượt ngưỡng"),
+              ("table_b", "Bảng cửa hàng xếp theo |Δ|", "Đơn, Finance, Δ, Δ%, Δ sau quy đổi, ⚠ Vượt"),
+              ("trend_g", "Δ online: gốc và sau quy đổi", "Về gần 0 → lệch thời điểm")],
              "Chênh lệch nằm ở cửa hàng nào, tháng nào, kênh nào?",
              ["Đối soát: ", ("Δ = Finance − dữ liệu đơn", {"bold": True, "color": NAVY}), "; cờ khi |Δ| > ",
               (vn(THR_ABS) + " USD", {"bold": True, "color": RED}), " và |Δ%| > ",
               (pct(THR_PCT, 0), {"bold": True, "color": RED})], NAVY)
     page_req("Trang 4 · Hoàn trả & chất lượng", "Trang Hoàn trả & chất lượng: bao nhiêu doanh thu bị mất?",
-             [("Giá trị hoàn trả", "nghìn USD"), ("Tỷ lệ hoàn trả", "% · thay đổi tính bằng điểm %"),
+             [("Giá trị hoàn trả", "USD"), ("Tỷ lệ hoàn trả", "% · thay đổi bằng điểm %"),
               ("Đơn huỷ", "đơn"), ("Dòng trùng đã loại", "dòng · kèm số đơn PENDING")],
-             [("pie_r", "Pie giá trị hoàn trả theo lý do", "Lỗi sản phẩm, giao nhầm, giao trễ, đổi ý"),
-              ("table_r", "Bảng tỷ lệ hoàn trả theo danh mục", "Net Sales, hoàn trả, tỷ lệ, tháng trước, cùng kỳ"),
-              ("trend_r", "Line chart tỷ lệ hoàn trả", "Theo tháng, %"),
-              ("trend_b", "Line chart đơn huỷ và đang giao", "Theo tháng đặt hàng")],
+             [("trend_r", "Đường tỷ lệ hoàn trả 24 tháng", "Tháng chọn tô xanh"),
+              ("bar_o", "Cột ngang lý do trả hàng", "Lý do lớn nhất tô xanh"),
+              ("bar_b", "Cột ngang tỷ lệ hoàn trả theo danh mục", "Nhãn kèm Net Sales để đọc cùng quy mô"),
+              ("trend_b", "Đơn huỷ và đang giao", "Theo tháng đặt hàng")],
              "Doanh thu có \"sạch\" không: trả hàng, huỷ đơn, dữ liệu lỗi?",
              ["Tỷ lệ hoàn trả tăng là ", ("tín hiệu xấu", {"bold": True, "color": RED}),
-              ": hiển thị màu đảo, thay đổi bằng ", ("điểm %", {"bold": True, "color": NAVY})], RED)
+              ": màu đảo, thay đổi bằng ", ("điểm %", {"bold": True, "color": NAVY})], RED)
 
     # ---- 11. Checklist
     s = dk.content(sec_name, SEC, "Bảng tự rà soát mức độ hoàn thiện sản phẩm",
@@ -1016,10 +1016,10 @@ def build():
                               "Bảng đối soát có cờ vượt ngưỡng"]),
            ("Nên có", ORANGE, ["Δ online sau khi quy về delivery_date",
                                "Line chart không bị slicer Tháng lọc (đủ 24 tháng)",
-                               "Caption \"Hình N\" cho mỗi biểu đồ, bảng",
+                               "Tiêu đề hành động nêu kết luận, câu Điểm chính đầu trang",
                                "Ghi rõ đơn vị: USD, nghìn USD, %, điểm %",
                                "Nút Đặt lại và điều hướng giữa 4 trang",
-                               "Màu đảo cho hoàn trả, ▲/▼ ở cột thay đổi"]),
+                               "Xám cho bối cảnh, 1 màu nhấn; ▲/▼ ở cột thay đổi"]),
            ("Sáng tạo", GREEN, ["Drill-through \"Chi tiết cửa hàng – ngày\"",
                                 "Tooltip Δ theo ngày khi rê chuột vào ô vượt ngưỡng",
                                 "Bảng giải thích chênh lệch: tổng nguyên nhân = Δ",
@@ -1031,6 +1031,23 @@ def build():
             color=WHITE)
         text(s, x + 0.12, 2.15, 3.8, 4.3,
              [{"runs": it, "bullet": "☐", "indent": 0.3, "space_after": 7} for it in items], size=14)
+
+    # ---- 12. Nguyên tắc Storytelling with Data
+    s = dk.content(sec_name, SEC, "Nguyên tắc trình bày: Storytelling with Data (Cole Nussbaumer Knaflic)",
+                   ["Dashboard để ", ("ra quyết định", {"bold": True, "color": ORANGE}),
+                    ", không để trưng bày: người xem phải thấy kết luận trong 3 giây"])
+    swd = [("1 · Hiểu bối cảnh", "Ai xem, cần quyết định gì? Viết Big Idea thành 1 câu: câu Điểm chính đầu mỗi trang.", GREEN),
+           ("2 · Chọn hình phù hợp", "Đường cho xu hướng, cột ngang xếp hạng cho danh mục, bảng cho chi tiết. Bỏ pie, donut, treemap, 3D.", ORANGE),
+           ("3 · Gỡ rối", "Bỏ khung, nền màu, lưới đậm, chú giải thừa; nhãn trực tiếp; ít chữ số lẻ.", NAVY),
+           ("4 · Dẫn mắt người xem", "Xám cho bối cảnh, MỘT màu nhấn cho điều cần thấy; đỏ chỉ cho vấn đề (⚠ vượt ngưỡng).", RED),
+           ("5 · Nghĩ như nhà thiết kế", "Căn lưới thẳng, định dạng số thống nhất, màu an toàn cho người mù màu, tooltip.", GREEN),
+           ("6 · Kể chuyện", "Tiêu đề nêu kết luận (\"Máy tính chiếm 43% Net Sales\"), không chỉ mô tả; nguồn và as-of ở chân trang.", ORANGE)]
+    for i, (t_, d_, colr) in enumerate(swd):
+        x = 0.4 + (i % 3) * 4.2
+        y = 1.5 + (i // 3) * 2.55
+        box(s, x, y, 4.0, 2.4, fill=WHITE, line=colr, lw=1.5)
+        box(s, x, y, 4.0, 0.5, fill=colr, adj=0.15, paras=[(t_, {"bold": True})], size=15, color=WHITE)
+        text(s, x + 0.15, y + 0.6, 3.7, 1.75, [d_], size=13.5)
 
     # ================================================================ PHẦN 3. KPI
     SEC = "Hệ thống chỉ số KPI"
@@ -1750,8 +1767,8 @@ RETURN pos + onl
     sec_name = "Phần 7 · Phân tích kết quả"
     # ---- 33. Bố cục 4 trang
     s = dk.content(sec_name, SEC, "Bố cục đề xuất 4 trang dashboard (bản tham chiếu của mentor)",
-                   ["Bố cục lưới: ", ("thẻ KPI ở trên", {"bold": True, "color": GREEN}), ", biểu đồ ở giữa, ",
-                    ("bảng chi tiết ở dưới", {"bold": True, "color": GREEN})])
+                   ["Thứ tự đọc: ", ("câu Điểm chính", {"bold": True, "color": GREEN}), " → thẻ KPI → biểu đồ có ",
+                    ("tiêu đề nêu kết luận", {"bold": True, "color": GREEN}), " → bảng chi tiết"])
     pg = [("dash_s1.png", "Tổng quan", "Tháng này bán được bao nhiêu, khớp Finance chưa?", GREEN),
           ("dash_s2.png", "Doanh thu", "Doanh thu đến từ kênh, danh mục, quốc gia nào?", ORANGE),
           ("dash_s3.png", "Đối soát", "Lệch ở cửa hàng nào, tháng nào, kênh nào?", NAVY),
@@ -1789,7 +1806,7 @@ RETURN pos + onl
     fin_rm_store = rm_b.finance_net
     hq_rm = REF["finance_month"][str(REPORT_MONTH)] - fin_rm_store
     n_over_rm = sum(1 for o in REF["over_threshold_2020"] if o["month_id"] == REPORT_MONTH)
-    result_slide(f"Trang Tổng quan, tháng {RM_LABEL}: 6 thẻ KPI và 3 biểu đồ", ASSETS / "dash_s1.png",
+    result_slide(f"Trang Tổng quan, tháng {RM_LABEL}: Điểm chính, 5 thẻ KPI và 5 biểu đồ", ASSETS / "dash_s1.png",
                  "Tháng này bán được bao nhiêu và có khớp Finance không?",
                  [[("Net Revenue ", {"bold": True}), (vn(m["net_revenue"] / 1e3, 1) + " nghìn USD", {}),
                    (f": {pct(chg(m['net_revenue'], lm['net_revenue']), 1, True)} so với {LM_LABEL}, "
@@ -1822,9 +1839,8 @@ RETURN pos + onl
                    (f"POS {vn(rmc.loc['POS', 'ns'] / rmc.loc['POS', 'orders'], 0)}, online "
                     f"{vn(rmc.loc['ONLINE', 'ns'] / rmc.loc['ONLINE', 'orders'], 0)} USD/đơn", {})],
                   [("Top 10: ", {"bold": True}), ("đọc cột Thay đổi; ô \"–\" là cửa hàng không bán ở kỳ so sánh", {})]],
-                 ["Bảng so sánh luôn kèm cột ", ("Thay đổi", {"bold": True, "color": NAVY}), ": ",
-                  ("▲ xanh", {"bold": True, "color": GREEN}), " là tăng, ", ("▼ đỏ", {"bold": True, "color": RED}),
-                  " là giảm"], colr=ORANGE)
+                 ["Cột ngang xếp hạng: ", ("một màu nhấn", {"bold": True, "color": NAVY}),
+                  " cho mục lớn nhất, còn lại xám; ▲/▼ luôn kèm chữ, không chỉ dựa vào màu"], colr=ORANGE)
     # ---- 36. Đối soát
     onl_rm = rm_rows[rm_rows.store_key == 0].iloc[0]
     n_store_rm = int((rm_rows.store_key > 0).sum())
@@ -1846,7 +1862,7 @@ RETURN pos + onl
                  colr=NAVY)
     # ---- 37. Hoàn trả
     crop_dir = ASSETS
-    s4_crop = crop_image(ASSETS / "dash_s4.png", crop_dir / "dash_s4_main.png", (0, 0.273, 1, 1))
+    s4_crop = ASSETS / "dash_s4.png"
     reason = D["r"][D["r"].mid == REPORT_MONTH].groupby("return_reason").return_amount.sum().sort_values(
         ascending=False)
     rr_cat_rm = None
