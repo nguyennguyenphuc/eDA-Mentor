@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Dựng ../Nexa_Sales_P1_Dashboard.xlsx — dashboard Excel tham chiếu, 4 sheet giống 4 tab của bản HTML.
+"""Dựng _mentor/Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx — bản ĐỐI CHIẾU SỐ bằng công thức thường, 4 sheet giống HTML.
+Dashboard chính (Power Query + Mô hình Dữ liệu + DAX) do build_dashboard_excel_com.py dựng trên Excel Windows.
 
 - Tong_quan · Doanh_thu · Doi_soat · Hoan_tra: câu "Điểm chính", thẻ KPI (so tháng trước, cùng kỳ), tiêu đề hành động,
   biểu đồ (xám + một màu nhấn, đỏ chỉ cho vượt ngưỡng), bảng chi tiết — cùng bố cục và cùng số với HTML.
@@ -26,7 +27,7 @@ from openpyxl.utils import get_column_letter as CL
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-OUT = A.P1 / "Nexa_Sales_P1_Dashboard.xlsx"
+OUT = A.P1 / "_mentor" / "Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx"   # bản đối chiếu số; dashboard chính: build_dashboard_excel_com.py
 REF = A.REF
 D = A.load()
 st = D["st"]

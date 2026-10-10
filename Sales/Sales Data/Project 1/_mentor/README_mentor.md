@@ -8,9 +8,9 @@ Không gửi thư mục này cho học viên: `Nexa_Sales_P1_Instructor_Key.xlsx
 | Ở đâu | File | Ai xem |
 |---|---|---|
 | `../hoc_vien/` | README.docx (đề bài), Nexa_Sales_P1_Dataset.xlsx, finance_revenue.xlsx, Huong_dan_hoc_vien.docx, Slide_Project_1_hoc_vien.pptx, excel_build/, so_do/*.pdf, guild_report_template.pdf | **Học viên** – gửi nguyên thư mục hoặc `../Nexa_Sales_P1_hoc_vien.zip` |
-| `../` | Nexa_Sales_P1_Dashboard.html, Nexa_Sales_P1_Dashboard.xlsx | Mentor; có thể gửi học viên sau buổi 1 |
+| `../` | Nexa_Sales_P1_Dashboard.html, Nexa_Sales_P1_Dashboard.xlsx (Power Query + Mô hình Dữ liệu + DAX) | Mentor; có thể gửi học viên sau buổi 1 |
 | `../` | Dashboard_Guideline (dành cho mentor).docx (có Bước 6 đáp án), Slide_Project_1.pptx (có 4 slide đáp án ẩn + lời thuyết trình), diagrams/*.drawio | Chỉ mentor |
-| `_mentor/` | Instructor Key, ref_numbers.json, script, kiem_tra/ | Chỉ mentor |
+| `_mentor/` | Instructor Key, Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx, ref_numbers.json, script, kiem_tra/ | Chỉ mentor |
 
 Bản học viên của hướng dẫn và slide **được sinh tự động**: hướng dẫn bỏ Bước 6 đáp án và Phụ lục script; slide xoá hẳn
 4 slide đáp án (không chỉ ẩn) và xoá lời thuyết trình. `dong_goi_hoc_vien.py` kiểm lại không lộ đáp án rồi mới đóng zip.
@@ -30,7 +30,8 @@ Bản học viên của hướng dẫn và slide **được sinh tự động**:
 ```
 python generate_dataset.py      # hoc_vien/ dataset + finance_revenue.xlsx, Instructor Key, ref_numbers.json (seed 2026)
 python build_dashboard.py       # ../Nexa_Sales_P1_Dashboard.html (số từ aggregate.py)
-python build_dashboard_xlsx.py  # ../Nexa_Sales_P1_Dashboard.xlsx — 4 sheet giống HTML, công thức thường (đối chiếu số)
+python build_dashboard_xlsx.py  # Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx — bản đối chiếu số, công thức thường
+python build_dashboard_excel_com.py  # (Windows + Excel) ../Nexa_Sales_P1_Dashboard.xlsx — PQ + Data Model + DAX, tự kiểm số
 python build_excel_kit.py       # hoc_vien/excel_build/ (code M, 21 số đo bắt buộc + 8 nâng cao) + pq_steps.json; assert số dòng
 cd /opt/node-tools && node <repo>/Sales/Sales\ Data/Project\ 1/_mentor/chup_dashboard.js <thư mục assets> <file html>   # ảnh cho slide
 python build_diagrams.py        # ../diagrams/*.drawio → .pdf + png/ (draw.io; Linux chạy qua xvfb-run)
@@ -49,17 +50,19 @@ python xuat_pdf_kiem_tra.py     # LibreOffice tính lại dashboard Excel, so s�
 - Học viên dựng dashboard bằng **Excel for Windows** (Microsoft 365 / 2016+, bật bổ trợ Power Pivot): Power Query (M) →
   Mô hình Dữ liệu → 21 số đo DAX bắt buộc (+8 nâng cao) → 4 sheet (PivotTable, PivotChart, Slicer, CUBEVALUE); % thay đổi,
   câu Điểm chính và tô màu nhấn làm bằng công thức Excel. Guideline Bước 2–5 và slide Phần 4, 6, 7.
-- Code M và DAX **chưa được chạy thử trên Excel thật** (máy sinh tài liệu là Linux, không có Excel). Đã kiểm:
+- Code M và DAX **đã chạy trên Excel 365 thật** (10/10/2026) qua `build_dashboard_excel_com.py`; số khớp Bước 6. Trước đó đã kiểm:
   từng bước M được chạy song song bằng pandas và khớp số dòng QC (62.884 · 2.430 · 19.400); logic [Vượt ngưỡng]
   khớp Instructor Key (32 ô năm 2020, 120 ô toàn kỳ); Net Revenue 12/2020 khớp số tham chiếu; ngoặc cân.
 - **Trước buổi học, mentor dựng thử một lần trên Excel Windows** theo excel_build/README.md và so số với Bước 6.
   Lỗi cú pháp nếu có thì sửa trong build_excel_kit.py rồi chạy lại build_excel_kit → build_guideline → build_slides.
 
-## Kiểm file Excel (không có Excel trên máy sinh tài liệu)
+## Kiểm file Excel
+- `build_dashboard_excel_com.py` (cần Windows + Excel + pywin32): dựng dashboard từ đầu bằng chính code M/DAX giao học viên,
+  đổi slicer qua 5 tổ hợp và so với ref_numbers.json, báo ô lỗi, xuất `kiem_tra/excel_*.pdf`.
 - `kiem_xlsx.py` đọc XML của mọi .xlsx, báo các lỗi làm Excel hiện "We found a problem with some content": chuỗi bắt
   đầu bằng "=" bị ghi thành công thức hỏng, data validation có dấu "=" thừa, định dạng số có ký tự "−" không đặt trong
   ngoặc kép, `<definedNames/>` rỗng, tiêu đề Table lệch. Bản trước có đủ ba lỗi đầu — đã sửa tận gốc ở script sinh file.
-- `xuat_pdf_kiem_tra.py` mở **bản sao** dashboard Excel bằng LibreOffice, đổi ô chọn qua 7 tổ hợp tháng/kênh/quốc gia,
+- `xuat_pdf_kiem_tra.py` mở **bản sao** bản đối chiếu số (công thức thường) bằng LibreOffice, đổi ô chọn qua 7 tổ hợp tháng/kênh/quốc gia,
   so Net Revenue, đơn, số Kế toán, Δ, Δ sau quy đổi, số ô vượt ngưỡng với pandas; xuất `kiem_tra/dashboard_xlsx.pdf`
   và `kiem_tra/so_sanh_s1..4.png` (trang Excel đặt cạnh tab HTML). PDF do LibreOffice vẽ nên font/biểu đồ không y hệt Excel.
 - Ô vàng ở sheet Tong_quan là ô chọn Tháng / Kênh / Quốc gia; 4 sheet dùng chung.
