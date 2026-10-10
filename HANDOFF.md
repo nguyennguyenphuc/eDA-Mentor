@@ -20,7 +20,7 @@ Cập nhật: 10/10/2026. Đọc file này trước khi làm tiếp Sales Projec
 | Mentor trên bìa slide | Nguyễn Phúc Nguyên, Nguyễn Thảo Nhi, Đinh Thị Thu Hà |
 | Sơ đồ | Làm bằng **draw.io** (`.drawio` sửa được), rồi mới xuất PDF/PNG |
 | Trình bày | Theo *Storytelling with Data*:<br>• câu "Điểm chính" mở mỗi trang<br>• tiêu đề hành động<br>• xám + một màu nhấn #2A78D6<br>• đỏ chỉ dùng cho ⚠ vượt ngưỡng |
-| Công cụ dashboard | **Excel cho Windows** (M365 / 2016+, bật Power Pivot): Power Query (M) → Data Model → DAX → 4 sheet (PivotTable, PivotChart, Slicer, CUBEVALUE).<br>Thay hẳn Power BI; chỉ giữ **một dòng** "M/DAX dùng lại được nếu chuyển sang Power BI" |
+| Công cụ dashboard | **Excel cho Windows** (M365 / 2016+, bật Power Pivot): Power Query (M) → Data Model → DAX → 4 sheet (PivotTable, PivotChart, Slicer, CUBEVALUE).<br>Thay hẳn Power BI; chỉ giữ **một dòng** "M/DAX dùng lại được nếu chuyển sang Power BI".<br>Sales P1 **không có file Power BI** (.pbix/.pbip) — chưa từng dựng; người dùng xác nhận 10/10/2026 giữ Excel. DAX vẫn dùng trong Power Pivot (21 bắt buộc + 8 nâng cao); chỉ phần trình bày (%, câu Điểm chính, tô màu) là công thức Excel. |
 | Bố cục dashboard | 4 sheet: Tong_quan → Doanh_thu → Doi_soat → Hoan_tra, cộng sheet `_pivot` (ẩn).<br>Slicer **Năm + Tháng**, Kênh, Quốc gia, dùng chung cho cả 4 sheet |
 | Quy tắc dữ liệu | • Chỉ đơn COMPLETED; bỏ 120 dòng trùng; Returns theo return_date<br>• Online: Finance ghi nhận theo delivery_date<br>• Δ = Finance − dữ liệu đơn; vượt ngưỡng khi \|Δ\| > 200 USD **và** \|Δ%\| > 1 % (tháng × cửa hàng)<br>• Cửa hàng 38 đổi mã GBR-03 → GBR-03N từ 01/07/2019; dòng HQ-ADJ có store_key trống |
 | Đặt tên | Measure `\|Δ\|` đổi thành `Δ tuyệt đối`, vì ký tự `\|` có thể không hợp lệ trong Excel |
