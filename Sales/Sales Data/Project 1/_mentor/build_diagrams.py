@@ -102,7 +102,7 @@ def d_pipeline():
     s2 = d.box(350, 90, 250, 110, "<b>generate_dataset.py</b> (seed 2026)<br>+ khuyến mãi, trạng thái đơn<br>+ hoàn trả, dòng trùng<br>+ file Finance có chênh lệch cài sẵn", stroke=BLUE, **b)
     s3 = d.box(670, 75, 250, 60, "<b>Nexa_Sales_P1_Dataset.xlsx</b><br>7 dim · 2 fact · map · KPI", stroke=G, fill=G10)
     s4 = d.box(670, 150, 250, 60, "<b>finance_revenue.xlsx</b><br>ngày × mã cửa hàng Finance", stroke=COR, fill=COR10)
-    s5 = d.box(1000, 90, 250, 110, "<b>Instructor Key</b> (chỉ mentor)<br>31 chênh lệch cài sẵn<br>cầu nối Orders → Finance<br>ref_numbers.json", stroke=BLUE, fill=BLUE10)
+    s5 = d.box(1000, 90, 250, 110, "<b>Instructor Key</b> (chỉ mentor)<br>đáp án chênh lệch<br>cầu nối Orders → Finance<br>ref_numbers.json", stroke=BLUE, fill=BLUE10)
     d.edge(s1, s2); d.edge(s2, s3); d.edge(s2, s4); d.edge(s2, s5, dashed=True, color=BLUE)
     p1 = d.box(80, 290, 200, 120, "<b>1 · Power Query</b><br>nạp 2 file, đặt kiểu<br>bỏ 120 dòng trùng<br>map fin_store_code<br>theo valid_from/to", stroke=G, **b)
     p2 = d.box(320, 290, 200, 120, "<b>2 · Mô hình</b><br>star schema<br>dim_date đánh dấu<br>quan hệ inactive<br>delivery_date", stroke=G, **b)

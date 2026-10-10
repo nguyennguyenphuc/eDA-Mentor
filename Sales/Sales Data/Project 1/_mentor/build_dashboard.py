@@ -41,7 +41,8 @@ ms = c.groupby(["month_id", "store_key"]).agg(gross=("gross", "sum"), disc=("dis
 c_post = c.assign(pm=np.where(c.store_key == 0, mid(c.delivery_date), c.month_id))
 ms = ms.join(c_post.groupby(["pm", "store_key"]).ns.sum().rename("ns_post").rename_axis(["month_id", "store_key"]),
              how="outer")
-st_cnt = s.groupby(["month_id", "store_key"]).order_status.value_counts().unstack(fill_value=0)
+st_cnt = (s.drop_duplicates("order_number")            # đếm ĐƠN, không đếm dòng
+          .groupby(["month_id", "store_key"]).order_status.value_counts().unstack(fill_value=0))
 ms = ms.join(st_cnt.reindex(columns=["CANCELLED", "PENDING"], fill_value=0)
              .rename(columns={"CANCELLED": "canc", "PENDING": "pend"}), how="outer")
 rawm = raw.assign(month_id=mid(raw.order_date))
@@ -100,6 +101,7 @@ data = {
 cur = ms[ms.month_id == REF["report_month"]]
 assert abs(cur.ns.sum() - cur.ret.sum() - REF["month"]["current"]["net_revenue"]) < 0.05
 assert int(cur.orders.sum()) == REF["month"]["current"]["orders"]
+assert int(ms.pend.sum()) == REF["rows"]["orders_pending"] and int(ms.canc.sum()) == REF["rows"]["orders_cancelled"]
 
 payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
 
