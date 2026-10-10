@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Kiểm dashboard Excel tham chiếu bằng LibreOffice (máy sinh tài liệu không có Excel).
 
-1. Mở BẢN SAO Nexa_Sales_P1_Dashboard.xlsx bằng LibreOffice (UNO), tính lại toàn bộ công thức.
+1. Mở BẢN SAO _mentor/Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx (bản công thức thường) bằng LibreOffice (UNO), tính lại toàn bộ công thức.
 2. Đổi ô chọn Tháng / Kênh / Quốc gia qua nhiều tổ hợp, đọc số ở sheet Calc và so với pandas (aggregate.load()) —
    cùng nguồn với bản HTML. Lệch > 0,01 USD là lỗi.
 3. Đặt lại mặc định, xuất 4 sheet dashboard ra kiem_tra/dashboard_xlsx.pdf (mỗi sheet một trang ngang A4).
@@ -23,7 +23,7 @@ from PIL import Image
 import aggregate as A
 
 HERE = Path(__file__).resolve().parent
-SRC = A.P1 / "Nexa_Sales_P1_Dashboard.xlsx"
+SRC = A.P1 / "_mentor" / "Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx"
 OUT = HERE / "kiem_tra"
 OUT.mkdir(exist_ok=True)
 
