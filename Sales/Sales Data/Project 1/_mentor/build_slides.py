@@ -608,6 +608,8 @@ class Deck:
                 e = etree.SubElement(lst, f"{{{P14}}}sldId")
                 e.set("id", str(i))
         extLst.insert(0, ext)
+        from slide_notes import apply_notes          # phần thuyết trình (speaker notes)
+        apply_notes(prs, REF, load_key(), vn, pct)
         cp = prs.core_properties
         cp.title = "Sales Project 1 – Kết quả bán hàng và đối soát doanh thu"
         cp.subject = "EDA Mentorship – Nexa Home"
