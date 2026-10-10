@@ -42,8 +42,8 @@ OUT = P1 / "Slide_Project_1.pptx"
 DIAG = P1 / "diagrams" / "png"
 ASSETS = HERE / "assets"
 
-# Tên mentor trên trang bìa. None = lấy đúng như trang bìa deck Bank (cùng nhóm EDA Mentorship).
-MENTORS = None
+# Tên mentor trên trang bìa (None = giữ nguyên tên trên bìa deck Bank).
+MENTORS = ["Nguyễn Phúc Nguyên", "Nguyễn Thảo Nhi", "Đinh Thị Thu Hà"]
 PROJECT_LABEL = "Sales Project 1"
 
 # ------------------------------------------------------------------ màu & font (theo deck Bank)
@@ -744,11 +744,16 @@ def build():
     text(s, 1.5, 3.62, 10.33, 0.5, [("Kết quả bán hàng và đối soát doanh thu · Nexa Home", {"italic": True})],
          size=22, color=NAVY, align="c")
     if names:
-        name_boxes = [sh for sh in s.shapes if sh.has_text_frame and sh.top and 4.6 < sh.top / 914400 < 5.7
-                      and sh.left / 914400 < 4]
+        # ô tên mentor = ô có chữ ở cột trái (dưới nhãn "Mentor:"), không phải nhãn kết thúc bằng ":"
+        name_boxes = [sh for sh in s.shapes if sh.has_text_frame and sh.left is not None and sh.left / 914400 < 7
+                      and sh.text_frame.text.strip() and not sh.text_frame.text.strip().endswith(":")
+                      and sh.top / 914400 > 4.6]
         name_boxes.sort(key=lambda z: z.top)
+        assert len(name_boxes) == len(names), [z.text_frame.text for z in name_boxes]
         for sh, nm in zip(name_boxes, names):
             sh.text_frame.paragraphs[0].runs[0].text = nm
+            sh.width = max(sh.width, I(3.4))          # tên dài không bị xuống dòng
+            sh.text_frame.paragraphs[0].alignment = PP_ALIGN.LEFT
 
     # ---------------------------------------------------------------- 2. Outline
     parts = ["Bối cảnh bán lẻ và đối soát doanh thu", "Đề bài xây dựng dashboard", "Hệ thống chỉ số KPI",
