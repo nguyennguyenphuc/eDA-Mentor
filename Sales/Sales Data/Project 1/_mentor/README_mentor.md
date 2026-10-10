@@ -1,5 +1,7 @@
 # Sales Project 1 — thư mục dành cho mentor
 
+> Tình trạng công việc, việc còn dở và bước tiếp theo: xem `HANDOFF.md` ở gốc repo.
+
 Không gửi thư mục này cho học viên: `Nexa_Sales_P1_Instructor_Key.xlsx` là đáp án.
 
 ## Nguồn dữ liệu
