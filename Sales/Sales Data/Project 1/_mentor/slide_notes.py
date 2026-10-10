@@ -116,8 +116,14 @@ def build_notes(REF, KEY, vn, pct):
     vấn đề. (5) Thiết kế: căn thẳng, số thống nhất, màu an toàn cho người mù màu. (6) Kể chuyện: tiêu đề nêu kết luận,
     nguồn và ngày dữ liệu ở chân trang. Hoạt động: cho học viên sửa một tiêu đề mô tả thành tiêu đề hành động.""")
     # ------------------------------------------------------------------ phần 3
+    add("Thuật ngữ dùng trong bài", """
+    (Phần 3 · khoảng 20 phút.) Trước khi vào KPI, thống nhất cách gọi. Doanh thu theo Chuẩn mực kế toán VAS 14 và chế độ
+    kế toán Thông tư 99/2025/TT-BTC (thay Thông tư 200 từ 01/01/2026): doanh thu bán hàng trừ các khoản giảm trừ doanh thu
+    (chiết khấu thương mại, hàng bán bị trả lại) ra doanh thu thuần – trong file và số đo là Gross Sales, Discounts,
+    Returns, Net Revenue. "Finance" trong tên file và số đo chính là phòng Tài chính – Kế toán. Tên menu Excel ghi theo
+    giao diện tiếng Việt của Microsoft kèm tiếng Anh, vì máy học viên có thể dùng một trong hai.""")
     add("Cây KPI", """
-    (Phần 3 · khoảng 20 phút.) Đọc cây KPI từ trái sang phải: Gross Sales trừ giảm giá ra Net Sales, trừ hoàn trả ra
+    Đọc cây KPI từ trái sang phải: Gross Sales trừ giảm giá ra Net Sales, trừ hoàn trả ra
     Net Revenue, rồi so với Finance Net Revenue ra Δ và cờ ngưỡng. Nhánh trên: Orders và Units là mẫu số của AOV và
     ASP, với tử số chung là Net Sales. Thông điệp: hiểu định nghĩa và thứ tự trước, viết DAX sau; sơ đồ này nằm ở
     diagrams/04_cay_kpi.drawio để mentor sửa khi cần.""")
@@ -238,18 +244,21 @@ def build_notes(REF, KEY, vn, pct):
     cao hơn Finance.""")
 
     # ------------------------------------------------------------------ phần 6
-    add("Bản đồ measure", """
-    (Phần 6 · khoảng 35 phút.) Viết measure theo 5 nhóm và theo thứ tự: doanh thu → đơn & giá → thời gian → Finance →
-    quy đổi online. Measure sau dùng lại measure trước, ví dụ [Net Revenue] = [Net Sales] − [Returns]: sửa định nghĩa
+    add("Bản đồ số đo", """
+    (Phần 6 · khoảng 35 phút.) Bộ bắt buộc chỉ có 21 số đo, chia 5 nhóm theo thứ tự: doanh thu → đơn & giá → Kế toán
+    và chênh lệch → quy đổi online → so sánh kỳ; 8 số đo nâng cao để riêng cho phần sáng tạo. Số đo sau dùng lại số đo trước, ví dụ [Net Revenue] = [Net Sales] − [Returns]: sửa định nghĩa
     ở một chỗ thì đúng ở mọi nơi. Đặt tất cả trong bảng _Measures, tạo theo đúng thứ tự trong excel_build/measures.dax.
-    Mỗi measure mới kiểm ngay bằng PivotTable hoặc một ô CUBEVALUE trước khi dùng tiếp.""")
-    add("Tạo measure trong Power Pivot", f"""
-    Hai cách tạo measure trong Excel: hộp thoại Power Pivot → Measures → New Measure (chọn bảng _Measures, đặt tên, dán
-    công thức, chọn định dạng) hoặc dán nguyên dòng “Tên := công thức” vào Calculation Area dưới bảng _Measures. Giữ
-    đúng tên như measures.dax vì các ô CUBEVALUE gọi theo tên. Measure chuỗi như [Điểm chính Tổng quan] ghép số thành
-    câu; đưa ra ô bằng CUBEVALUE kèm 4 slicer nên câu tự đổi khi chọn tháng khác. Demo trực tiếp tháng {RM}.""")
+    Mỗi số đo mới kiểm ngay bằng PivotTable hoặc một ô CUBEVALUE trước khi dùng tiếp.""")
+    add("Tạo số đo trong Power Pivot", f"""
+    Hai cách tạo số đo: hộp thoại Power Pivot → Measures → New Measure (chọn bảng _Measures, đặt tên, dán công thức,
+    chọn định dạng) hoặc dán nguyên khối “Tên := công thức” vào Calculation Area dưới bảng _Measures. Giữ đúng tên như
+    measures.dax vì ô CUBEVALUE gọi theo tên. Điểm mới so với bản trước: DAX chỉ tính số; % thay đổi và câu Điểm chính
+    là công thức Excel thường (TEXT, &) trỏ vào các ô CUBEVALUE, CUBERANKEDMEMBER đọc tháng đang chọn trên slicer.
+    Demo trực tiếp tháng {RM}.""")
+
     add("DAX nhóm doanh thu", f"""
-    gross_amount (quantity × unit_price) đã tính ở Power Query nên Gross Sales chỉ cần SUM; CALCULATE với
+    Gross Sales là doanh thu bán hàng, Discounts là chiết khấu thương mại, Returns là hàng bán bị trả lại, Net Revenue
+    là doanh thu thuần. gross_amount (quantity × unit_price) đã tính ở Power Query nên Gross Sales chỉ cần SUM; CALCULATE với
     KEEPFILTERS thêm điều kiện COMPLETED cho mọi pivot mà vẫn giữ lựa chọn của slicer. Cú pháp trong Excel là
     “Tên := công thức”. Returns không lọc trạng thái vì mọi dòng trả hàng đều thuộc đơn COMPLETED (QC đã kiểm). Kiểm chứng tháng
     {RM}: Gross {vn(m['gross_sales'], 2)} − Discounts {vn(m['discounts'], 2)} = Net Sales {vn(m['net_sales'], 2)}; trừ
@@ -280,12 +289,13 @@ def build_notes(REF, KEY, vn, pct):
     (công thức SUMIFS) dùng để so số. Thứ tự đọc mỗi sheet: câu Điểm chính → thẻ KPI → biểu đồ có tiêu đề nêu kết
     luận → bảng chi tiết. Luôn bắt đầu từ câu hỏi của trang, không bắt đầu từ biểu đồ.""")
     add("Từ measure đến dashboard Excel", """
-    Bốn đối tượng Excel đủ dựng cả 4 sheet. Slicer từ Data Model (Năm, Tháng, Kênh, Quốc gia), copy sang sheet khác là
-    dùng chung bộ lọc; Report Connections quyết định pivot nào bị lọc – biểu đồ 24 tháng thì bỏ nối slicer Năm/Tháng.
-    CUBEVALUE đưa một measure ra một ô theo slicer, kể cả measure chuỗi, nên dùng cho thẻ KPI, câu Điểm chính và tiêu
-    đề hành động. PivotTable From Data Model cho bảng chi tiết và làm nguồn cho PivotChart. Waterfall không làm được từ
-    PivotTable nên vẽ chart thường từ các ô CUBEVALUE. Mẹo tô màu nhấn: tách hai measure (mục nhấn / phần còn lại)
-    rồi vẽ cột chồng.""")
+    Bốn đối tượng Excel đủ dựng cả 4 sheet. Slicer từ Mô hình Dữ liệu (Năm, Tháng, Kênh, Quốc gia), copy sang sheet khác
+    là dùng chung bộ lọc; Report Connections quyết định pivot nào bị lọc – biểu đồ 24 tháng thì bỏ nối slicer Năm/Tháng.
+    CUBEVALUE đưa một số đo ra một ô theo slicer; các ô đó là nguyên liệu cho thẻ KPI, % thay đổi và câu Điểm chính viết
+    bằng công thức Excel. PivotTable From Data Model cho bảng chi tiết và làm nguồn cho PivotChart. Waterfall không làm
+    được từ PivotTable nên vẽ chart thường từ các ô CUBEVALUE. Mẹo tô màu nhấn: bảng phụ hai cột (nhấn = IF là mục lớn
+    nhất, nền = phần còn lại) rồi vẽ cột chồng.""")
+
     add("Bảng dựng 4 sheet", """
     Bảng này là “bản vẽ thi công” của 4 sheet. Đặt mọi PivotTable nguồn và bảng phụ ở sheet _pivot (ẩn khi nộp); 4
     sheet dashboard chỉ chứa slicer, ô CUBEVALUE, biểu đồ và bảng cho người xem. Giữ cùng vùng ô cho câu Điểm chính
@@ -380,10 +390,12 @@ def apply_notes(prs, REF, KEY, vn, pct):
     notes = build_notes(REF, KEY, vn, pct)
     slides = list(prs.slides)
     assert len(notes) == len(slides), f"{len(notes)} notes cho {len(slides)} slide"
+    from thuat_ngu import chuan_hoa
     for i, (s, (key, txt)) in enumerate(zip(slides, notes), 1):
         allt = " ".join(sh.text_frame.text for sh in _walk(s.shapes) if sh.has_text_frame)
+        key = chuan_hoa(key, ui=False)
         assert key in allt, f"slide {i}: không thấy '{key}' – notes lệch slide"
-        s.notes_slide.notes_text_frame.text = txt
+        s.notes_slide.notes_text_frame.text = chuan_hoa(txt, ui=False)
 
 
 def _walk(shapes):

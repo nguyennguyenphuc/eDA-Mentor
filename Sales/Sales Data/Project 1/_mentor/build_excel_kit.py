@@ -13,7 +13,8 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 P1 = HERE.parent
-KIT = P1 / "excel_build"
+HV = P1 / "hoc_vien"                  # bộ file giao học viên
+KIT = HV / "excel_build"
 REF = json.loads((HERE / "ref_numbers.json").read_text(encoding="utf-8"))
 THR_ABS, THR_PCT = REF["threshold"]["abs_usd"], REF["threshold"]["pct"]
 
@@ -117,96 +118,88 @@ Q["_Measures"] = ('let\n    Source = #table(type table [ghi_chu = text],\n      
 LOAD = {"SourceFolder": "—", "finance_raw": "Only Create Connection", "map_store_finance": "Only Create Connection"}
 
 # ------------------------------------------------------------------ DAX (Power Pivot)
-DAX = f"""// Measures cho Data Model của Excel (Power Pivot). Tạo bằng Power Pivot → Measures → New Measure
-// (Table name: _Measures), hoặc dán từng dòng "Tên := công thức" vào vùng tính toán (Calculation Area) của bảng _Measures.
-// Tên measure giữ nguyên để CUBEVALUE và slide khớp nhau.
+DAX = f"""// Số đo (measure) BẮT BUỘC cho Mô hình Dữ liệu (Data Model) của Excel – 21 số đo.
+// Tạo: Power Pivot → Measures → New Measure (Table name: _Measures), hoặc dán nguyên khối "Tên := công thức"
+// vào Calculation Area dưới bảng _Measures. Giữ đúng tên vì ô CUBEVALUE gọi số đo theo tên.
+// % thay đổi, câu "Điểm chính" và tô màu nhấn làm bằng công thức Excel trên các ô CUBEVALUE (guideline Bước 5).
 
 // ===== 1 · Doanh thu (chỉ đơn COMPLETED; dòng trùng đã bỏ ở Power Query)
-Gross Sales := CALCULATE ( SUM ( fact_sales_line[gross_amount] ), KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
-Discounts := CALCULATE ( SUM ( fact_sales_line[discount_amount] ), KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
+Gross Sales :=
+    CALCULATE ( SUM ( fact_sales_line[gross_amount] ),
+        KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
+Discounts :=
+    CALCULATE ( SUM ( fact_sales_line[discount_amount] ),
+        KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
 Net Sales := [Gross Sales] - [Discounts]
 Returns := SUM ( fact_return[return_amount] )
 Net Revenue := [Net Sales] - [Returns]
 
 // ===== 2 · Đơn hàng và giá
-Orders := CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ), KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
-Units := CALCULATE ( SUM ( fact_sales_line[quantity] ), KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
+Orders :=
+    CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ),
+        KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
+Units :=
+    CALCULATE ( SUM ( fact_sales_line[quantity] ),
+        KEEPFILTERS ( fact_sales_line[order_status] = "COMPLETED" ) )
 AOV := DIVIDE ( [Net Sales], [Orders] )
 ASP := DIVIDE ( [Net Sales], [Units] )
 Return Rate := DIVIDE ( [Returns], [Net Sales] )
-Giảm giá / Gross := DIVIDE ( [Discounts], [Gross Sales] )
-Tỷ trọng online := DIVIDE ( CALCULATE ( [Net Sales], KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ) ), [Net Sales] )
-Cancelled Orders := CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ), fact_sales_line[order_status] = "CANCELLED" )
-Pending Orders := CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ), fact_sales_line[order_status] = "PENDING" )
 
-// ===== 3 · Finance và đối soát
-Finance Net Revenue := CALCULATE ( SUM ( fact_finance[net_revenue] ), NOT ISBLANK ( fact_finance[store_key] ) )
-HQ Adjustment := CALCULATE ( SUM ( fact_finance[net_revenue] ), ISBLANK ( fact_finance[store_key] ) )
+// ===== 3 · Kế toán (Finance) và đối soát
+Finance Net Revenue :=
+    CALCULATE ( SUM ( fact_finance[net_revenue] ), NOT ISBLANK ( fact_finance[store_key] ) )
 Δ Finance := [Finance Net Revenue] - [Net Revenue]
 Δ Finance % := DIVIDE ( [Δ Finance], ABS ( [Finance Net Revenue] ) )
 Δ tuyệt đối := ABS ( [Δ Finance] )
-Net Sales (ngày giao) := CALCULATE ( [Net Sales], USERELATIONSHIP ( fact_sales_line[delivery_date], dim_date[date] ) )
+Vượt ngưỡng :=
+    IF ( ABS ( [Δ Finance] ) > {THR_ABS:.0f} && ABS ( [Δ Finance %] ) > {THR_PCT}, 1, 0 )
+Số cửa hàng vượt ngưỡng :=
+    SUMX ( CROSSJOIN ( VALUES ( dim_date[month_id] ), VALUES ( dim_store[store_key] ) ),
+        [Vượt ngưỡng] )
+
+// ===== 4 · Quy đổi online về ngày giao (cách Kế toán ghi nhận)
 Net Sales (cơ sở Finance) :=
     VAR pos = CALCULATE ( [Net Sales], KEEPFILTERS ( fact_sales_line[channel_code] = "POS" ) )
-    VAR onl = CALCULATE ( [Net Sales (ngày giao)], KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ) )
+    VAR onl = CALCULATE ( [Net Sales], KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ),
+        USERELATIONSHIP ( fact_sales_line[delivery_date], dim_date[date] ) )
     RETURN pos + onl
 Δ sau quy đổi := [Finance Net Revenue] - ( [Net Sales (cơ sở Finance)] - [Returns] )
-Vượt ngưỡng := IF ( ABS ( [Δ Finance] ) > {THR_ABS:.0f} && ABS ( [Δ Finance %] ) > {THR_PCT}, 1, 0 )
-Số cửa hàng vượt ngưỡng := SUMX ( CROSSJOIN ( VALUES ( dim_date[month_id] ), VALUES ( dim_store[store_key] ) ), [Vượt ngưỡng] )
-Lệch thời điểm online := [Δ Finance] - [Δ sau quy đổi]
 
-// ===== 4 · So sánh kỳ (cần dim_date đã Mark as Date Table; chọn MỘT tháng trên slicer)
+// ===== 5 · So sánh kỳ (dim_date đã Đánh dấu là Bảng ngày tháng; slicer chọn MỘT năm + MỘT tháng)
 Net Revenue LM := CALCULATE ( [Net Revenue], DATEADD ( dim_date[date], -1, MONTH ) )
 Net Revenue SPLY := CALCULATE ( [Net Revenue], SAMEPERIODLASTYEAR ( dim_date[date] ) )
 Net Revenue YTD := CALCULATE ( [Net Revenue], DATESYTD ( dim_date[date] ) )
-Net Revenue % LM := DIVIDE ( [Net Revenue] - [Net Revenue LM], [Net Revenue LM] )
-Net Revenue % SPLY := DIVIDE ( [Net Revenue] - [Net Revenue SPLY], [Net Revenue SPLY] )
-Net Sales SPLY := CALCULATE ( [Net Sales], SAMEPERIODLASTYEAR ( dim_date[date] ) )
-Net Sales % SPLY := DIVIDE ( [Net Sales] - [Net Sales SPLY], [Net Sales SPLY] )
-Orders LM := CALCULATE ( [Orders], DATEADD ( dim_date[date], -1, MONTH ) )
-AOV LM := CALCULATE ( [AOV], DATEADD ( dim_date[date], -1, MONTH ) )
-Orders % LM := DIVIDE ( [Orders] - [Orders LM], [Orders LM] )
-AOV % LM := DIVIDE ( [AOV] - [AOV LM], [AOV LM] )
-Return Rate LM := CALCULATE ( [Return Rate], DATEADD ( dim_date[date], -1, MONTH ) )
-Orders SPLY := CALCULATE ( [Orders], SAMEPERIODLASTYEAR ( dim_date[date] ) )
-AOV SPLY := CALCULATE ( [AOV], SAMEPERIODLASTYEAR ( dim_date[date] ) )
-Orders % SPLY := DIVIDE ( [Orders] - [Orders SPLY], [Orders SPLY] )
-AOV % SPLY := DIVIDE ( [AOV] - [AOV SPLY], [AOV SPLY] )
-Return Rate SPLY := CALCULATE ( [Return Rate], SAMEPERIODLASTYEAR ( dim_date[date] ) )
-
-// ===== 5 · Hỗ trợ biểu đồ Excel (tách 2 chuỗi để tô màu nhấn mà không phải tô tay sau mỗi lần đổi slicer)
-Net Sales danh mục dẫn đầu := VAR m = MAXX ( ALLSELECTED ( dim_product[category] ), [Net Sales] ) RETURN IF ( [Net Sales] = m, [Net Sales] )
-Net Sales danh mục khác := IF ( ISBLANK ( [Net Sales danh mục dẫn đầu] ), [Net Sales] )
-Δ tháng có vượt ngưỡng := IF ( [Số cửa hàng vượt ngưỡng] > 0, [Δ sau quy đổi] )
-Δ tháng khác := IF ( [Số cửa hàng vượt ngưỡng] = 0, [Δ sau quy đổi] )
-
-// ===== 6 · Chuỗi cho tiêu đề hành động và câu Điểm chính (đưa ra ô bằng CUBEVALUE)
-Tháng chọn := IF ( HASONEVALUE ( dim_date[month_label] ), VALUES ( dim_date[month_label] ), "nhiều tháng" )
-Điểm chính Tổng quan :=
-    "Net Revenue " & [Tháng chọn] & " đạt " & FORMAT ( [Net Revenue] / 1000, "#,##0.0" ) & " nghìn USD — "
-    & FORMAT ( [Net Revenue % LM], "+0.0%;-0.0%" ) & " so với tháng trước, "
-    & FORMAT ( [Net Revenue % SPLY], "+0.0%;-0.0%" ) & " so với cùng kỳ năm trước."
-Điểm chính Động lực :=
-    IF ( ABS ( [Orders % SPLY] ) >= ABS ( [AOV % SPLY] ),
-        "Biến động so với cùng kỳ đến chủ yếu từ số đơn (" & FORMAT ( [Orders % SPLY], "+0.0%;-0.0%" ) & "); AOV " & FORMAT ( [AOV % SPLY], "+0.0%;-0.0%" ) & ".",
-        "Biến động so với cùng kỳ đến chủ yếu từ giá trị mỗi đơn (AOV " & FORMAT ( [AOV % SPLY], "+0.0%;-0.0%" ) & "); số đơn " & FORMAT ( [Orders % SPLY], "+0.0%;-0.0%" ) & "." )
-Điểm chính Đối soát :=
-    "Finance " & IF ( [Δ Finance] >= 0, "cao", "thấp" ) & " hơn dữ liệu đơn " & FORMAT ( ABS ( [Δ Finance] ), "#,##0" )
-    & " USD; sau khi quy online về ngày giao còn " & FORMAT ( [Δ sau quy đổi], "#,##0" ) & " USD; "
-    & [Số cửa hàng vượt ngưỡng] & " cửa hàng vượt ngưỡng."
-Tiêu đề danh mục :=
-    VAR topCat = TOPN ( 1, VALUES ( dim_product[category] ), [Net Sales] )
-    RETURN MAXX ( topCat, dim_product[category] ) & " chiếm "
-        & FORMAT ( DIVIDE ( CALCULATE ( [Net Sales], topCat ), [Net Sales] ), "0%" ) & " Net Sales"
-Tiêu đề hoàn trả :=
-    "Tỷ lệ hoàn trả " & FORMAT ( [Return Rate], "0.00%" ) & " — "
-    & IF ( [Return Rate] > [Return Rate SPLY], "cao", "thấp" ) & " hơn cùng kỳ "
-    & FORMAT ( ABS ( [Return Rate] - [Return Rate SPLY] ) * 100, "0.00" ) & " điểm %"
 """
 
+DAX_NC = """// Số đo NÂNG CAO (tuỳ chọn – phần sáng tạo, 8 số đo). Chỉ tạo sau khi 21 số đo bắt buộc đã khớp số.
+
+// ===== A · Bổ sung cho đối soát và chất lượng dữ liệu
+HQ Adjustment :=
+    CALCULATE ( SUM ( fact_finance[net_revenue] ), ISBLANK ( fact_finance[store_key] ) )
+Cancelled Orders :=
+    CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ),
+        fact_sales_line[order_status] = "CANCELLED" )
+Pending Orders :=
+    CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ),
+        fact_sales_line[order_status] = "PENDING" )
+
+// ===== B · Cơ cấu doanh thu
+Tỷ trọng online :=
+    DIVIDE ( CALCULATE ( [Net Sales], KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ) ),
+        [Net Sales] )
+Tỷ lệ chiết khấu := DIVIDE ( [Discounts], [Gross Sales] )
+
+// ===== C · So sánh cùng kỳ cho thẻ KPI khác Net Revenue
+Orders SPLY := CALCULATE ( [Orders], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+AOV SPLY := CALCULATE ( [AOV], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+Return Rate SPLY := CALCULATE ( [Return Rate], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+"""
+_n = lambda t: sum(1 for l in t.splitlines() if ":=" in l and not l.startswith((" ", "//")))
+assert _n(DAX) == 21 and _n(DAX_NC) == 8, (_n(DAX), _n(DAX_NC))
+
 # ------------------------------------------------------------------ chạy song song bằng pandas: số dòng sau từng bước
-X = pd.read_excel(P1 / DS, sheet_name=None)
-finance = pd.read_excel(P1 / FIN, sheet_name="finance_revenue")
+X = pd.read_excel(HV / DS, sheet_name=None)
+finance = pd.read_excel(HV / FIN, sheet_name="finance_revenue")
 steps = {}
 f0 = X["fact_sales_line"]
 f1 = f0.drop_duplicates()
@@ -273,26 +266,35 @@ for i, name in enumerate(ORDER, 1):
     (KIT / "m" / f"{i:02d}_{name}.pq").write_text(f"// {name}: {desc}\n// Nạp: {LOAD.get(name, 'Only Create Connection + Add this data to the Data Model')}\n{code}\n",
                                                   encoding="utf-8")
 (KIT / "measures.dax").write_text(DAX, encoding="utf-8")
+(KIT / "measures_nang_cao.dax").write_text(DAX_NC, encoding="utf-8")
 (KIT / "README.md").write_text(f"""# Bộ dựng dashboard Excel — Sales Project 1
 
-Yêu cầu: Excel cho Windows (Microsoft 365 hoặc 2016+), bật add-in **Microsoft Power Pivot for Excel**
-(File → Options → Add-ins → Manage: COM Add-ins → Go… → tick Power Pivot).
+**Yêu cầu:** Excel cho Windows (Microsoft 365 hoặc Excel 2016 trở lên), bật bổ trợ **Microsoft Power Pivot for Excel**:
+File → Options → Add-ins → ô Manage chọn *COM Add-ins* → Go… → tick *Microsoft Power Pivot for Excel*.
+Excel cho Mac và Excel trên web không có Power Pivot.
 
-1. **Power Query (M)** — Data → Get Data → From Other Sources → Blank Query → Advanced Editor, dán lần lượt các file
-   trong `m/` theo số thứ tự, đặt tên query đúng tên file (bỏ số). Sửa `SourceFolder` thành thư mục chứa
-   `{DS}` và `{FIN}`.
-2. **Nạp** — Home → Close & Load To… → *Only Create Connection* + tick *Add this data to the Data Model*
-   (riêng `finance_raw`, `map_store_finance`: chỉ *Only Create Connection*).
-3. **Data Model** — Power Pivot → Manage → Diagram View: tạo quan hệ theo guideline mục 3.1, Mark as Date Table cho dim_date.
-4. **DAX** — dán các measure trong `measures.dax` vào bảng `_Measures` (Power Pivot → Measures → New Measure).
-5. **Dashboard** — 4 sheet: PivotTable/PivotChart từ Data Model, Slicer Tháng/Kênh/Quốc gia nối mọi pivot
-   (Report Connections), thẻ KPI và câu Điểm chính bằng CUBEVALUE.
+| Thư mục / file | Nội dung |
+|---|---|
+| `m/01_…pq` → `m/13_…pq` | 13 truy vấn Power Query (M), đánh số theo thứ tự tạo |
+| `measures.dax` | 21 số đo (measure) **bắt buộc** |
+| `measures_nang_cao.dax` | 8 số đo **nâng cao** (tuỳ chọn, cho phần sáng tạo) |
+
+1. **Power Query (M).** Data → Get Data → From Other Sources → Blank Query → Advanced Editor. Dán lần lượt các file
+   trong `m/` theo số thứ tự, đặt tên truy vấn đúng tên file (bỏ số). Sửa tham số `SourceFolder` thành thư mục chứa
+   `{DS}` và `{FIN}` (kết thúc bằng dấu \\).
+2. **Nạp dữ liệu.** Home → Đóng & Tải Tới (Close & Load To…) → *Only Create Connection* và tick
+   *Add this data to the Data Model*. Riêng `finance_raw`, `map_store_finance`: chỉ *Only Create Connection*.
+3. **Mô hình Dữ liệu (Data Model).** Power Pivot → Manage → Dạng xem Sơ đồ (Diagram View): tạo mối quan hệ theo
+   hướng dẫn mục 3.1; Đánh dấu là Bảng ngày tháng (Mark as Date Table) cho dim_date.
+4. **Số đo DAX.** Tạo 21 số đo trong `measures.dax` ở bảng `_Measures` (Power Pivot → Measures → New Measure).
+5. **Dashboard 4 sheet.** PivotTable/PivotChart từ Mô hình Dữ liệu, Slicer Năm/Tháng/Kênh/Quốc gia nối mọi pivot
+   (Report Connections); thẻ KPI bằng CUBEVALUE; % thay đổi và câu "Điểm chính" bằng công thức Excel.
 
 Số dòng phải khớp sau khi nạp: fact_sales_line {vn(rows['fact_sales_line_clean'])} · fact_return {vn(rows['fact_return'])} ·
-fact_finance {vn(rows['finance_revenue'])}. Code M và DAX ở đây dùng lại được nguyên vẹn nếu sau này chuyển sang Power BI.
+fact_finance {vn(rows['finance_revenue'])}. Khi dữ liệu đổi: Data → Làm mới Tất cả (Refresh All).
 """, encoding="utf-8")
 out = {"steps": steps, "dims": dims, "order": ORDER, "load": LOAD,
        "queries": {k: {"code": v[0], "desc": v[1]} for k, v in Q.items()}}
 (HERE / "pq_steps.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
-print("excel_build:", len(ORDER), "query M,", DAX.count(":="), "measure; số dòng:",
+print("excel_build:", len(ORDER), "query M,", _n(DAX), "+", _n(DAX_NC), "số đo; số dòng:",
       {k: v[-1][2] for k, v in steps.items()})

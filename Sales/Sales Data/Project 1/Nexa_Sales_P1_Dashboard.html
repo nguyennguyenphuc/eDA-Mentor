@@ -69,7 +69,7 @@ table.t td .bar.hl{background:var(--accent)}
  </header>
  <nav class="tabs" id="tabs">
   <button data-p="s1" class="on">1 · Tổng quan</button><button data-p="s2">2 · Doanh thu đến từ đâu</button>
-  <button data-p="s3">3 · Đối soát với Finance</button><button data-p="s4">4 · Hoàn trả &amp; chất lượng dữ liệu</button>
+  <button data-p="s3">3 · Đối soát với Kế toán</button><button data-p="s4">4 · Hoàn trả &amp; chất lượng dữ liệu</button>
  </nav>
 
  <section class="page on" id="s1">
@@ -157,7 +157,7 @@ const delta = m => { const a = finv(m); return a == null ? null : a - nrev(m); }
 const deltaAdj = m => sumM(m,r => r.fin - (r.ns_post - r.ret));
 const rrate = m => { const a = ns(m); return a ? ret(m)/a : null; };
 const dOf = r => r.fin - (r.ns - r.ret);
-const over = r => { const d = dOf(r), p = r.fin ? d/Math.abs(r.fin) : (d ? 1 : 0); return Math.abs(d) > D.thr.abs_usd && Math.abs(p) > D.thr.pct; };
+const over = r => { const d = dOf(r), p = r.fin ? d/Math.abs(r.fin) : 0; /* như DIVIDE của DAX: Kế toán = 0 → không xét % */ return Math.abs(d) > D.thr.abs_usd && Math.abs(p) > D.thr.pct; };
 const overRows = m => rowsM(m).filter(over);
 const chg = (a,b) => (a == null || b == null || !b) ? null : (a-b)/Math.abs(b);
 const win = () => MONTHS.filter(m => m <= S.mid && m > mAdd(S.mid,-24));
@@ -302,13 +302,13 @@ function p1() {
     ? `Biến động so với cùng kỳ đến chủ yếu từ số đơn (${spc(cO)}); giá trị mỗi đơn (AOV) ${spc(cA)}.`
     : `Biến động so với cùng kỳ đến chủ yếu từ giá trị mỗi đơn (AOV ${spc(cA)}); số đơn ${spc(cO)}.`;
   story('s1-story', `Net Revenue ${mStr(m)} đạt ${k1(nr)} nghìn USD — ${spc(chg(nr, nrev(LM(m))))} so với tháng trước, ${spc(cN)} so với cùng kỳ năm trước.`,
-    [driver, `Finance ghi nhận ${d >= 0 ? 'cao' : 'thấp'} hơn dữ liệu đơn ${nf(Math.abs(d))} USD (${spc(chg(finv(m), nr))}); ${fl} cửa hàng vượt ngưỡng cần giải thích (trang 3).`]);
+    [driver, `Kế toán ghi nhận ${d >= 0 ? 'cao' : 'thấp'} hơn dữ liệu đơn ${nf(Math.abs(d))} USD (${spc(chg(finv(m), nr))}); ${fl} cửa hàng vượt ngưỡng cần giải thích (trang 3).`]);
   kpis('s1-k', [
     {lb:'Net Revenue', v:k1(nr), u:'nghìn USD', d:[[chg(nr, nrev(LM(m))), 'so với tháng trước', true], [cN, 'so với cùng kỳ', true]]},
     {lb:'Số đơn hoàn tất', v:nf(o), u:'đơn', d:[[chg(o, orders(LM(m))), 'so với tháng trước', true], [cO, 'so với cùng kỳ', true]]},
     {lb:'AOV', v:nf(a), u:'USD/đơn', d:[[chg(a, aov(LM(m))), 'so với tháng trước', true], [cA, 'so với cùng kỳ', true]]},
     {lb:'Tỷ lệ hoàn trả', v:pc(rrate(m), 2), d:[[rrate(m) - rrate(LM(m)), 'so với tháng trước', false, 'pp'], [rrate(m) - rrate(SP(m)), 'so với cùng kỳ', false, 'pp']]},
-    {lb:'Chênh lệch Finance', v:sg(d), u:'USD', alert: fl > 0, note:[`${spc(chg(finv(m), nr), 2)} so với dữ liệu đơn`, `${fl} cửa hàng vượt ngưỡng`]},
+    {lb:'Chênh lệch với Kế toán', v:sg(d), u:'USD', alert: fl > 0, note:[`${spc(chg(finv(m), nr), 2)} so với dữ liệu đơn`, `${fl} cửa hàng vượt ngưỡng`]},
   ]);
   const R = win(), cats = R.map(mShort), sel = mShort(m), spI = R.indexOf(SP(m));
   T('t1a', `Net Revenue ${mStr(m)} bằng ${pc(nr / nrev(SP(m)), 0)} cùng kỳ năm trước`);
@@ -370,14 +370,14 @@ function p3() {
   const fl = rows.filter(over), posFl = fl.filter(r => r.store_key !== 0).sort((a,b) => Math.abs(dOf(b)) - Math.abs(dOf(a)));
   const hqv = D.hq[String(m)];
   const sub = posFl.slice(0,3).map(r => `${ST[r.store_key].code} (${sg(dOf(r))} USD)`).join(', ');
-  story('s3-story', `Finance ${d >= 0 ? 'cao' : 'thấp'} hơn dữ liệu đơn ${nf(Math.abs(d))} USD (${spc(d / Math.abs(finv(m) || 1), 2)}).` +
+  story('s3-story', `Kế toán ${d >= 0 ? 'cao' : 'thấp'} hơn dữ liệu đơn ${nf(Math.abs(d))} USD (${spc(d / Math.abs(finv(m) || 1), 2)}).` +
       (onlR && Math.abs(timing) > 1 ? ` ${sg(timing)} USD là lệch thời điểm của kênh online — biến mất khi tính theo ngày giao.` : ''),
     [posFl.length ? `Còn lại ${sg(da)} USD; cần điều tra ${posFl.length} cửa hàng vượt ngưỡng: ${sub}${posFl.length > 3 ? '…' : ''}.` : `Còn lại ${sg(da)} USD, không cửa hàng nào vượt ngưỡng ngoài kênh online.`,
      hqv ? `Chưa gồm bút toán HQ-ADJ ${sg(hqv)} USD (không thuộc cửa hàng nào).` : 'Xuống mức ngày (posting_date) ở các cửa hàng có ⚠ để tìm nguyên nhân và số tiền.']);
   kpis('s3-k', [
     {lb:'Net Revenue · dữ liệu đơn', v:k1(nrev(m)), u:'nghìn USD'},
-    {lb:'Net Revenue · Finance', v:k1(finv(m)), u:'nghìn USD', note: hqv ? ['chưa gồm HQ-ADJ ' + sg(hqv) + ' USD'] : []},
-    {lb:'Chênh lệch Δ', v:sg(d), u:'USD', alert: Math.abs(d) > D.thr.abs_usd, note:[spc(d / Math.abs(finv(m) || 1), 2) + ' trên Finance']},
+    {lb:'Net Revenue · Kế toán', v:k1(finv(m)), u:'nghìn USD', note: hqv ? ['chưa gồm HQ-ADJ ' + sg(hqv) + ' USD'] : []},
+    {lb:'Chênh lệch Δ', v:sg(d), u:'USD', alert: Math.abs(d) > D.thr.abs_usd, note:[spc(d / Math.abs(finv(m) || 1), 2) + ' trên số Kế toán']},
     {lb:'Δ sau quy đổi online', v:sg(da), u:'USD', alert: posFl.length > 0, note:['online tính theo ngày giao']},
     {lb:'Cửa hàng vượt ngưỡng', v:String(fl.length), u:'/ ' + rows.length, alert: fl.length > 0, note:[`|Δ| > ${nf(D.thr.abs_usd)} USD và |Δ%| > ${nf(D.thr.pct*100)}%`]},
   ]);
@@ -385,7 +385,7 @@ function p3() {
   if (onlR && Math.abs(timing) > .5) steps.push({n:'Online lệch thời điểm', v:timing, c:C.ctx});
   posFl.slice(0,3).forEach(r => steps.push({n:ST[r.store_key].code + ' ⚠', v:dOf(r), c:C.crit}));
   const rest = d - steps.reduce((a,s) => a + s.v, 0); if (Math.abs(rest) > .5) steps.push({n:'Cửa hàng khác', v:rest, c:C.ctxD});
-  steps.push({n:'Δ Finance − đơn', v:d, total:true, hl:true});
+  steps.push({n:'Δ Kế toán − đơn', v:d, total:true, hl:true});
   T('t3a', posFl.length ? `${ST[posFl[0].store_key].code} là chênh lệch thật lớn nhất (${sg(dOf(posFl[0]))} USD)` : 'Chênh lệch chủ yếu là lệch thời điểm');
   waterfall('c3a', steps, {fmt:v => nf(v/1000,1), unit:'nghìn USD'});
   const R = win(), cats = R.map(mShort), sel = mShort(m);
@@ -396,7 +396,7 @@ function p3() {
   const tr = rows.map(r => ({k:r.store_key, nr:r.ns - r.ret, fin:r.fin, d:dOf(r), p:r.fin ? dOf(r)/Math.abs(r.fin) : null, da:r.fin - (r.ns_post - r.ret), fl:over(r)}))
     .sort((a,b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 10);
   T('t3c', fl.length ? `${fl.length} cửa hàng vượt ngưỡng tháng ${mStr(m)}` : `Không cửa hàng nào vượt ngưỡng tháng ${mStr(m)}`);
-  table('c3c', [{h:'Cửa hàng', l:1, f:r => ({t:ST[r.k].code + ' · ' + ST[r.k].ctry})}, {h:'Đơn hàng', f:r => ({t:nf(r.nr)})}, {h:'Finance', f:r => ({t:nf(r.fin)})},
+  table('c3c', [{h:'Cửa hàng', l:1, f:r => ({t:ST[r.k].code + ' · ' + ST[r.k].ctry})}, {h:'Đơn hàng', f:r => ({t:nf(r.nr)})}, {h:'Kế toán', f:r => ({t:nf(r.fin)})},
     {h:'Δ', f:r => ({t:sg(r.d), c:r.fl ? 'flag' : ''})}, {h:'Δ %', f:r => ({t:spc(r.p), c:r.fl ? 'flag' : 'mut'})}, {h:'Δ sau quy đổi', f:r => ({t:sg(r.da)})},
     {h:'Cờ', f:r => r.fl ? {t:'⚠ Vượt', c:'flag'} : {t:'trong ngưỡng', c:'mut'}}], tr);
   if (S.ch === 'POS' || S.ctry !== 'ALL') { T('t3d', 'Kênh online không thuộc bộ lọc đang chọn'); empty('c3d', 'Chọn Kênh = Tất cả và Quốc gia = Tất cả để xem kênh online.'); }
@@ -443,8 +443,8 @@ function header() {
   const cs = $('#f-ctry'); if (cs.options.length !== CTRY.length + 1) cs.replaceChildren(new Option('Tất cả quốc gia', 'ALL'), ...CTRY.map(c => new Option(c, c)));
   cs.value = S.ctry; $('#f-ch').value = S.ch;
   $('#sub').textContent = 'Nexa Home · Sales Project 1 · dữ liệu đến ' + D.asof.split('-').reverse().join('/');
-  $('#foot').textContent = 'Nguồn: Nexa_Sales_P1_Dataset.xlsx (đơn hàng, hoàn trả) và finance_revenue.xlsx (Finance). Dữ liệu đến ' + D.asof.split('-').reverse().join('/') +
-    '. USD, chưa VAT. Chỉ tính đơn COMPLETED, đã loại dòng trùng; Returns theo ngày trả hàng. Δ = Finance − dữ liệu đơn; vượt ngưỡng khi |Δ| > ' + nf(D.thr.abs_usd) + ' USD và |Δ%| > ' + nf(D.thr.pct*100) + '% ở mức tháng × cửa hàng. Kênh online không thuộc quốc gia nào: khi chọn quốc gia, online bị loại.';
+  $('#foot').textContent = 'Nguồn: Nexa_Sales_P1_Dataset.xlsx (đơn hàng, hoàn trả) và finance_revenue.xlsx (phòng Tài chính – Kế toán). Dữ liệu đến ' + D.asof.split('-').reverse().join('/') +
+    '. USD, chưa VAT. Chỉ tính đơn COMPLETED, đã loại dòng trùng; Returns theo ngày trả hàng. Δ = số Kế toán − dữ liệu đơn; vượt ngưỡng khi |Δ| > ' + nf(D.thr.abs_usd) + ' USD và |Δ%| > ' + nf(D.thr.pct*100) + '% ở mức tháng × cửa hàng. Kênh online không thuộc quốc gia nào: khi chọn quốc gia, online bị loại.';
 }
 function render() { header(); ({s1:p1, s2:p2, s3:p3, s4:p4})[page](); }
 const set = o => { Object.assign(S, o); render(); };

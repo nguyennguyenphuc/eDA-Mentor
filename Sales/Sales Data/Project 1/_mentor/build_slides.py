@@ -33,12 +33,16 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
 
+from thuat_ngu import BANG, chuan_hoa
+
 # ------------------------------------------------------------------ đường dẫn
 HERE = Path(__file__).resolve().parent            # .../Project 1/_mentor
 P1 = HERE.parent                                   # .../Project 1
+HV = P1 / "hoc_vien"                               # bộ file giao học viên
 REPO = P1.parents[2]                               # .../eDA-Mentor
 TEMPLATE = REPO / "Bank" / "Project 1" / "Slide_Project_1_v3.pptx"
-OUT = P1 / "Slide_Project_1.pptx"
+OUT = P1 / "Slide_Project_1.pptx"                   # bản mentor (đủ phụ lục + notes)
+OUT_HV = HV / "Slide_Project_1_hoc_vien.pptx"       # bản học viên: bỏ slide ẩn và notes
 DIAG = P1 / "diagrams" / "png"
 ASSETS = HERE / "assets"
 
@@ -124,7 +128,7 @@ def chg(cur, base):
 
 def load_data():
     """Đọc dataset + Finance, trả về dict các bảng tổng hợp dùng cho phần khám phá dữ liệu."""
-    X = pd.read_excel(P1 / "Nexa_Sales_P1_Dataset.xlsx",
+    X = pd.read_excel(HV / "Nexa_Sales_P1_Dataset.xlsx",
                       sheet_name=["fact_sales_line", "fact_return", "dim_product", "dim_store",
                                   "dim_promotion", "sample_transactions", "map_store_finance",
                                   "dim_channel", "dim_order_status"])
@@ -271,7 +275,7 @@ def fill_tf(tf, paras, size=14, color=TXT, bold=False, align="l", font=FONT, spa
                 rr = (rr, {})
             text, o = rr
             run = p.add_run()
-            run.text = text
+            run.text = text if (o.get("font", font) == CODE_FONT or o.get("raw")) else chuan_hoa(text, ui=False)
             _set_font(run, o.get("size", psize), o.get("color", pcolor), o.get("bold", pbold),
                       o.get("italic", para.get("italic", False)), o.get("font", font))
     return tf
@@ -464,7 +468,7 @@ def table(slide, x, y, w, h, rows, col_w=None, size=12, header_fill=GREEN, heade
     return gf
 
 
-KIT = P1 / "excel_build"
+KIT = HV / "excel_build"
 PQ = json.loads((HERE / "pq_steps.json").read_text(encoding="utf-8"))
 
 
@@ -485,7 +489,8 @@ def _dax_defs(txt):
     return {k: re.sub(r"\s+", "", v) for k, v in out.items()}
 
 
-KIT_DAX = _dax_defs((KIT / "measures.dax").read_text(encoding="utf-8"))
+KIT_DAX = {**_dax_defs((KIT / "measures.dax").read_text(encoding="utf-8")),
+           **_dax_defs((KIT / "measures_nang_cao.dax").read_text(encoding="utf-8"))}
 
 
 def dax_box(slide, x, y, w, h, code, size=12):
@@ -656,6 +661,36 @@ class Deck:
         cp.subject = "EDA Mentorship – Nexa Home"
         cp.author = "EDA Mentorship"
         prs.save(str(OUT))
+        luu_ban_hoc_vien(OUT, OUT_HV)
+
+
+def luu_ban_hoc_vien(src, dst):
+    """Bản học viên: xoá hẳn slide ẩn (đáp án mentor) và mọi speaker notes. Slide ẩn chỉ "ẩn" thì học viên vẫn bỏ ẩn được."""
+    prs = Presentation(str(src))
+    P14 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+    sldIdLst = prs.slides._sldIdLst
+    bo = []
+    for sid in list(sldIdLst):
+        slide = prs.slides.get(int(sid.get("id")))
+        if slide._element.get("show") == "0":
+            bo.append(sid.get("id"))
+            prs.part.drop_rel(sid.get(qn("r:id")))
+            sldIdLst.remove(sid)
+    # bỏ id slide đã xoá khỏi danh sách section; xoá section rỗng
+    for sec in prs.part._element.iter(f"{{{P14}}}section"):
+        lst = sec.find(f"{{{P14}}}sldIdLst")
+        for e in list(lst):
+            if e.get("id") in bo:
+                lst.remove(e)
+        if not len(lst):
+            sec.getparent().remove(sec)
+    for slide in prs.slides:
+        for rel in list(slide.part.rels.values()):
+            if rel.reltype.endswith("/notesSlide"):
+                slide.part.drop_rel(rel.rId)
+    assert all(sl._element.get("show") != "0" for sl in prs.slides) and bo
+    prs.save(str(dst))
+    print(f"Đã lưu {dst.relative_to(P1)} · {len(prs.slides)} slide (bỏ {len(bo)} slide ẩn và toàn bộ notes)")
 
 
 # ================================================================== biểu đồ
@@ -1094,6 +1129,21 @@ def build():
     SEC = "Hệ thống chỉ số KPI"
     sec_name = "Phần 3 · KPI"
     # ---- 12. Cây KPI
+    # ---- Thuật ngữ (VAS 14 + giao diện Excel tiếng Việt)
+    s = dk.content(sec_name, SEC, "Thuật ngữ dùng trong bài: theo VAS 14 và giao diện Excel tiếng Việt",
+                   ["Tên file, cột, số đo giữ tiếng Anh; ", ("văn bản dùng thuật ngữ chuẩn", {"bold": True, "color": NAVY}),
+                    " – bảng đầy đủ ở phụ lục hướng dẫn"])
+    chon = {"phòng Tài chính – Kế toán (gọi tắt: Kế toán)", "Trưởng phòng Kinh doanh", "chuyên viên phân tích dữ liệu",
+            "doanh thu bán hàng", "chiết khấu thương mại (khuyến mãi giảm giá trên hoá đơn)", "hàng bán bị trả lại",
+            "doanh thu thuần", "ghi nhận doanh thu · ngày ghi sổ", "tỷ lệ hàng bán bị trả lại",
+            "chênh lệch · ngưỡng · đối soát (đối chiếu số liệu)", "Mô hình Dữ liệu", "số đo",
+            "lược đồ hình sao · bảng dữ kiện · bảng chiều"}
+    tn = [["Nhóm", "Thuật ngữ trong tài liệu", "Tiếng Anh / trong file", "Căn cứ"]] + \
+         [[r[0], r[1], (r[2], {"raw": True}), r[3]] for r in BANG[1:] if r[1] in chon]
+    assert len(tn) == len(chon) + 1, "thuật ngữ chọn cho slide không khớp thuat_ngu.BANG"
+    table(s, 0.4, 1.5, 12.55, 5.05, tn, col_w=[1.4, 5.0, 3.6, 2.6], size=12, align=["l", "l", "l", "l"],
+          bold_first_col=True)
+
     s = dk.content(sec_name, SEC, "Cây KPI: từ Gross Sales đến chênh lệch với Finance",
                    ["Hiểu ", ("định nghĩa và thứ tự", {"bold": True, "color": NAVY}),
                     " trước, viết DAX sau: Gross → Net Sales → Net Revenue → Δ Finance"])
@@ -1695,31 +1745,32 @@ def build():
     SEC = "Các mẫu công thức DAX"
     sec_name = "Phần 6 · DAX"
     # ---- 28. Bản đồ measure
-    s = dk.content(sec_name, SEC, "Bản đồ measure: viết theo thứ tự, measure sau dùng lại measure trước",
+    s = dk.content(sec_name, SEC, "Bản đồ số đo: 21 số đo bắt buộc, số đo sau dùng lại số đo trước",
                    ["Không viết lại công thức: ", ("[Net Revenue] = [Net Sales] − [Returns]", {"bold": True,
                                                                                                "color": NAVY}),
                     " – sửa một chỗ, đúng mọi nơi"])
     groups = [("1 · Doanh thu", GREEN, ["Gross Sales", "Discounts", "Net Sales", "Returns", "Net Revenue"]),
               ("2 · Đơn & giá", TEAL, ["Orders", "Units", "AOV", "ASP", "Return Rate"]),
-              ("3 · Thời gian", ORANGE, ["… LM", "… SPLY", "… YTD", "… % LM", "… % SPLY"]),
-              ("4 · Finance", NAVY, ["Finance Net Revenue", "Δ Finance", "Δ Finance %", "Vượt ngưỡng",
-                                     "Số cửa hàng vượt ngưỡng"]),
-              ("5 · Quy đổi online", RED, ["Net Sales (ngày giao)", "Net Sales (cơ sở Finance)",
-                                           "Δ sau quy đổi"])]
+              ("3 · Kế toán & Δ", NAVY, ["Finance Net Revenue", "Δ Finance", "Δ Finance %", "Δ tuyệt đối",
+                                        "Vượt ngưỡng", "Số cửa hàng vượt ngưỡng"]),
+              ("4 · Quy đổi online", RED, ["Net Sales (cơ sở Finance)", "Δ sau quy đổi"]),
+              ("5 · So sánh kỳ", ORANGE, ["Net Revenue LM", "Net Revenue SPLY", "Net Revenue YTD"])]
+    assert sum(len(g[2]) for g in groups) == len([k for k in KIT_DAX if k in
+               _dax_defs((KIT / "measures.dax").read_text(encoding="utf-8"))]) == 21
     for i, (t, colr, ms) in enumerate(groups):
         x = 0.4 + i * 2.53
         box(s, x, 1.5, 2.38, 5.05, fill=WHITE, line=colr, lw=1.5)
         box(s, x, 1.5, 2.38, 0.55, fill=colr, adj=0.15, paras=[(t, {"bold": True})], size=15, color=WHITE)
         for j, mm in enumerate(ms):
-            box(s, x + 0.15, 2.2 + j * 0.85, 2.08, 0.65, fill=L_GRAY, line=None, adj=0.15,
-                paras=[(mm, {"bold": True})], size=13, color=colr)
+            box(s, x + 0.15, 2.17 + j * 0.72, 2.08, 0.6, fill=L_GRAY, line=None, adj=0.15,
+                paras=[(mm, {"bold": True})], size=12, color=colr)
         if i < 4:
             box(s, x + 2.39, 3.85, 0.14, 0.35, fill=GRAY, shape="rarrow")
 
     # ---- Tạo measure trong Excel + measure chuỗi
-    s = dk.content(sec_name, SEC, "Tạo measure trong Power Pivot và measure chuỗi cho câu Điểm chính",
-                   ["Mọi measure đặt trong bảng ", ("_Measures", {"bold": True, "color": NAVY}),
-                    "; tên giữ đúng như measures.dax vì CUBEVALUE gọi theo tên"])
+    s = dk.content(sec_name, SEC, "Tạo số đo trong Power Pivot; % thay đổi và câu Điểm chính bằng công thức Excel",
+                   ["DAX chỉ tính số; ", ("chữ và % đặt ở ô Excel", {"bold": True, "color": NAVY}),
+                    " trỏ vào các ô CUBEVALUE – dễ sửa, đúng sở trường Excel"])
     ways = [("Cách 1 · Hộp thoại", GREEN, ["Power Pivot → Measures → New Measure…",
                                          "Table name: _Measures · đặt tên · dán công thức",
                                          "Check formula → chọn Format → OK"]),
@@ -1733,26 +1784,22 @@ def build():
         text(s, 0.5, y + 0.52, 5.4, 1.4, [{"runs": it, "bullet": True, "space_after": 3} for it in its], size=13)
     box(s, 0.4, 5.75, 5.6, 0.8, fill=L_ORANGE, line=ORANGE, lw=1.25, align="l", anchor="m",
         paras=[[("Khác công cụ BI chuyên dụng: ", {"bold": True, "color": ORANGE}),
-                ("không có display folder, không có cửa sổ chạy DAX – kiểm bằng PivotTable", {})]],
+                ("không có thư mục hiển thị số đo, không có cửa sổ chạy DAX – kiểm bằng PivotTable", {})]],
         size=12, margin=(0.12, 0.03, 0.1, 0.03))
-    dax_box(s, 6.2, 1.5, 6.75, 3.0, """
-Tháng chọn :=
-    IF ( HASONEVALUE ( dim_date[month_label] ),
-         VALUES ( dim_date[month_label] ), "nhiều tháng" )
-
-Điểm chính Tổng quan :=
-    "Net Revenue " & [Tháng chọn] & " đạt "
-    & FORMAT ( [Net Revenue] / 1000, "#,##0.0" )
-    & " nghìn USD — "
-    & FORMAT ( [Net Revenue % LM], "+0.0%;-0.0%" )
-    & " so với tháng trước, "
-    & FORMAT ( [Net Revenue % SPLY], "+0.0%;-0.0%" )
-    & " so với cùng kỳ năm trước."
-""", size=10)
-    code_box(s, 6.2, 4.6, 6.75, 1.05, """
-=CUBEVALUE("ThisWorkbookDataModel",
-    "[Measures].[Điểm chính Tổng quan]",
+    code_box(s, 6.2, 1.5, 6.75, 4.15, """
+// Khối ô CUBEVALUE (sheet _pivot)
+Z2 =CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_month,1)
+    &"/"&CUBERANKEDMEMBER("ThisWorkbookDataModel",Slicer_year,1)
+Z3 =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
     Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
+Z4  … [Net Revenue LM]      Z5  … [Net Revenue SPLY]
+Z6 =IFERROR(Z3/Z4-1,"")     Z7 =IFERROR(Z3/Z5-1,"")
+
+// Câu Điểm chính = công thức Excel thường
+="Net Revenue "&Z2&" đạt "&FIXED(Z3/1000,1)
+ &" nghìn USD — "&IF(Z6>=0,"+","-")&FIXED(ABS(Z6)*100,1)
+ &"% so với tháng trước, "&IF(Z7>=0,"+","-")&FIXED(ABS(Z7)*100,1)
+ &"% so với cùng kỳ năm trước."
 """, size=10)
     box(s, 6.2, 5.8, 6.75, 0.75, fill=L_BLUE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[[(f"{RM_LABEL}: ", {"bold": True, "color": NAVY}),
@@ -1833,8 +1880,7 @@ CALCULATE ( [Net Revenue],
 Net Revenue YTD :=
 CALCULATE ( [Net Revenue], DATESYTD ( dim_date[date] ) )
 
-Net Revenue % LM := DIVIDE ( [Net Revenue] - [Net Revenue LM],
-                             [Net Revenue LM] )
+// % so tháng trước: tính ở ô Excel  =Z3/Z4-1
 """, size=12)
     box(s, 6.8, 5.2, 6.15, 1.35, fill=L_BLUE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[[("Kiểm chứng " + RM_LABEL + ": ", {"bold": True, "color": NAVY}),
@@ -1884,16 +1930,13 @@ SUMX (
                    ["Nếu Δ online ", ("biến mất sau quy đổi", {"bold": True, "color": GREEN}),
                     " thì đó là lệch thời điểm, không phải lỗi dữ liệu"])
     dax_box(s, 0.4, 1.5, 7.4, 5.05, """
-Net Sales (ngày giao) :=
-    CALCULATE ( [Net Sales],
-        USERELATIONSHIP ( fact_sales_line[delivery_date],
-                          dim_date[date] ) )
-
 Net Sales (cơ sở Finance) :=
     VAR pos = CALCULATE ( [Net Sales],
         KEEPFILTERS ( fact_sales_line[channel_code] = "POS" ) )
-    VAR onl = CALCULATE ( [Net Sales (ngày giao)],
-        KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ) )
+    VAR onl = CALCULATE ( [Net Sales],
+        KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ),
+        USERELATIONSHIP ( fact_sales_line[delivery_date],
+                          dim_date[date] ) )
     RETURN pos + onl
 
 Δ sau quy đổi :=
@@ -1957,14 +2000,14 @@ Net Sales (cơ sở Finance) :=
 // Thẻ KPI và dòng so sánh (đổi theo 4 slicer)
 =CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue]",
            Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
-=IFERROR(TEXT(CUBEVALUE("ThisWorkbookDataModel",
-           "[Measures].[Net Revenue % LM]",Slicer_year,Slicer_month,
-           Slicer_channel_name,Slicer_country),"▲ 0.0%;▼ 0.0%")
-         &" so với tháng trước","–")
+=CUBEVALUE("ThisWorkbookDataModel","[Measures].[Net Revenue LM]",
+           Slicer_year,Slicer_month,Slicer_channel_name,Slicer_country)
+=IF(Z6="","–",IF(Z6>=0,"▲ ","▼ ")&FIXED(ABS(Z6)*100,1)
+    &"% so với tháng trước")
 """, size=10)
     box(s, 7.9, 4.65, 5.05, 1.9, fill=L_GREEN, line=GREEN, lw=1.25, align="l", anchor="m",
         paras=[{"runs": [("Tô màu nhấn bền: ", {"bold": True, "color": GREEN}),
-                         ("tách 2 measure (mục nhấn / phần còn lại), vẽ cột chồng, một chuỗi xanh, một chuỗi xám", {})],
+                         ("bảng phụ 2 cột nhấn = IF(là mục lớn nhất; giá trị; 0) và nền = phần còn lại, vẽ cột chồng", {})],
                 "bullet": True, "space_after": 4},
                {"runs": [("Xu hướng 24 tháng: ", {"bold": True, "color": GREEN}),
                          ("bỏ nối slicer Năm/Tháng trong Report Connections", {})], "bullet": True}],
@@ -1976,12 +2019,12 @@ Net Sales (cơ sở Finance) :=
                     " cho Điểm chính (B8:Q9) và thẻ KPI (B11:Q14) ở cả 4 sheet để chuyển sheet không nhảy mắt"])
     mp4 = [["Sheet", "Điểm chính + thẻ KPI (CUBEVALUE)", "Biểu đồ", "Bảng (PivotTable)"],
            ["Tong_quan", "Net Revenue · Orders · AOV · Return Rate · Δ Finance",
-            "Line 24 tháng (chart thường) · Waterfall Gross → Net · Orders, AOV · Δ theo tháng (PivotChart cột chồng)", "—"],
-           ["Doanh_thu", "Net Sales · Units · Tỷ trọng online · Giảm giá / Gross",
-            "Danh mục (PivotChart Bar chồng: dẫn đầu / khác) · Quốc gia (PivotChart Bar)",
+            "Line 24 tháng (chart thường) · Waterfall Gross → Net · Orders, AOV · Δ theo tháng (cột chồng từ bảng phụ)", "—"],
+           ["Doanh_thu", "Net Sales · Units · AOV · ASP",
+            "Danh mục (cột ngang chồng từ bảng phụ: nhấn / nền) · Quốc gia (PivotChart Bar)",
             "Kênh · Top 10 cửa hàng (data bar)"],
            ["Doi_soat", "Net Revenue · Finance · Δ · Δ sau quy đổi · Số cửa hàng vượt ngưỡng",
-            "Phân rã Δ (Waterfall) · Δ theo tháng, đỏ = vượt (PivotChart) · Δ online (PivotChart Line)",
+            "Phân rã Δ (Waterfall) · Δ theo tháng, đỏ = vượt (cột chồng từ bảng phụ) · Δ online (PivotChart Line)",
             "Top 10 cửa hàng theo Δ tuyệt đối, ⚠ Vượt"],
            ["Hoan_tra", "Returns · Return Rate · Cancelled · Pending; ô ghi 120 dòng trùng đã loại",
             "Return Rate 24 tháng · Lý do (Bar) · Danh mục (Bar) · Huỷ & chờ giao (Line)", "—"]]

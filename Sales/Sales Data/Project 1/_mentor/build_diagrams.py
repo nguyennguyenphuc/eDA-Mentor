@@ -8,6 +8,7 @@ Chạy:  python build_diagrams.py            # sinh .drawio + xuất
        python build_diagrams.py --chi-xuat # KHÔNG ghi đè .drawio (giữ bản đã sửa tay), chỉ xuất lại PDF/PNG
 Cần: draw.io desktop (lệnh `drawio`); trên Linux không màn hình chạy qua `xvfb-run`.
 """
+from thuat_ngu import chuan_hoa
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,7 @@ class Dia:
 
     def box(self, x, y, w, h, text, fill=G10, stroke=G, font=TX, bold=False, size=13, shape="rounded=1;arcSize=8;",
             align="center", parent="1", extra=""):
+        text = chuan_hoa(text, ui=False)
         i = self._id()
         st = (f"{shape}whiteSpace=wrap;html=1;fillColor={fill};strokeColor={stroke};fontColor={font};fontSize={size};"
               f"{FONT}align={align};verticalAlign=middle;spacing=6;{'fontStyle=1;' if bold else ''}{extra}")
@@ -41,10 +43,12 @@ class Dia:
         return i
 
     def lane(self, x, y, w, h, title, fill, stroke):
+        title = chuan_hoa(title, ui=False)
         return self.box(x, y, w, h, title, fill=fill, stroke=stroke, font=stroke, bold=True, size=14,
                         shape="swimlane;horizontal=0;startSize=34;rounded=1;arcSize=2;", extra="swimlaneFillColor=#FFFFFF;")
 
     def text(self, x, y, w, h, t, size=12, color=GRAY, align="left", bold=False):
+        t = chuan_hoa(t, ui=False)
         return self.box(x, y, w, h, t, fill="none", stroke="none", font=color, size=size, align=align, bold=bold,
                         shape="text;")
 
@@ -106,7 +110,7 @@ def d_pipeline():
     d.edge(s1, s2); d.edge(s2, s3); d.edge(s2, s4); d.edge(s2, s5, dashed=True, color=BLUE)
     p1 = d.box(80, 290, 200, 120, "<b>1 · Power Query (M)</b><br>nạp 2 file, đặt kiểu<br>bỏ 120 dòng trùng<br>map fin_store_code<br>theo valid_from/to", stroke=G, **b)
     p2 = d.box(320, 290, 200, 120, "<b>2 · Data Model</b><br>Power Pivot<br>quan hệ star schema<br>Mark as Date Table<br>inactive delivery_date", stroke=G, **b)
-    p3 = d.box(560, 290, 200, 120, "<b>3 · DAX (Power Pivot)</b><br>Gross → Net Sales<br>→ Net Revenue<br>Δ Finance, cờ ngưỡng<br>measure chuỗi tiêu đề", stroke=G, **b)
+    p3 = d.box(560, 290, 200, 120, "<b>3 · DAX (Power Pivot)</b><br>Gross → Net Sales<br>→ Net Revenue<br>Δ Finance, cờ ngưỡng<br>21 số đo bắt buộc", stroke=G, **b)
     p4 = d.box(800, 290, 200, 120, "<b>4 · Dashboard 4 sheet</b><br>PivotTable · PivotChart<br>Slicer dùng chung<br>CUBEVALUE cho thẻ KPI<br>và câu Điểm chính", stroke=G, **b)
     p5 = d.box(1040, 290, 200, 120, "<b>5 · Báo cáo</b><br>8 phần theo<br>guide_report_template<br>giải thích chênh lệch<br>vượt ngưỡng", stroke=G, **b)
     for a, c in [(p1, p2), (p2, p3), (p3, p4), (p4, p5)]:

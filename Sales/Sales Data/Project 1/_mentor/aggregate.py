@@ -19,8 +19,8 @@ REF = json.loads((HERE / "ref_numbers.json").read_text(encoding="utf-8"))
 
 @lru_cache(maxsize=1)
 def load():
-    X = pd.read_excel(P1 / "Nexa_Sales_P1_Dataset.xlsx", sheet_name=None)
-    fin = pd.read_excel(P1 / "finance_revenue.xlsx", sheet_name="finance_revenue")
+    X = pd.read_excel(P1 / "hoc_vien" / "Nexa_Sales_P1_Dataset.xlsx", sheet_name=None)
+    fin = pd.read_excel(P1 / "hoc_vien" / "finance_revenue.xlsx", sheet_name="finance_revenue")
     mp = X["map_store_finance"]
     st = X["dim_store"]
     prod = X["dim_product"]

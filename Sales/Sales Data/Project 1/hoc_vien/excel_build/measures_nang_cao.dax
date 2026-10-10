@@ -1,0 +1,22 @@
+// Số đo NÂNG CAO (tuỳ chọn – phần sáng tạo, 8 số đo). Chỉ tạo sau khi 21 số đo bắt buộc đã khớp số.
+
+// ===== A · Bổ sung cho đối soát và chất lượng dữ liệu
+HQ Adjustment :=
+    CALCULATE ( SUM ( fact_finance[net_revenue] ), ISBLANK ( fact_finance[store_key] ) )
+Cancelled Orders :=
+    CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ),
+        fact_sales_line[order_status] = "CANCELLED" )
+Pending Orders :=
+    CALCULATE ( DISTINCTCOUNT ( fact_sales_line[order_number] ),
+        fact_sales_line[order_status] = "PENDING" )
+
+// ===== B · Cơ cấu doanh thu
+Tỷ trọng online :=
+    DIVIDE ( CALCULATE ( [Net Sales], KEEPFILTERS ( fact_sales_line[channel_code] = "ONLINE" ) ),
+        [Net Sales] )
+Tỷ lệ chiết khấu := DIVIDE ( [Discounts], [Gross Sales] )
+
+// ===== C · So sánh cùng kỳ cho thẻ KPI khác Net Revenue
+Orders SPLY := CALCULATE ( [Orders], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+AOV SPLY := CALCULATE ( [AOV], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+Return Rate SPLY := CALCULATE ( [Return Rate], SAMEPERIODLASTYEAR ( dim_date[date] ) )

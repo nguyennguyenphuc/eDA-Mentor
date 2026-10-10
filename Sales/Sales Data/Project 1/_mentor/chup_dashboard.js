@@ -1,5 +1,5 @@
 // Chụp ảnh dashboard cho slide: cd /opt/node-tools (nơi có playwright) && node <đường dẫn>/chup_dashboard.js <thư mục assets> <file html>
-// Mỗi trang: dash_sN.png (toàn trang), dash_sN_figK.png (từng biểu đồ/bảng), dash_sN_kpiK.png (từng thẻ KPI).
+// Mỗi trang (tab) một ảnh: dash_sN.png — dùng ở slide Phần 7 và để so với dashboard Excel (xuat_pdf_kiem_tra.py).
 const { chromium } = require('playwright');
 (async () => {
   const OUT = process.argv[2], HTML = process.argv[3];
@@ -12,10 +12,6 @@ const { chromium } = require('playwright');
     await p.click(`button[data-p=${s}]`);
     await p.waitForTimeout(600);
     await (await p.$('.wrap')).screenshot({ path: `${OUT}/dash_${s}.png` });
-    const figs = await p.$$(`#${s} .card`);
-    for (let i = 0; i < figs.length; i++) await figs[i].screenshot({ path: `${OUT}/dash_${s}_fig${i+1}.png` });
-    const ks = await p.$$(`#${s} .k`);
-    for (let i = 0; i < ks.length; i++) await ks[i].screenshot({ path: `${OUT}/dash_${s}_kpi${i+1}.png` });
   }
   console.log('ERRORS', JSON.stringify(errs));
   await b.close();

@@ -11,6 +11,7 @@ Chạy:  python generate_dataset.py            (seed cố định 2026, chạy l
 
 Mọi số tiền xử lý bằng cent (số nguyên) để cộng dồn không lệch làm tròn.
 """
+from thuat_ngu import chuan_hoa
 import hashlib
 import io
 import json
@@ -30,8 +31,9 @@ THRESH_PCT, THRESH_ABS = 0.01, 200.0     # ngưỡng chênh lệch tháng × c�
 HERE = Path(__file__).resolve().parent
 P1 = HERE.parent
 SRC = P1 / "source" / "Global_Electronics_Retailer.zip"
-OUT_DATA = P1 / "Nexa_Sales_P1_Dataset.xlsx"
-OUT_FIN = P1 / "finance_revenue.xlsx"
+HV = P1 / "hoc_vien"                       # bộ file giao học viên
+OUT_DATA = HV / "Nexa_Sales_P1_Dataset.xlsx"
+OUT_FIN = HV / "finance_revenue.xlsx"
 OUT_KEY = HERE / "Nexa_Sales_P1_Instructor_Key.xlsx"
 OUT_REF = HERE / "ref_numbers.json"
 
@@ -645,8 +647,10 @@ DOC_SHEETS = {"README", "Data_Dictionary", "QC_Summary", "KPI_Definitions"}
 
 def write_xlsx(path, sheets):
     """Sheet tài liệu: bảng chữ có xuống dòng. Sheet dữ liệu: Excel Table tbl_<tên> + định dạng số theo cột."""
-    with pd.ExcelWriter(path, engine="xlsxwriter", datetime_format="yyyy-mm-dd",
-                        date_format="yyyy-mm-dd") as xw:
+    # strings_to_formulas=False: chữ bắt đầu bằng "=" (vd "= revenue_recognized − refunds") phải là văn bản,
+    # không thì xlsxwriter ghi thành công thức hỏng và Excel báo "We found a problem with some content".
+    with pd.ExcelWriter(path, engine="xlsxwriter", datetime_format="yyyy-mm-dd", date_format="yyyy-mm-dd",
+                        engine_kwargs={"options": {"strings_to_formulas": False}}) as xw:
         wb = xw.book
         wb.set_properties({"title": path.stem, "author": "EDA Mentor",
                            "created": pd.Timestamp("2026-10-10").to_pydatetime()})
@@ -657,6 +661,8 @@ def write_xlsx(path, sheets):
                                    "text_wrap": True})}
         for name, df in sheets.items():
             df = df.reset_index(drop=True)
+            if name in DOC_SHEETS or name.startswith("README"):          # chữ hướng dẫn: thuật ngữ chuẩn
+                df = df.apply(lambda c: c.map(lambda v: chuan_hoa(v) if isinstance(v, str) else v))
             df.to_excel(xw, sheet_name=name, index=False, header=False, startrow=1)
             ws = xw.sheets[name]
             n, m = len(df), len(df.columns)
@@ -698,8 +704,8 @@ dataset_sheets = {
 write_xlsx(OUT_DATA, dataset_sheets)
 write_xlsx(OUT_FIN, {
     "README": pd.DataFrame([
-        ("Nội dung", "Doanh thu đã được Finance xác nhận (bản rút gọn). USD; chưa gồm VAT trừ cột total_incl_vat."),
-        ("Hạt dữ liệu", "Mỗi dòng = 1 ngày hạch toán × 1 mã cửa hàng của Finance. entry_type = SALES hoặc ADJUSTMENT."),
+        ("Nội dung", "Doanh thu phòng Tài chính – Kế toán (Finance) đã ghi sổ (bản rút gọn). USD; chưa gồm VAT trừ cột total_incl_vat."),
+        ("Độ chi tiết (grain)", "Mỗi dòng = 1 ngày hạch toán × 1 mã cửa hàng của Finance. entry_type = SALES hoặc ADJUSTMENT."),
         ("revenue_recognized", "Doanh thu sau giảm giá được ghi nhận: POS theo ngày bán, online theo ngày giao."),
         ("refunds", "Tiền hoàn cho khách, hạch toán theo ngày Finance xử lý."),
         ("net_revenue", "= revenue_recognized − refunds. Đây là cột dùng để đối soát."),
