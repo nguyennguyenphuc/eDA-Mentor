@@ -117,15 +117,16 @@ def build_notes(REF, KEY, vn, pct):
     nguồn và ngày dữ liệu ở chân trang. Hoạt động: cho học viên sửa một tiêu đề mô tả thành tiêu đề hành động.""")
     # ------------------------------------------------------------------ phần 3
     add("Thuật ngữ dùng trong bài", """
-    (Phần 3 · khoảng 20 phút.) Trước khi vào KPI, thống nhất cách gọi. Doanh thu theo Chuẩn mực kế toán VAS 14 và chế độ
-    kế toán Thông tư 99/2025/TT-BTC (thay Thông tư 200 từ 01/01/2026): doanh thu bán hàng trừ các khoản giảm trừ doanh thu
-    (chiết khấu thương mại, hàng bán bị trả lại) ra doanh thu thuần – trong file và số đo là Gross Sales, Discounts,
+    (Phần 3 · khoảng 20 phút.) Trước khi vào KPI, thống nhất cách gọi. Theo Chuẩn mực kế toán VAS 14 và chế độ kế toán
+    Thông tư 99/2025/TT-BTC (thay Thông tư 200 từ 01/01/2026), doanh thu thuần = doanh thu trừ các khoản giảm trừ. Giảm
+    giá khuyến mại của Nexa nằm ngay trên hoá đơn nên kế toán ghi doanh thu theo giá đã giảm, không phải chiết khấu
+    thương mại (giảm giá cho khách mua số lượng lớn) – trong file và số đo là Gross Sales, Discounts,
     Returns, Net Revenue. "Finance" trong tên file và số đo chính là phòng Tài chính – Kế toán. Tên menu Excel ghi theo
     giao diện tiếng Việt của Microsoft kèm tiếng Anh, vì máy học viên có thể dùng một trong hai.""")
     add("Cây KPI", """
     Đọc cây KPI từ trái sang phải: Gross Sales trừ giảm giá ra Net Sales, trừ hoàn trả ra
     Net Revenue, rồi so với Finance Net Revenue ra Δ và cờ ngưỡng. Nhánh trên: Orders và Units là mẫu số của AOV và
-    ASP, với tử số chung là Net Sales. Thông điệp: hiểu định nghĩa và thứ tự trước, viết DAX sau.""")
+    ASP, cùng lấy Net Sales làm tử số; Net Sales cũng là mẫu số của tỷ lệ hoàn trả. Thông điệp: hiểu định nghĩa và thứ tự trước, viết DAX sau.""")
     add("Nhóm doanh thu: định nghĩa", f"""
     Đi qua 5 chỉ tiêu nhóm doanh thu và phạm vi: chỉ đơn COMPLETED, đã bỏ dòng trùng; Returns tính theo ngày trả hàng.
     Làm ví dụ tính tay ở khung bên phải (sheet sample_transactions): đơn POS dùng mã BF15, Gross 5.509,99 USD, giảm giá
@@ -258,7 +259,7 @@ def build_notes(REF, KEY, vn, pct):
     Demo trực tiếp tháng {RM}.""")
 
     add("DAX nhóm doanh thu", f"""
-    Gross Sales là doanh thu bán hàng, Discounts là chiết khấu thương mại, Returns là hàng bán bị trả lại, Net Revenue
+    Gross Sales là doanh thu theo giá niêm yết, Discounts là giảm giá khuyến mại trên hoá đơn (kế toán ghi doanh thu theo giá đã giảm, không qua TK 521), Returns là hàng bán bị trả lại, Net Revenue
     là doanh thu thuần. gross_amount (quantity × unit_price) đã tính ở Power Query nên Gross Sales chỉ cần SUM; CALCULATE với
     KEEPFILTERS thêm điều kiện COMPLETED cho mọi pivot mà vẫn giữ lựa chọn của slicer. Cú pháp trong Excel là
     “Tên := công thức”. Returns không lọc trạng thái vì mọi dòng trả hàng đều thuộc đơn COMPLETED (QC đã kiểm). Kiểm chứng tháng
@@ -274,8 +275,9 @@ def build_notes(REF, KEY, vn, pct):
     add("DAX đối soát", f"""
     Finance Net Revenue loại các dòng HQ-ADJ (store_key trống). Δ = Finance − Net Revenue; Δ % chia cho trị tuyệt đối
     của Finance để giữ dấu. [Vượt ngưỡng] trả về 1/0 cho từng ô tháng × cửa hàng; [Số cửa hàng vượt ngưỡng] dùng
-    SUMX qua CROSSJOIN tháng × cửa hàng – context transition tính lại measure cho từng ô, nên đúng cả khi chọn một
-    tháng lẫn cả năm. Nhấn mạnh: không so tổng của cả bảng,
+    SUMX qua CROSSJOIN tháng × cửa hàng – context transition tính lại số đo cho từng ô. Đơn vị đếm là ô tháng × cửa
+    hàng: chọn một tháng thì bằng số cửa hàng; chọn cả năm thì một cửa hàng lệch nhiều tháng được đếm nhiều lần (năm
+    2020 có 32 ô). Nhấn mạnh: không so tổng của cả bảng,
     vì các lệch trái dấu sẽ triệt tiêu nhau.""")
     add("DAX quy đổi online về ngày giao", f"""
     USERELATIONSHIP bật quan hệ inactive delivery_date chỉ trong measure này; KEEPFILTERS giữ lựa chọn của slicer Kênh.
@@ -294,8 +296,8 @@ def build_notes(REF, KEY, vn, pct):
     là dùng chung bộ lọc; Report Connections nối slicer với mọi PivotTable trên _pivot. Biểu đồ 24 tháng lấy số từ
     bảng phụ CUBEVALUE theo month_id, chỉ truyền slicer Kênh và Quốc gia nên luôn đủ 24 tháng.
     CUBEVALUE đưa một số đo ra một ô theo slicer; các ô đó là nguyên liệu cho thẻ KPI, % thay đổi và câu Điểm chính viết
-    bằng công thức Excel. PivotTable From Data Model cho bảng xếp hạng và bảng chi tiết (Top 10). Waterfall vẽ bằng
-    loại biểu đồ Waterfall của Excel từ các ô CUBEVALUE, cột cuối Set as total. Mẹo tô màu nhấn: bảng phụ hai cột (nhấn = IF là mục lớn
+    bằng công thức Excel. PivotTable From Data Model cho bảng xếp hạng và bảng chi tiết (Top 10). Cầu doanh thu vẽ
+    bằng loại biểu đồ thác nước có sẵn của Excel (Insert → Waterfall) từ các ô CUBEVALUE, cột cuối Set as total. Mẹo tô màu nhấn: bảng phụ hai cột (nhấn = IF là mục lớn
     nhất, nền = phần còn lại) rồi vẽ cột chồng.""")
 
     add("Bảng dựng 4 sheet", """

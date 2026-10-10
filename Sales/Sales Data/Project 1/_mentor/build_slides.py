@@ -905,7 +905,7 @@ def build():
     box(s, 9.7, 3.05, 0.35, 0.45, fill=GREEN, shape="rarrow")
     box(s, 10.1, 1.55, 2.83, 3.55, fill=L_GREEN, line=GREEN, lw=1.5)
     ic.circle(s, "trend_w", 10.97, 1.7, 1.1, GREEN)
-    text(s, 10.2, 2.9, 2.63, 0.75, [[("Data Analyst", {"bold": True})], "bán lẻ"], size=18, align="c")
+    text(s, 10.2, 2.9, 2.63, 0.75, [[("Chuyên viên phân tích", {"bold": True})], "dữ liệu bán lẻ"], size=16, align="c")
     text(s, 10.2, 3.65, 2.63, 1.4, ["Tính KPI từ dữ liệu đơn hàng, đối chiếu với Finance và giải thích "
                                     "từng chênh lệch vượt ngưỡng bằng con số"], size=13, align="c", color=GRAY)
     steps = ["Doanh thu hình thành thế nào", "Hai hệ thống ghi nhận khác nhau", "Vai trò DA và Finance",
@@ -972,7 +972,7 @@ def build():
         {"runs": "Thưởng doanh số, chỉ tiêu cửa hàng tính trên số sai", "bullet": True},
         {"runs": "Lỗi thật (ghi trùng, thiếu dữ liệu, sai thuế) bị che lấp trong tổng", "bullet": True}],
          size=14, space_after=4)
-    roles = [("Data Analyst", "Tính KPI từ dữ liệu đơn · ghép với Finance theo tháng × cửa hàng × kênh · "
+    roles = [("Chuyên viên phân tích dữ liệu (DA)", "Tính KPI từ dữ liệu đơn · ghép với Finance theo tháng × cửa hàng × kênh · "
                               "lập bảng giải thích chênh lệch", GREEN, "bar_w"),
              ("Finance", "Cung cấp số đã xác nhận · xác nhận nguyên nhân phía sổ sách (bút toán trùng, "
                          "thiếu dữ liệu, VAT)", NAVY, "calc_w"),
@@ -1120,8 +1120,8 @@ def build():
                                "Ghi rõ đơn vị: USD, nghìn USD, %, điểm %",
                                "Nút Đặt lại và điều hướng giữa 4 trang",
                                "Xám cho bối cảnh, 1 màu nhấn; ▲/▼ ở cột thay đổi"]),
-           ("Sáng tạo", GREEN, ["Drill-through \"Chi tiết cửa hàng – ngày\"",
-                                "Tooltip Δ theo ngày khi rê chuột vào ô vượt ngưỡng",
+           ("Sáng tạo", GREEN, ["Sheet \"Chi tiết cửa hàng – ngày\" (PivotTable + slicer cửa hàng)",
+                                "Show Details: bấm đúp ô vượt ngưỡng để xem từng dòng",
                                 "Bảng giải thích chênh lệch: tổng nguyên nhân = Δ",
                                 "Dùng fx_rate, unit_cost, dim_customer (bảng bổ sung)"])]
     for i, (t, colr, items) in enumerate(chk):
@@ -1140,7 +1140,7 @@ def build():
            ("2 · Chọn hình phù hợp", "Đường cho xu hướng, cột ngang xếp hạng cho danh mục, bảng cho chi tiết. Bỏ pie, donut, treemap, 3D.", ORANGE),
            ("3 · Gỡ rối", "Bỏ khung, nền màu, lưới đậm, chú giải thừa; nhãn trực tiếp; ít chữ số lẻ.", NAVY),
            ("4 · Dẫn mắt người xem", "Xám cho bối cảnh, MỘT màu nhấn cho điều cần thấy; đỏ chỉ cho vấn đề (⚠ vượt ngưỡng).", RED),
-           ("5 · Nghĩ như nhà thiết kế", "Căn lưới thẳng, định dạng số thống nhất, màu an toàn cho người mù màu, tooltip.", GREEN),
+           ("5 · Nghĩ như nhà thiết kế", "Căn lưới thẳng, định dạng số thống nhất, màu an toàn cho người mù màu.", GREEN),
            ("6 · Kể chuyện", "Tiêu đề nêu kết luận (\"Máy tính chiếm 43% Net Sales\"), không chỉ mô tả; nguồn và as-of ở chân trang.", ORANGE)]
     for i, (t_, d_, colr) in enumerate(swd):
         x = 0.4 + (i % 3) * 4.2
@@ -1158,10 +1158,10 @@ def build():
                    ["Tên file, cột, số đo giữ tiếng Anh; ", ("văn bản dùng thuật ngữ chuẩn", {"bold": True, "color": NAVY}),
                     " – bảng đầy đủ ở phụ lục hướng dẫn"])
     chon = {"phòng Tài chính – Kế toán (gọi tắt: Kế toán)", "Trưởng phòng Kinh doanh", "chuyên viên phân tích dữ liệu",
-            "doanh thu bán hàng", "chiết khấu thương mại (khuyến mãi giảm giá trên hoá đơn)", "hàng bán bị trả lại",
+            "doanh thu theo giá niêm yết (trước giảm giá)", "giảm giá khuyến mại trên hoá đơn (chỉ tiêu quản trị; kế toán ghi doanh thu theo giá đã giảm)", "hàng bán bị trả lại",
             "doanh thu thuần", "ghi nhận doanh thu · ngày ghi sổ", "tỷ lệ hàng bán bị trả lại",
             "chênh lệch · ngưỡng · đối soát (đối chiếu số liệu)", "Mô hình Dữ liệu", "số đo",
-            "lược đồ hình sao · bảng dữ kiện · bảng chiều"}
+            "lược đồ hình sao · bảng dữ kiện (còn gọi bảng sự kiện) · bảng chiều"}
     tn = [["Nhóm", "Thuật ngữ trong tài liệu", "Tiếng Anh / trong file", "Căn cứ"]] + \
          [[r[0], r[1], (r[2], {"raw": True}), r[3]] for r in BANG[1:] if r[1] in chon]
     assert len(tn) == len(chon) + 1, "thuật ngữ chọn cho slide không khớp thuat_ngu.BANG"
@@ -1183,7 +1183,7 @@ def build():
     ex_rate = D["X"]["dim_promotion"].set_index("promo_code").discount_pct.get(ex_promo, np.nan)
     s = dk.content(sec_name, SEC, "Nhóm doanh thu: định nghĩa, công thức và một ví dụ tính tay",
                    [("Net Revenue", {"bold": True, "color": ORANGE}),
-                    " là con số đem đi đối soát; Net Sales là mẫu số chung của AOV, ASP, tỷ lệ hoàn trả"])
+                    " là con số đem đi đối soát; Net Sales là tử số của AOV, ASP và mẫu số của tỷ lệ hoàn trả"])
     kdefs = [("Gross Sales", "Σ quantity × unit_price", "Đơn COMPLETED, đã bỏ dòng trùng", GREEN),
              ("Discounts", "Σ discount_amount", "Khuyến mãi theo promo_code", ORANGE),
              ("Net Sales", "Gross Sales − Discounts", "Doanh thu sau giảm giá", GREEN),
@@ -1217,7 +1217,7 @@ def build():
     # ---- 14. Đơn, giá, tỷ lệ + mốc thời gian
     s = dk.content(sec_name, SEC, "Nhóm đơn hàng và giá: Orders, Units, AOV, ASP, Return Rate",
                    ["Orders ", ("đếm đơn, không đếm dòng", {"bold": True, "color": RED}),
-                    "; AOV, ASP và tỷ lệ hoàn trả đều chia cho Net Sales"])
+                    "; AOV, ASP lấy Net Sales làm tử số, tỷ lệ hoàn trả lấy Net Sales làm mẫu số"])
     k2 = [("Orders", "DISTINCTCOUNT(order_number)", "Đơn COMPLETED", vn(m["orders"]) + " đơn", NAVY),
           ("Units", "Σ quantity", "Đơn COMPLETED", vn(m["units"]) + " sản phẩm", NAVY),
           ("AOV", "Net Sales / Orders", "Giá trị trung bình mỗi đơn", vn(m["aov"], 2) + " USD", GREEN),
@@ -1339,7 +1339,7 @@ def build():
                    ["Mỗi bảng có ", ("hạt dữ liệu (grain)", {"bold": True, "color": RED}),
                     " khác nhau: dòng sản phẩm, lần trả hàng, ngày × mã cửa hàng Finance"])
     stat = [("2", "file", "Dataset + Finance"), ("2 + 1", "bảng fact", "đơn · trả hàng · Finance"),
-            ("7", "bảng dim", "ngày, cửa hàng, sản phẩm…"), ("1", "bảng map", "mã Finance → store_key")]
+            ("6 + 1", "bảng dim", "6 bắt buộc + dim_customer bổ sung"), ("1", "bảng map", "mã Finance → store_key")]
     for i, (v, a, b_) in enumerate(stat):
         x = 0.4 + i * 3.15
         box(s, x, 1.5, 2.95, 1.05, fill=WHITE, line=[GREEN, ORANGE, NAVY, RED][i], lw=1.5)
@@ -1483,7 +1483,7 @@ def build():
         {"runs": [("1. Bỏ trùng", {"bold": True, "color": ORANGE})]},
         {"runs": "Power Query → Remove Duplicates trên toàn bộ cột", "space_after": 8},
         {"runs": [("2. Lọc trạng thái", {"bold": True, "color": ORANGE})]},
-        {"runs": "Giữ dữ liệu đủ cột, lọc COMPLETED trong measure để vẫn đếm được đơn huỷ", "space_after": 8},
+        {"runs": "Giữ đủ mọi dòng (không xoá đơn huỷ), lọc COMPLETED trong số đo để vẫn đếm được đơn huỷ", "space_after": 8},
         {"runs": [("3. Đúng kiểu dữ liệu", {"bold": True, "color": ORANGE})]},
         {"runs": "Ngày là Date, tiền là Fixed decimal (Currency), store_key là Whole Number ở mọi bảng"}], size=13)
 
@@ -1957,7 +1957,8 @@ SUMX (
 """, size=12)
     box(s, 6.8, 4.95, 6.15, 1.6, fill=WHITE, line=NAVY, lw=1.25, align="l", anchor="m",
         paras=[{"runs": [("Context transition: ", {"bold": True, "color": NAVY}),
-                         ("measure trong SUMX được tính lại cho từng cặp tháng × cửa hàng", {})], "bullet": True},
+                         ("số đo trong SUMX được tính lại cho từng ô tháng × cửa hàng; kết quả là số ô vượt ngưỡng "
+                          "(chọn một tháng = số cửa hàng)", {})], "bullet": True},
                {"runs": [("HQ-ADJ: ", {"bold": True, "color": NAVY}),
                          ("store_key trống nên không thuộc ô nào; báo riêng ở tổng chuỗi", {})], "bullet": True}],
         size=13, margin=(0.12, 0.04, 0.12, 0.04))

@@ -298,7 +298,7 @@ LIST(["Tên bảng và cột viết dạng `fact_sales_line[order_date]`; tên m
       "“LM” là tháng trước (Last Month), “SPLY” là cùng tháng năm trước (Same Period Last Year).",
       "Δ (chênh lệch) luôn tính **số Kế toán − dữ liệu đơn**: Δ dương nghĩa là Kế toán ghi nhận cao hơn.",
       "Tên file, cột và số đo giữ chữ `Finance` (vd `finance_revenue.xlsx`, `[Finance Net Revenue]`, `[Δ Finance]`): đều chỉ số của phòng Tài chính – Kế toán.",
-      "Tên chỉ tiêu theo Chuẩn mực kế toán VAS 14: doanh thu bán hàng (Gross Sales) − chiết khấu thương mại (Discounts) − hàng bán bị trả lại (Returns) = doanh thu thuần (Net Revenue). Bảng thuật ngữ đầy đủ ở Phụ lục " + PL["thuat_ngu"] + ".",
+      "Tên chỉ tiêu: Gross Sales (doanh thu theo giá niêm yết) − Discounts (giảm giá khuyến mại trên hoá đơn) − Returns (hàng bán bị trả lại) = Net Revenue, tương ứng doanh thu thuần theo VAS 14. Giảm giá khuyến mại không phải chiết khấu thương mại (giảm giá cho khách mua số lượng lớn); vì giảm ngay trên hoá đơn nên kế toán ghi doanh thu theo giá đã giảm, không qua TK 521. Bảng thuật ngữ đầy đủ ở Phụ lục " + PL["thuat_ngu"] + ".",
       "Số viết theo kiểu Việt Nam: dấu chấm phân cách nghìn, dấu phẩy thập phân."])
 FIG("01_pipeline_du_lieu.png", "Hình 1: Pipeline từ nguồn dữ liệu đến báo cáo")
 
@@ -514,10 +514,11 @@ LIST(["Dùng DIVIDE thay cho phép chia “/” để tránh lỗi chia cho 0 (D
 DAX_SUB = {1: "4.3 Nhóm Doanh thu", 2: "4.4 Nhóm Đơn hàng và giá", 3: "4.5 Nhóm Kế toán (Finance) và đối soát",
            4: "4.6 Quy đổi online về ngày giao", 5: "4.7 So sánh kỳ"}
 DAX_NOTE = {
-    1: "Gross Sales = doanh thu bán hàng; Discounts = chiết khấu thương mại; Returns = hàng bán bị trả lại; "
+    1: "Gross Sales = doanh thu theo giá niêm yết; Discounts = giảm giá khuyến mại trên hoá đơn; Returns = hàng bán bị trả lại; "
        "Net Revenue = doanh thu thuần (VAS 14). gross_amount đã tính ở Power Query nên chỉ cần SUM.",
     3: f"[Vượt ngưỡng] so một ô tháng × cửa hàng với ngưỡng {nf(thr['abs_usd'])} USD và {pct(thr['pct'], 0)}. "
-       "[Số cửa hàng vượt ngưỡng] duyệt từng cặp tháng × cửa hàng (CROSSJOIN), nên đúng cả khi chọn một tháng lẫn cả năm. "
+       "[Số cửa hàng vượt ngưỡng] duyệt từng ô tháng × cửa hàng (CROSSJOIN) và đếm số ô vượt ngưỡng: chọn một tháng thì "
+       "bằng số cửa hàng; chọn cả năm thì một cửa hàng lệch nhiều tháng được đếm nhiều lần. "
        "[Δ tuyệt đối] dùng để xếp bảng cửa hàng theo độ lớn chênh lệch.",
     4: "Kế toán ghi nhận đơn online theo ngày giao. USERELATIONSHIP bật mối quan hệ không hoạt động (inactive) "
        "delivery_date ngay trong số đo; POS giữ ngày đặt hàng.",

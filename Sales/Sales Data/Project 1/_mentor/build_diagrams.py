@@ -170,7 +170,7 @@ def d_recon():
     d.text(20, 10, 1400, 34, "Quy trình đối soát doanh thu: dữ liệu đơn ↔ Finance (tháng × cửa hàng × kênh)", size=20, color=G, bold=True)
     w = dict(fill="#FFFFFF")
     o1 = d.box(40, 70, 220, 60, "<b>fact_sales_line</b><br>63.004 dòng", stroke=G, fill=G10)
-    o2 = d.box(40, 160, 220, 60, "① Bỏ dòng trùng<br>(order_number + line_item)", stroke=G, **w)
+    o2 = d.box(40, 160, 220, 60, "① Bỏ dòng trùng<br>(trùng hoàn toàn mọi cột)", stroke=G, **w)
     o3 = d.box(40, 250, 220, 60, "② Giữ đơn COMPLETED<br>(loại CANCELLED, PENDING)", stroke=G, **w)
     o4 = d.box(40, 340, 220, 70, "③ Gross Sales − Discounts<br>= <b>Net Sales</b>", stroke=G, **w)
     o5 = d.box(40, 440, 220, 70, "④ Net Sales − Returns<br>= <b>Net Revenue</b> (đơn)", stroke=G, fill=G10)
@@ -233,7 +233,7 @@ def d_kpi():
     d.edge(rt, nr, "−", color=COR, exit=(1, 0.5), entry=(0, 0.8))
     d.edge(rt, rr, color=COR, exit=(0.5, 1), entry=(0, 0.5))
     d.edge(nr, dl, color=G); d.edge(fn, dl, color=COR, exit=(0.5, 0), entry=(0.5, 1)); d.edge(dl, fl, color=GRAY)
-    d.text(40, 50, 260, 140, "Net Sales là tử số chung của AOV, ASP và Return Rate. Orders đếm đơn, không đếm dòng.", size=12)
+    d.text(40, 50, 260, 140, "Net Sales là tử số của AOV, ASP và mẫu số của Return Rate. Orders đếm đơn, không đếm dòng.", size=12)
     d.text(40, 560, 1300, 60, "Phạm vi: chỉ đơn COMPLETED, đã bỏ dòng trùng. Mốc thời gian: order_date cho bán hàng, return_date cho hoàn trả. "
            "Đơn vị USD. Δ dương nghĩa là Finance ghi nhận cao hơn dữ liệu đơn.", size=12)
     return d
