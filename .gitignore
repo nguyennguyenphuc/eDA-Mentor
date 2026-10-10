@@ -1,4 +1,4 @@
-# File nen (Contoso.zip 465 MB vuot gioi han 100 MB cua GitHub; cac zip con lai la ban tai tu Drive)
+# File nen. Contoso.zip (465 MB, vuot 100 MB cua git) tai o Release: https://github.com/nguyennguyenphuc/eDA-Mentor/releases/download/data-v1/Contoso.zip
 *.zip
 # Rac chay
 __pycache__/
