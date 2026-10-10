@@ -10,7 +10,7 @@ from pathlib import Path
 import win32com.client as win32
 
 P1 = Path(__file__).resolve().parent.parent
-KIT = P1 / "hoc_vien" / "excel_build"
+KIT = P1 / "_mentor" / "excel_build"                 # code M + DAX gốc, chỉ mentor (không giao học viên)
 DATA_DIR = P1 / "hoc_vien"
 
 # query chỉ tạo connection, không nạp Data Model (guideline 2.7)

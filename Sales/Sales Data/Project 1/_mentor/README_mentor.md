@@ -7,7 +7,7 @@ Không gửi thư mục này cho học viên: `Nexa_Sales_P1_Instructor_Key.xlsx
 ## Học viên được xem file nào
 | Ở đâu | File | Ai xem |
 |---|---|---|
-| `../hoc_vien/` | README.docx (đề bài), Nexa_Sales_P1_Dataset.xlsx, finance_revenue.xlsx, Huong_dan_hoc_vien.docx, Slide_Project_1_hoc_vien.pptx, excel_build/, so_do/*.pdf, guild_report_template.pdf | **Học viên** – gửi nguyên thư mục hoặc `../Nexa_Sales_P1_hoc_vien.zip` |
+| `../hoc_vien/` | README.docx (đề bài), Nexa_Sales_P1_Dataset.xlsx, finance_revenue.xlsx, Huong_dan_hoc_vien.docx, Slide_Project_1_hoc_vien.pptx, so_do/*.pdf, guild_report_template.pdf (không có file code) | **Học viên** – gửi nguyên thư mục hoặc `../Nexa_Sales_P1_hoc_vien.zip` |
 | `../` | Nexa_Sales_P1_Dashboard.html, Nexa_Sales_P1_Dashboard.xlsx (Power Query + Mô hình Dữ liệu + DAX) | Mentor; có thể gửi học viên sau buổi 1 |
 | `../` | Dashboard_Guideline (dành cho mentor).docx (có Bước 6 đáp án), Slide_Project_1.pptx (có 4 slide đáp án ẩn + lời thuyết trình), diagrams/*.drawio | Chỉ mentor |
 | `_mentor/` | Instructor Key, Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx, ref_numbers.json, script, kiem_tra/ | Chỉ mentor |
@@ -32,7 +32,7 @@ python generate_dataset.py      # hoc_vien/ dataset + finance_revenue.xlsx, Inst
 python build_dashboard.py       # ../Nexa_Sales_P1_Dashboard.html (số từ aggregate.py)
 python build_dashboard_xlsx.py  # Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx — bản đối chiếu số, công thức thường
 python build_dashboard_excel_com.py  # (Windows + Excel) ../Nexa_Sales_P1_Dashboard.xlsx — PQ + Data Model + DAX, tự kiểm số
-python build_excel_kit.py       # hoc_vien/excel_build/ (code M, 21 số đo bắt buộc + 8 nâng cao) + pq_steps.json; assert số dòng
+python build_excel_kit.py       # _mentor/excel_build/ (chỉ mentor) (code M, 21 số đo bắt buộc + 8 nâng cao) + pq_steps.json; assert số dòng
 cd /opt/node-tools && node <repo>/Sales/Sales\ Data/Project\ 1/_mentor/chup_dashboard.js <thư mục assets> <file html>   # ảnh cho slide
 python build_diagrams.py        # ../diagrams/*.drawio → .pdf + png/ (draw.io; Linux chạy qua xvfb-run)
 python build_guideline.py       # hướng dẫn: bản mentor (../) + bản học viên (hoc_vien/)

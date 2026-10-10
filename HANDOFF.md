@@ -12,8 +12,12 @@ Cập nhật: 10/10/2026. Đọc file này trước khi làm tiếp Sales Projec
   - DAX rút còn **21 số đo bắt buộc + 8 nâng cao**; thuật ngữ chuẩn hoá theo VAS 14 / TT 99/2025 và giao diện Excel tiếng Việt.
   - **Đã dựng trên Excel Windows thật (10/10/2026):** `Nexa_Sales_P1_Dashboard.xlsx` giờ là bản Power Query + Mô hình
     Dữ liệu + 29 số đo DAX + 4 slicer + PivotTable + CUBEVALUE, sinh bằng `_mentor/build_dashboard_excel_com.py`;
-    M và DAX trong `hoc_vien/excel_build/` chạy đúng, không phải sửa. Bản công thức cũ chuyển thành
+    M và DAX trong `_mentor/excel_build/` chạy đúng, không phải sửa. Bản công thức cũ chuyển thành
     `_mentor/Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx` (đối chiếu số).
+  - **Tài liệu và slide là bài dựng BẰNG TAY (10/10/2026):** guideline Bước 2 dạy Power Query bằng thao tác chuột
+    (nguồn chung `_mentor/pq_thao_tac.py`), không còn code M, script hay dấu vết agent; slide 26–27 vẽ chuỗi Applied
+    Step bằng khối; ảnh dashboard chụp từ file Excel thật; thuật ngữ rà theo VAS 14, TT 99/2025, đề cương NEU và tên
+    giao diện tiếng Việt của Microsoft (`thuat_ngu.py`). Code M + `.dax` chuyển sang `_mentor/excel_build/` (chỉ mentor).
 
 ## 2. Quyết định đã chốt (đừng làm lại)
 | Chủ đề | Quyết định |
@@ -29,7 +33,7 @@ Cập nhật: 10/10/2026. Đọc file này trước khi làm tiếp Sales Projec
 | Đặt tên | Measure `\|Δ\|` đổi thành `Δ tuyệt đối`, vì ký tự `\|` có thể không hợp lệ trong Excel |
 | Số đo DAX | 21 bắt buộc (`measures.dax`) + 8 nâng cao (`measures_nang_cao.dax`). % thay đổi, câu "Điểm chính", tiêu đề hành động, tô màu nhấn làm bằng **công thức Excel** (FIXED, &, IF) trên ô CUBEVALUE — không viết measure chuỗi |
 | Thuật ngữ | `_mentor/thuat_ngu.py` (một nguồn): Finance → phòng Tài chính – Kế toán (gọi tắt Kế toán); Sales Manager → Trưởng phòng Kinh doanh; measure → số đo; Gross Sales/Discounts/Returns/Net Revenue = doanh thu bán hàng / chiết khấu thương mại / hàng bán bị trả lại / doanh thu thuần (VAS 14); tên menu Excel = tiếng Việt của Microsoft + tiếng Anh trong ngoặc. Tên file, cột, số đo giữ nguyên. "Đối soát" giữ làm từ chính |
-| Học viên xem gì | `hoc_vien/`: đề bài, dataset, finance_revenue, Huong_dan_hoc_vien.docx, Slide_Project_1_hoc_vien.pptx, excel_build/, so_do/, template báo cáo. Dashboard tham chiếu gửi sau buổi 1 (tuỳ mentor) |
+| Học viên xem gì | `hoc_vien/`: đề bài, dataset, finance_revenue, Huong_dan_hoc_vien.docx, Slide_Project_1_hoc_vien.pptx, so_do/, template báo cáo (không có file code). Dashboard tham chiếu gửi sau buổi 1 (tuỳ mentor) |
 | Số trong câu chữ Excel | Dùng `FIXED()` thay `TEXT(x;"#,##0.0")` — FIXED theo dấu thập phân của máy, không vỡ khi máy cài định dạng Việt Nam |
 | Bảo mật | Không nhận cookie/session ChatGPT của người dùng (đã từ chối) |
 
@@ -50,10 +54,10 @@ Cập nhật: 10/10/2026. Đọc file này trước khi làm tiếp Sales Projec
 - `README.docx` (đề bài), `Nexa_Sales_P1_Dataset.xlsx`, `finance_revenue.xlsx`, `guild_report_template.pdf`.
 - `Huong_dan_hoc_vien.docx`: bản học viên của guideline (Bước 6 chỉ có phương pháp + khung cầu nối trống).
 - `Slide_Project_1_hoc_vien.pptx`: 52 slide, đã **xoá hẳn** 4 slide đáp án và mọi notes.
-- `excel_build/` (13 file M, measures.dax, measures_nang_cao.dax, README), `so_do/*.pdf`, `DANH_SACH_FILE.md`.
+- `so_do/*.pdf`, `DANH_SACH_FILE.md`. Không có file .pq/.dax/.py (`dong_goi_hoc_vien.py` chặn).
 
 **Gốc `Project 1/` — mentor:**
-- `Dashboard_Guideline (dành cho mentor).docx` (có Bước 6 đáp án + Phụ lục B script), `Slide_Project_1.pptx` (56 slide, notes).
+- `Dashboard_Guideline (dành cho mentor).docx` (có Bước 6 đáp án), `Slide_Project_1.pptx` (56 slide, notes).
 - `Nexa_Sales_P1_Dashboard.html` và `Nexa_Sales_P1_Dashboard.xlsx` — bản tham chiếu, có thể gửi học viên sau buổi 1.
   File .xlsx dựng đúng các bước guideline: 13 query Power Query (SourceFolder trỏ `hoc_vien/`), Mô hình Dữ liệu 10 bảng /
   12 quan hệ, 29 số đo DAX, 4 slicer dùng chung (Năm, Tháng, Kênh, Quốc gia; mặc định 12/2020), 8 PivotTable trên `_pivot`
@@ -73,7 +77,7 @@ python build_dashboard.py         # HTML
 python build_dashboard_xlsx.py    # bản đối chiếu số _mentor/Nexa_Sales_P1_Doi_chieu_cong_thuc.xlsx (công thức thường)
 python build_dashboard_excel_com.py  # CHẠY TRÊN WINDOWS + Excel: ../Nexa_Sales_P1_Dashboard.xlsx (PQ + Data Model + DAX),
                                      # tự kiểm số với ref_numbers.json, xuất kiem_tra/excel_*.pdf (~2 phút)
-python build_excel_kit.py         # hoc_vien/excel_build/ + pq_steps.json (assert số dòng, ngưỡng, 21+8 số đo)
+python build_excel_kit.py         # _mentor/excel_build/ (chỉ mentor) + pq_steps.json (assert số dòng, ngưỡng, 21+8 số đo)
 cd /opt/node-tools && node <repo>/Sales/Sales\ Data/Project\ 1/_mentor/chup_dashboard.js <assets> <html>   # 4 ảnh tab HTML
 python build_diagrams.py          # sinh lại .drawio + xuất; dùng --chi-xuat nếu đã sửa .drawio bằng tay
 python build_guideline.py         # 2 bản: mentor + hoc_vien/
@@ -119,19 +123,20 @@ python xuat_pdf_kiem_tra.py       # LibreOffice tính lại bản đối chiếu
    openpyxl không tạo được).
 4. ~~Chưa có workbook mẫu dựng bằng Mô hình Dữ liệu~~ — xong (`Nexa_Sales_P1_Dashboard.xlsx`). Còn: slicer hiện mục
    "(blank)" (dòng HQ-ADJ không có cửa hàng, ngày ngoài dim_date) — hành vi chuẩn của Power Pivot; số trong câu chữ theo
-   dấu thập phân của máy (máy dựng dùng dấu chấm). Tài liệu/slide cần cập nhật theo file mới: phiên song song đang làm
-   (`build_guideline.py`, `build_slides.py`, `slide_notes.py`).
-5. Ảnh dashboard ở slide Phần 7 vẫn chụp từ bản HTML → thay bằng ảnh 4 sheet Excel thật sau khi dựng.
-6. Slide 25–26 (code M) chữ 9–10,5 pt, hơi nhỏ khi chiếu.
+   dấu thập phân của máy (máy dựng dùng dấu chấm). Tài liệu/slide đã cập nhật theo file mới.
+5. ~~Ảnh dashboard ở slide Phần 7 chụp từ HTML~~ — đã thay bằng ảnh 4 sheet Excel (`_mentor/assets/dash_s*.png`).
+6. ~~Slide code M chữ nhỏ~~ — đã bỏ code M; slide 26–27 là sơ đồ bước. Tên lệnh tiếng Việt cần chốt bằng Excel giao
+   diện tiếng Việt (Microsoft dịch không thống nhất; chưa xác nhận: Only Create Connection, Count Rows, Sort by Column, Top 10).
 7. `return_reason` còn mã tiếng Anh trong Pivot (CHANGE_MIND…) — có thể thêm cột Việt hoá trong M fact_return.
 8. Thuật ngữ vai trò/KPI bán lẻ không có văn bản chính thức (lấy theo thực tế tuyển dụng); chưa đối chiếu được bản in
-   giáo trình NEU/UEH/HVTC. `Dataset_for_project1n4.docx` (mô tả Contoso, nhắc Power BI) để nguyên.
+   giáo trình NEU/UEH/HVTC (HUST, HCMUT, UEH không có tài liệu công khai đọc được; chỉ đọc được đề cương NEU).
+   `Dataset_for_project1n4.docx` (mô tả Contoso, nhắc Power BI) để nguyên.
 9. Skill: `pbi-dashboard-loop` không dùng cho P1; `goi-ngoai`/ChatGPT web cần Chrome cổng 9222 trên máy người dùng.
 10. PR #1 chưa review/merge. Sales Project 2–4 chưa làm.
 
 ## 8. Gợi ý bước tiếp (theo thứ tự)
 1. ~~Dựng thử Power Query + DAX trên Excel Windows~~ — xong. Mentor mở `Nexa_Sales_P1_Dashboard.xlsx`, sửa SourceFolder
-   theo máy mình rồi Refresh All để thử.
-2. Chụp 4 sheet Excel thật, thay ảnh ở slide Phần 7, chạy lại `build_slides.py`.
+   theo máy mình rồi Refresh All để thử (học viên đổi đường dẫn bằng Data Source Settings → Change Source).
+2. ~~Thay ảnh slide Phần 7~~ — xong. Mở slide và hướng dẫn trên Office tiếng Việt để chốt tên lệnh.
 3. Review và merge PR #1. Commit nối tiếp làm trên nhánh mới tách từ nhánh mặc định.
 4. Bắt đầu Sales Project tiếp theo, dùng lại khung script của P1 (`generate_dataset` → `build_*`).

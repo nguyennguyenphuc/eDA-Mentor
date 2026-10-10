@@ -2,7 +2,7 @@
 """Dựng ../Nexa_Sales_P1_Dashboard.xlsx bằng Excel thật (Windows + Excel 365/2016+, qua COM), đúng các bước
 guideline Bước 2–5 và slide Phần 4, 6, 7:
 
-  Power Query (13 query M trong hoc_vien/excel_build/m) → Mô hình Dữ liệu → 12 quan hệ → 21 + 8 số đo DAX
+  Power Query (13 query M trong _mentor/excel_build/m) → Mô hình Dữ liệu → 12 quan hệ → 21 + 8 số đo DAX
   → 4 slicer dùng chung (Năm, Tháng, Kênh, Quốc gia) → PivotTable trên _pivot → thẻ KPI, câu Điểm chính, tiêu đề
   hành động bằng CUBEVALUE + công thức Excel → biểu đồ thường dựng từ bảng phụ (xám + một màu nhấn, đỏ chỉ cho ⚠).
 
