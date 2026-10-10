@@ -1,0 +1,735 @@
+{
+ "version": "1.0",
+ "seed": 2026,
+ "as_of": "2021-02-20",
+ "report_month": 202012,
+ "rows": {
+  "fact_sales_line": 63004,
+  "fact_sales_line_clean": 62884,
+  "fact_return": 2430,
+  "finance_revenue": 19400,
+  "orders_total": 26326,
+  "orders_completed": 25639,
+  "orders_cancelled": 658,
+  "orders_pending": 29,
+  "dim_store": 67,
+  "dim_product": 2517,
+  "dim_customer": 15266,
+  "dim_date": 1917,
+  "map_store_finance": 69
+ },
+ "month": {
+  "current": {
+   "gross_sales": 640551.11,
+   "discounts": 24739.37,
+   "net_sales": 615811.74,
+   "returns": 9686.67,
+   "net_revenue": 606125.07,
+   "orders": 310,
+   "units": 2359,
+   "aov": 1986.49,
+   "asp": 261.05,
+   "return_rate": 0.0157
+  },
+  "lm": {
+   "gross_sales": 252950.76,
+   "discounts": 11493.8,
+   "net_sales": 241456.96,
+   "returns": 3420.28,
+   "net_revenue": 238036.68,
+   "orders": 145,
+   "units": 1031,
+   "aov": 1665.22,
+   "asp": 234.2,
+   "return_rate": 0.0142
+  },
+  "sply": {
+   "gross_sales": 2400312.48,
+   "discounts": 83880.88,
+   "net_sales": 2316431.6,
+   "returns": 53016.63,
+   "net_revenue": 2263414.97,
+   "orders": 1223,
+   "units": 9123,
+   "aov": 1894.06,
+   "asp": 253.91,
+   "return_rate": 0.0229
+  }
+ },
+ "ytd": {
+  "current": {
+   "gross_sales": 9080387.9,
+   "discounts": 138974.66,
+   "net_sales": 8941413.24,
+   "returns": 208665.01,
+   "net_revenue": 8732748.23,
+   "orders": 4528,
+   "units": 33642,
+   "aov": 1974.69,
+   "asp": 265.78,
+   "return_rate": 0.0233
+  },
+  "sply": {
+   "gross_sales": 17750417.69,
+   "discounts": 375050.39,
+   "net_sales": 17375367.3,
+   "returns": 451134.18,
+   "net_revenue": 16924233.12,
+   "orders": 8842,
+   "units": 66565,
+   "aov": 1965.09,
+   "asp": 261.03,
+   "return_rate": 0.026
+  }
+ },
+ "year": {
+  "2016": {
+   "gross_sales": 6839403.27,
+   "discounts": 134383.51,
+   "net_sales": 6705019.76,
+   "returns": 154971.55,
+   "net_revenue": 6550048.21,
+   "orders": 2802,
+   "units": 21348,
+   "aov": 2392.94,
+   "asp": 314.08,
+   "return_rate": 0.0231
+  },
+  "2017": {
+   "gross_sales": 7190874.03,
+   "discounts": 144482.61,
+   "net_sales": 7046391.42,
+   "returns": 173317.59,
+   "net_revenue": 6873073.83,
+   "orders": 3178,
+   "units": 24025,
+   "aov": 2217.24,
+   "asp": 293.29,
+   "return_rate": 0.0246
+  },
+  "2018": {
+   "gross_sales": 12505021.71,
+   "discounts": 244031.12,
+   "net_sales": 12260990.59,
+   "returns": 337541.25,
+   "net_revenue": 11923449.34,
+   "orders": 5833,
+   "units": 43496,
+   "aov": 2102.0,
+   "asp": 281.89,
+   "return_rate": 0.0275
+  },
+  "2019": {
+   "gross_sales": 17750417.69,
+   "discounts": 375050.39,
+   "net_sales": 17375367.3,
+   "returns": 451134.18,
+   "net_revenue": 16924233.12,
+   "orders": 8842,
+   "units": 66565,
+   "aov": 1965.09,
+   "asp": 261.03,
+   "return_rate": 0.026
+  },
+  "2020": {
+   "gross_sales": 9080387.9,
+   "discounts": 138974.66,
+   "net_sales": 8941413.24,
+   "returns": 208665.01,
+   "net_revenue": 8732748.23,
+   "orders": 4528,
+   "units": 33642,
+   "aov": 1974.69,
+   "asp": 265.78,
+   "return_rate": 0.0233
+  },
+  "2021": {
+   "gross_sales": 940628.97,
+   "discounts": 11644.34,
+   "net_sales": 928984.63,
+   "returns": 23609.68,
+   "net_revenue": 905374.95,
+   "orders": 456,
+   "units": 3411,
+   "aov": 2037.25,
+   "asp": 272.35,
+   "return_rate": 0.0254
+  }
+ },
+ "finance_year": {
+  "2016": 6464763.98,
+  "2017": 6908182.02,
+  "2018": 11891528.55,
+  "2019": 16940908.23,
+  "2020": 8795934.91,
+  "2021": 935524.74
+ },
+ "finance_month": {
+  "201601": 609825.84,
+  "201602": 847425.08,
+  "201603": 325190.59,
+  "201604": 91065.8,
+  "201605": 591997.24,
+  "201606": 485736.39,
+  "201607": 445826.74,
+  "201608": 493305.54,
+  "201609": 506637.1,
+  "201610": 567534.1,
+  "201611": 619251.28,
+  "201612": 880968.28,
+  "201701": 662966.96,
+  "201702": 710114.38,
+  "201703": 322196.99,
+  "201704": 51697.3,
+  "201705": 577682.19,
+  "201706": 619706.09,
+  "201707": 496987.5,
+  "201708": 529153.54,
+  "201709": 645008.12,
+  "201710": 585367.27,
+  "201711": 593415.88,
+  "201712": 1113885.8,
+  "201801": 865826.58,
+  "201802": 1283433.42,
+  "201803": 407799.37,
+  "201804": 60774.1,
+  "201805": 1015683.92,
+  "201806": 929849.87,
+  "201807": 902362.6,
+  "201808": 909479.58,
+  "201809": 1118670.1,
+  "201810": 1157444.44,
+  "201811": 1353303.86,
+  "201812": 1886900.71,
+  "201901": 1848065.13,
+  "201902": 1953137.3,
+  "201903": 838092.28,
+  "201904": 111562.46,
+  "201905": 1487647.84,
+  "201906": 1350836.65,
+  "201907": 1337467.86,
+  "201908": 1275199.07,
+  "201909": 1465915.27,
+  "201910": 1483300.14,
+  "201911": 1543514.86,
+  "201912": 2246169.37,
+  "202001": 1951684.14,
+  "202002": 2129455.35,
+  "202003": 680026.25,
+  "202004": 156014.43,
+  "202005": 864517.61,
+  "202006": 715612.51,
+  "202007": 498408.86,
+  "202008": 378211.94,
+  "202009": 353072.53,
+  "202010": 244318.74,
+  "202011": 232459.21,
+  "202012": 592153.34,
+  "202101": 474770.04,
+  "202102": 460754.7
+ },
+ "bridge_2020": {
+  "orders_net_revenue": 8732748.23,
+  "adj_online_timing": 59682.78,
+  "adj_refund_lag": -2937.04,
+  "adj_cancelled_booked": 17002.68,
+  "adj_missing_upload": -22168.91,
+  "adj_vat_included": 2901.63,
+  "adj_duplicate_posting": 10141.04,
+  "finance_net": 8797370.41
+ },
+ "over_threshold_cells": 120,
+ "over_threshold_2020": [
+  {
+   "month_id": 202001,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": 41120.82
+  },
+  {
+   "month_id": 202001,
+   "store_code": "S16",
+   "country": "France",
+   "diff_finance_minus_orders": 481.65
+  },
+  {
+   "month_id": 202001,
+   "store_code": "S57",
+   "country": "United States",
+   "diff_finance_minus_orders": -2907.0
+  },
+  {
+   "month_id": 202001,
+   "store_code": "S66",
+   "country": "United States",
+   "diff_finance_minus_orders": 1249.96
+  },
+  {
+   "month_id": 202002,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -17488.29
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S08",
+   "country": "Canada",
+   "diff_finance_minus_orders": 677.87
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S16",
+   "country": "France",
+   "diff_finance_minus_orders": -481.65
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S24",
+   "country": "Germany",
+   "diff_finance_minus_orders": -22168.91
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S33",
+   "country": "Netherlands",
+   "diff_finance_minus_orders": 301.65
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S38",
+   "country": "United Kingdom",
+   "diff_finance_minus_orders": 1475.0
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S40",
+   "country": "United Kingdom",
+   "diff_finance_minus_orders": 568.0
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S43",
+   "country": "United States",
+   "diff_finance_minus_orders": 5097.97
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S48",
+   "country": "United States",
+   "diff_finance_minus_orders": 1739.66
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S53",
+   "country": "United States",
+   "diff_finance_minus_orders": 1284.7
+  },
+  {
+   "month_id": 202002,
+   "store_code": "S59",
+   "country": "United States",
+   "diff_finance_minus_orders": -474.9
+  },
+  {
+   "month_id": 202003,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": 67117.99
+  },
+  {
+   "month_id": 202003,
+   "store_code": "S40",
+   "country": "United Kingdom",
+   "diff_finance_minus_orders": -568.0
+  },
+  {
+   "month_id": 202003,
+   "store_code": "S49",
+   "country": "United States",
+   "diff_finance_minus_orders": -249.99
+  },
+  {
+   "month_id": 202003,
+   "store_code": "S55",
+   "country": "United States",
+   "diff_finance_minus_orders": -249.99
+  },
+  {
+   "month_id": 202004,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -46927.78
+  },
+  {
+   "month_id": 202005,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": 27197.36
+  },
+  {
+   "month_id": 202006,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -3869.5
+  },
+  {
+   "month_id": 202006,
+   "store_code": "S36",
+   "country": "United Kingdom",
+   "diff_finance_minus_orders": 349.99
+  },
+  {
+   "month_id": 202006,
+   "store_code": "S45",
+   "country": "United States",
+   "diff_finance_minus_orders": 1906.98
+  },
+  {
+   "month_id": 202006,
+   "store_code": "S54",
+   "country": "United States",
+   "diff_finance_minus_orders": 2901.63
+  },
+  {
+   "month_id": 202007,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": 18513.26
+  },
+  {
+   "month_id": 202007,
+   "store_code": "S22",
+   "country": "Germany",
+   "diff_finance_minus_orders": 2831.93
+  },
+  {
+   "month_id": 202009,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -4564.5
+  },
+  {
+   "month_id": 202010,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": 7191.03
+  },
+  {
+   "month_id": 202011,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -5577.47
+  },
+  {
+   "month_id": 202012,
+   "store_code": "ONL",
+   "country": "Online",
+   "diff_finance_minus_orders": -22812.19
+  },
+  {
+   "month_id": 202012,
+   "store_code": "S12",
+   "country": "France",
+   "diff_finance_minus_orders": 10141.04
+  }
+ ],
+ "anomalies": [
+  {
+   "anomaly_id": "K01",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 27.0,
+   "store_code": "S27",
+   "effect_usd": 2391.99,
+   "date_from": "2019-01-23",
+   "date_to": "2019-01-23"
+  },
+  {
+   "anomaly_id": "K02",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 56.0,
+   "store_code": "S56",
+   "effect_usd": 779.97,
+   "date_from": "2019-01-30",
+   "date_to": "2019-01-30"
+  },
+  {
+   "anomaly_id": "K03",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 64.0,
+   "store_code": "S64",
+   "effect_usd": 129.99,
+   "date_from": "2019-02-13",
+   "date_to": "2019-02-13"
+  },
+  {
+   "anomaly_id": "K04",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 44.0,
+   "store_code": "S44",
+   "effect_usd": 1052.29,
+   "date_from": "2019-02-16",
+   "date_to": "2019-02-16"
+  },
+  {
+   "anomaly_id": "K05",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 64.0,
+   "store_code": "S64",
+   "effect_usd": 3715.3,
+   "date_from": "2019-05-11",
+   "date_to": "2019-05-11"
+  },
+  {
+   "anomaly_id": "K06",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 66.0,
+   "store_code": "S66",
+   "effect_usd": 1632.94,
+   "date_from": "2019-05-25",
+   "date_to": "2019-05-25"
+  },
+  {
+   "anomaly_id": "K07",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 27.0,
+   "store_code": "S27",
+   "effect_usd": 569.94,
+   "date_from": "2019-05-31",
+   "date_to": "2019-05-31"
+  },
+  {
+   "anomaly_id": "K08",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 45.0,
+   "store_code": "S45",
+   "effect_usd": 1739.94,
+   "date_from": "2019-07-10",
+   "date_to": "2019-07-10"
+  },
+  {
+   "anomaly_id": "K09",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 57.0,
+   "store_code": "S57",
+   "effect_usd": 2558.99,
+   "date_from": "2019-07-11",
+   "date_to": "2019-07-11"
+  },
+  {
+   "anomaly_id": "K10",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 23.0,
+   "store_code": "S23",
+   "effect_usd": 57.98,
+   "date_from": "2019-07-15",
+   "date_to": "2019-07-15"
+  },
+  {
+   "anomaly_id": "K11",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 40.0,
+   "store_code": "S40",
+   "effect_usd": 64.78,
+   "date_from": "2019-09-12",
+   "date_to": "2019-09-12"
+  },
+  {
+   "anomaly_id": "K12",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 39.0,
+   "store_code": "S39",
+   "effect_usd": 1887.3,
+   "date_from": "2019-09-14",
+   "date_to": "2019-09-14"
+  },
+  {
+   "anomaly_id": "K13",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 48.0,
+   "store_code": "S48",
+   "effect_usd": 3782.7,
+   "date_from": "2019-10-03",
+   "date_to": "2019-10-03"
+  },
+  {
+   "anomaly_id": "K14",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 65.0,
+   "store_code": "S65",
+   "effect_usd": 1379.7,
+   "date_from": "2019-12-14",
+   "date_to": "2019-12-14"
+  },
+  {
+   "anomaly_id": "K15",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 66.0,
+   "store_code": "S66",
+   "effect_usd": 1249.96,
+   "date_from": "2020-01-09",
+   "date_to": "2020-01-09"
+  },
+  {
+   "anomaly_id": "K16",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 53.0,
+   "store_code": "S53",
+   "effect_usd": 1284.7,
+   "date_from": "2020-02-06",
+   "date_to": "2020-02-06"
+  },
+  {
+   "anomaly_id": "K17",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 43.0,
+   "store_code": "S43",
+   "effect_usd": 5097.97,
+   "date_from": "2020-02-17",
+   "date_to": "2020-02-17"
+  },
+  {
+   "anomaly_id": "K18",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 38.0,
+   "store_code": "S38",
+   "effect_usd": 1475.0,
+   "date_from": "2020-02-21",
+   "date_to": "2020-02-21"
+  },
+  {
+   "anomaly_id": "K19",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 48.0,
+   "store_code": "S48",
+   "effect_usd": 1739.66,
+   "date_from": "2020-02-22",
+   "date_to": "2020-02-22"
+  },
+  {
+   "anomaly_id": "K20",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 8.0,
+   "store_code": "S08",
+   "effect_usd": 677.87,
+   "date_from": "2020-02-23",
+   "date_to": "2020-02-23"
+  },
+  {
+   "anomaly_id": "K21",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 33.0,
+   "store_code": "S33",
+   "effect_usd": 301.65,
+   "date_from": "2020-02-25",
+   "date_to": "2020-02-25"
+  },
+  {
+   "anomaly_id": "K22",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 45.0,
+   "store_code": "S45",
+   "effect_usd": 1906.98,
+   "date_from": "2020-06-05",
+   "date_to": "2020-06-05"
+  },
+  {
+   "anomaly_id": "K23",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 36.0,
+   "store_code": "S36",
+   "effect_usd": 349.99,
+   "date_from": "2020-06-06",
+   "date_to": "2020-06-06"
+  },
+  {
+   "anomaly_id": "K24",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 22.0,
+   "store_code": "S22",
+   "effect_usd": 2831.93,
+   "date_from": "2020-07-09",
+   "date_to": "2020-07-09"
+  },
+  {
+   "anomaly_id": "K25",
+   "type": "A_CANCELLED_BOOKED",
+   "store_key": 62.0,
+   "store_code": "S62",
+   "effect_usd": 86.97,
+   "date_from": "2020-12-23",
+   "date_to": "2020-12-23"
+  },
+  {
+   "anomaly_id": "K26",
+   "type": "B_MISSING_UPLOAD",
+   "store_key": 24.0,
+   "store_code": "S24",
+   "effect_usd": -22168.91,
+   "date_from": "2020-02-06",
+   "date_to": "2020-02-25"
+  },
+  {
+   "anomaly_id": "K27",
+   "type": "C_VAT_INCLUDED",
+   "store_key": 54.0,
+   "store_code": "S54",
+   "effect_usd": 2901.63,
+   "date_from": "2020-06-01",
+   "date_to": "2020-06-30"
+  },
+  {
+   "anomaly_id": "K28",
+   "type": "D_DUPLICATE_POSTING",
+   "store_key": 12.0,
+   "store_code": "S12",
+   "effect_usd": 10141.04,
+   "date_from": "2020-12-10",
+   "date_to": "2020-12-10"
+  },
+  {
+   "anomaly_id": "K29",
+   "type": "E_MANUAL_ADJ",
+   "store_key": NaN,
+   "store_code": NaN,
+   "effect_usd": -1250.0,
+   "date_from": "2018-12-31",
+   "date_to": "2018-12-31"
+  },
+  {
+   "anomaly_id": "K30",
+   "type": "E_MANUAL_ADJ",
+   "store_key": NaN,
+   "store_code": NaN,
+   "effect_usd": 980.0,
+   "date_from": "2019-12-31",
+   "date_to": "2019-12-31"
+  },
+  {
+   "anomaly_id": "K31",
+   "type": "E_MANUAL_ADJ",
+   "store_key": NaN,
+   "store_code": NaN,
+   "effect_usd": -1435.5,
+   "date_from": "2020-12-31",
+   "date_to": "2020-12-31"
+  }
+ ],
+ "systemic": {
+  "S1_ONLINE_TIMING": 1346286.28,
+  "S2_REFUND_LAG": 93465.04,
+  "S3_DUPLICATE_LINES": 67493.06,
+  "S4_PENDING": 73105.11,
+  "S5_STORE_RECODE": 0.0
+ },
+ "recode": {
+  "store_key": 38,
+  "old": "GBR-03",
+  "new": "GBR-03N"
+ },
+ "threshold": {
+  "abs_usd": 200.0,
+  "pct": 0.01
+ },
+ "vat_rate": 0.1,
+ "duplicates": 120
+}
